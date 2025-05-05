@@ -1,25 +1,25 @@
+import { useState } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Combobox } from "@/components/ui/combobox";
-import { Input } from "@/components/ui/input";
-import { InputDate } from "@/components/ui/input-date";
-import { InputDateTime } from "@/components/ui/input-datetime";
-import { InputPassword } from "@/components/ui/input-password";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
-
 import {
   FileUpload,
   FileUploadClear,
   FileUploadDropzone,
   FileUploadItem,
   FileUploadList,
-} from "./components/ui/file-upload";
-import ItemList from "./components/ui/item-list";
+} from "@/components/ui/file-upload";
+import { Input } from "@/components/ui/input";
+import { InputDate } from "@/components/ui/input-date";
+import { InputDateTime } from "@/components/ui/input-datetime";
+import { InputPassword } from "@/components/ui/input-password";
+import ItemList from "@/components/ui/item-list";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-function App() {
+export default function Components() {
   const [files, setFiles] = useState<File[]>([]);
   const [comboValue, setComboValue] = useState<number | null>(null);
   const [itemListValue, setItemListValue] = useState<
@@ -101,5 +101,3 @@ function App() {
     </>
   );
 }
-
-export default App;
