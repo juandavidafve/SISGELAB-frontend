@@ -10,9 +10,17 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 
+import {
+  FileUpload,
+  FileUploadClear,
+  FileUploadDropzone,
+  FileUploadItem,
+  FileUploadList,
+} from "./components/ui/file-upload";
 import ItemList from "./components/ui/item-list";
 
 function App() {
+  const [files, setFiles] = useState<File[]>([]);
   const [comboValue, setComboValue] = useState<number | null>(null);
   const [itemListValue, setItemListValue] = useState<
     {
@@ -33,7 +41,6 @@ function App() {
           <Label htmlFor="option-two">Option Two</Label>
         </div>
       </RadioGroup>
-
       <div className="items-top flex space-x-2">
         <Checkbox id="terms1" />
         <div className="grid gap-1.5 leading-none">
@@ -48,16 +55,12 @@ function App() {
           </p>
         </div>
       </div>
-
       <Badge>SSDSD</Badge>
-
       <div className="grid w-full max-w-sm items-center gap-1.5">
         <Label htmlFor="email">Email</Label>
         <Input type="email" id="email" placeholder="Email" />
       </div>
-
       <InputPassword />
-
       <Combobox
         value={comboValue}
         onChange={setComboValue}
@@ -82,9 +85,19 @@ function App() {
         onChange={setItemListValue}
         valueLabel="country"
       ></ItemList>
-
       <InputDate />
       <InputDateTime />
+
+      <FileUpload value={files} onValueChange={setFiles} multiple>
+        <FileUploadDropzone />
+
+        <FileUploadList>
+          {files.map((file) => (
+            <FileUploadItem key={file.name} value={file} />
+          ))}
+        </FileUploadList>
+        <FileUploadClear />
+      </FileUpload>
     </>
   );
 }

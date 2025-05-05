@@ -83,14 +83,18 @@ export default function ItemList<T>({
         </div>
       </div>
 
-      <ul className="space-y-1">
+      <ul className="flex flex-col gap-1 mt-1">
         {value.map((item, index) => (
           <li
             key={index}
-            className="flex justify-between items-center border-b border-gray-600 py-2"
+            className="flex items-center justify-between gap-2.5 rounded-md shadow-xs border pl-4"
           >
             <span>{String(item[valueLabel])}</span>
-            <Button onClick={() => handleRemove(index)} variant="ghost">
+            <Button
+              onClick={() => handleRemove(index)}
+              variant="ghost"
+              size="icon"
+            >
               <Icon icon="mdi:close" className="text-red-500 size-6" />
             </Button>
           </li>
