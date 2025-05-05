@@ -14,7 +14,9 @@ createRoot(document.getElementById("root")!).render(
     <HashRouter>
       <Routes>
         <Route index element={<Navigate to="/dashboard" />} />
-        <Route path="dashboard" element={<Home />} />
+        <Route path="dashboard">
+          <Route index element={<Home />} />
+        </Route>
         <Route path="login" element={<Login />} />
         {MODE === "development" && (
           <Route path="dev/components" element={<Components />} />
