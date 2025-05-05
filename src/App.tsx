@@ -8,8 +8,18 @@ import { InputDateTime } from "@/components/ui/input-datetime";
 import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useState } from "react";
+
+import ItemList from "./components/ui/item-list";
 
 function App() {
+  const [comboValue, setComboValue] = useState<number | null>(null);
+  const [itemListValue, setItemListValue] = useState<
+    {
+      country: string;
+      currency: string;
+    }[]
+  >([]);
   return (
     <>
       <Button>Wenas</Button>
@@ -49,28 +59,29 @@ function App() {
       <InputPassword />
 
       <Combobox
+        value={comboValue}
+        onChange={setComboValue}
         comboboxPlaceholder="Seleccionar país"
         notFoundText="País no encontrado."
         searchPlaceholder="Buscar país..."
-        items={[
+        items={["Colombia", "Venecozuela"]}
+      />
+      <ItemList
+        label="País"
+        options={[
           {
-            label: "Colombia",
-            value: "CO",
+            country: "Colombia",
+            currency: "COP",
           },
           {
-            label: "Venecozuela",
-            value: "VE",
-          },
-          {
-            label: "Perú",
-            value: "PE",
-          },
-          {
-            label: "Ecuador",
-            value: "EC",
+            country: "Venecozuela",
+            currency: "Bolivar",
           },
         ]}
-      />
+        value={itemListValue}
+        onChange={setItemListValue}
+        valueLabel="country"
+      ></ItemList>
 
       <InputDate />
       <InputDateTime />

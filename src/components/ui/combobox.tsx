@@ -15,27 +15,29 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import * as React from "react";
 
 interface ComboboxProps {
-  items: {
-    value: string;
-    label: string;
-  }[];
+  items: string[];
+  value: number | null;
+  onChange: (value: number | null) => void;
   searchPlaceholder: string;
   comboboxPlaceholder: string;
   notFoundText: string;
+  width?: string;
 }
 
 export function Combobox({
   items,
+  value,
+  onChange,
   searchPlaceholder,
   comboboxPlaceholder,
   notFoundText,
+  width = "w-[200px]",
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,29 +46,26 @@ export function Combobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className={cn(width, "justify-between")}
         >
-          {value
-            ? items.find((item) => item.value === value)?.label
-            : comboboxPlaceholder}
+          {value !== null ? items[value] : comboboxPlaceholder}
           <Icon
             icon="material-symbols:expand-all-rounded"
             className="ml-2 h-4 w-4 shrink-0 opacity-50"
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className={cn(width, "p-0")}>
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
             <CommandEmpty>{notFoundText}</CommandEmpty>
             <CommandGroup>
-              {items.map((item) => (
+              {items.map((item, index) => (
                 <CommandItem
-                  key={item.value}
-                  value={item.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                  key={item}
+                  onSelect={() => {
+                    onChange(index == value ? null : index);
                     setOpen(false);
                   }}
                 >
@@ -74,10 +73,10 @@ export function Combobox({
                     icon="material-symbols:check-rounded"
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === item.value ? "opacity-100" : "opacity-0",
+                      value === index ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  {item.label}
+                  {item}
                 </CommandItem>
               ))}
             </CommandGroup>
