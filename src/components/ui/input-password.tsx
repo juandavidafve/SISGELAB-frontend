@@ -1,13 +1,15 @@
-import { Input } from "@/components/ui/input";
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { ComponentProps, useState } from "react";
 
-function InputPassword() {
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+
+function InputPassword({ className, ...props }: ComponentProps<"input">) {
   const [hidden, setHidden] = useState(true);
 
   return (
-    <div className="relative">
-      <Input type={hidden ? "password" : "text"} />
+    <div className={cn("relative", className)}>
+      <Input type={hidden ? "password" : "text"} {...props} />
       {hidden ? (
         <Icon
           icon="iconamoon:eye"

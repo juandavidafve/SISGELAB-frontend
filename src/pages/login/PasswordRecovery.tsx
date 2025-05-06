@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
@@ -14,19 +13,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { InputPassword } from "@/components/ui/input-password";
 
-export default function Login() {
+export default function PasswordRecovery() {
   const formSchema = z.object({
     email: z.string().email("El correo no es válido"),
-    password: z.string().nonempty("La contraseña no puede estar vacía"),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
@@ -36,7 +32,7 @@ export default function Login() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Iniciar Sesión</h1>
+      <h1 className="text-2xl font-bold mb-4">Recuperar Contraseña</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -54,43 +50,17 @@ export default function Login() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contraseña</FormLabel>
-                <FormControl>
-                  <InputPassword {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <Button type="submit" className="w-full">
-            Iniciar sesión
+            Enviar enlace
           </Button>
         </form>
       </Form>
 
-      <div className="text-right mb-4">
+      <div className="mb-4 text-center">
         <Button variant="link" className="text-xs">
-          <Link to="password-recovery">Olvidé mi contraseña</Link>
+          <Link to="..">Volver a inicio de sesión</Link>
         </Button>
       </div>
-
-      <div className="h-4 relative">
-        <div className="h-px w-full bg-gray-500"></div>
-        <span className="bg-white px-2 absolute left-1/2 top-0 -translate-1/2 text-nowrap text-xs">
-          o inicia sesión con
-        </span>
-      </div>
-
-      <Button variant="outline" className="w-full">
-        <Icon icon="devicon:google" />
-        Google
-      </Button>
     </div>
   );
 }
