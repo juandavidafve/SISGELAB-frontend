@@ -1,8 +1,9 @@
+import { Icon } from "@iconify/react";
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import { Label } from "@/components/ui/label";
-import { Icon } from "@iconify/react";
-import { useEffect, useState } from "react";
 
 // Ajusta la ruta si es distinta
 
@@ -67,7 +68,7 @@ export default function ItemList<T>({
     <div className={className}>
       <div>
         <Label htmlFor="item-combobox">{label}</Label>
-        <div className="grid grid-cols-[auto_1fr] gap-2 mt-1">
+        <div className="mt-1 grid grid-cols-[auto_1fr] gap-2">
           <Combobox
             value={selectedValue}
             onChange={setSelectedValue}
@@ -83,11 +84,11 @@ export default function ItemList<T>({
         </div>
       </div>
 
-      <ul className="flex flex-col gap-1 mt-1">
+      <ul className="mt-1 flex flex-col gap-1">
         {value.map((item, index) => (
           <li
             key={index}
-            className="flex items-center justify-between gap-2.5 rounded-md shadow-xs border pl-4"
+            className="flex items-center justify-between gap-2.5 rounded-md border pl-4 shadow-xs"
           >
             <span>{String(item[valueLabel])}</span>
             <Button
@@ -95,7 +96,7 @@ export default function ItemList<T>({
               variant="ghost"
               size="icon"
             >
-              <Icon icon="mdi:close" className="text-red-500 size-6" />
+              <Icon icon="mdi:close" className="size-6 text-red-500" />
             </Button>
           </li>
         ))}

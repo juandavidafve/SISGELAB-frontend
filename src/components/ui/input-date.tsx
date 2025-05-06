@@ -1,5 +1,10 @@
 "use client";
 
+import { Icon } from "@iconify/react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import * as React from "react";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -8,10 +13,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import * as React from "react";
 
 export function InputDate() {
   const [date, setDate] = React.useState<Date>();

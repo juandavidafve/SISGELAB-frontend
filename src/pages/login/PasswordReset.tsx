@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Icon } from "@iconify/react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
@@ -13,20 +12,32 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
 
-export default function Login() {
+export default function PasswordReset() {
+  let passwordValue = "";
   const formSchema = z.object({
-    email: z.string().email("El correo no es válido"),
-    password: z.string().nonempty("La contraseña no puede estar vacía"),
+    password: z
+      .string()
+      .nonempty("La contraseña no debe estar vacía")
+      .refine((value) => {
+        passwordValue = value;
+        return true;
+      }),
+    passwordCheck: z
+      .string()
+      .nonempty("Debes confirmar la contraseña")
+      .refine(
+        (value) => value === passwordValue,
+        "Las contraseñas no coinciden",
+      ),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
       password: "",
+      passwordCheck: "",
     },
   });
 
@@ -36,18 +47,18 @@ export default function Login() {
 
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-bold">Iniciar Sesión</h1>
+      <h1 className="mb-4 text-2xl font-bold">Restablecer Contraseña</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="email"
+            name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Correo</FormLabel>
+                <FormLabel>Introduce la nueva contraseña</FormLabel>
                 <FormControl>
-                  <Input placeholder="correo@ejemplo.com" {...field} />
+                  <InputPassword {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -56,10 +67,10 @@ export default function Login() {
 
           <FormField
             control={form.control}
-            name="password"
+            name="passwordCheck"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contraseña</FormLabel>
+                <FormLabel>Confirmar la nueva contraseña</FormLabel>
                 <FormControl>
                   <InputPassword {...field} />
                 </FormControl>
@@ -69,28 +80,16 @@ export default function Login() {
           />
 
           <Button type="submit" className="w-full">
-            Iniciar sesión
+            Actualizar contraseña
           </Button>
         </form>
       </Form>
 
-      <div className="mb-4 text-right">
+      <div className="mb-4 text-center">
         <Button variant="link" className="text-xs">
-          <Link to="password-recovery">Olvidé mi contraseña</Link>
+          <Link to="..">Volver a inicio de sesión</Link>
         </Button>
       </div>
-
-      <div className="relative h-4">
-        <div className="h-px w-full bg-gray-500"></div>
-        <span className="absolute top-0 left-1/2 -translate-1/2 bg-white px-2 text-xs text-nowrap">
-          o inicia sesión con
-        </span>
-      </div>
-
-      <Button variant="outline" className="w-full">
-        <Icon icon="devicon:google" />
-        Google
-      </Button>
     </div>
   );
 }

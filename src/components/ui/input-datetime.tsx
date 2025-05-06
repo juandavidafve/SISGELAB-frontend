@@ -1,5 +1,10 @@
 "use client";
 
+import { Icon } from "@iconify/react";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import * as React from "react";
+
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -9,10 +14,6 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import * as React from "react";
 
 export function InputDateTime() {
   const [date, setDate] = React.useState<Date>();
@@ -77,9 +78,9 @@ export function InputDateTime() {
             onSelect={handleDateSelect}
             initialFocus
           />
-          <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
+          <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
             <ScrollArea className="w-64 sm:w-auto">
-              <div className="flex sm:flex-col p-2">
+              <div className="flex p-2 sm:flex-col">
                 {hours.reverse().map((hour) => (
                   <Button
                     key={hour}
@@ -89,7 +90,7 @@ export function InputDateTime() {
                         ? "default"
                         : "ghost"
                     }
-                    className="sm:w-full shrink-0 aspect-square"
+                    className="aspect-square shrink-0 sm:w-full"
                     onClick={() => handleTimeChange("hour", hour.toString())}
                   >
                     {hour}
@@ -99,7 +100,7 @@ export function InputDateTime() {
               <ScrollBar orientation="horizontal" className="sm:hidden" />
             </ScrollArea>
             <ScrollArea className="w-64 sm:w-auto">
-              <div className="flex sm:flex-col p-2">
+              <div className="flex p-2 sm:flex-col">
                 {Array.from({ length: 12 }, (_, i) => i * 5).map((minute) => (
                   <Button
                     key={minute}
@@ -107,7 +108,7 @@ export function InputDateTime() {
                     variant={
                       date && date.getMinutes() === minute ? "default" : "ghost"
                     }
-                    className="sm:w-full shrink-0 aspect-square"
+                    className="aspect-square shrink-0 sm:w-full"
                     onClick={() =>
                       handleTimeChange("minute", minute.toString())
                     }
@@ -119,7 +120,7 @@ export function InputDateTime() {
               <ScrollBar orientation="horizontal" className="sm:hidden" />
             </ScrollArea>
             <ScrollArea className="">
-              <div className="flex sm:flex-col p-2">
+              <div className="flex p-2 sm:flex-col">
                 {["AM", "PM"].map((ampm) => (
                   <Button
                     key={ampm}
@@ -131,7 +132,7 @@ export function InputDateTime() {
                         ? "default"
                         : "ghost"
                     }
-                    className="sm:w-full shrink-0 aspect-square"
+                    className="aspect-square shrink-0 sm:w-full"
                     onClick={() => handleTimeChange("ampm", ampm)}
                   >
                     {ampm}
