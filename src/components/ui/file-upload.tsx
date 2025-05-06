@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { Slot } from "@radix-ui/react-slot";
 import {
   FileArchiveIcon,
@@ -14,6 +12,9 @@ import {
   FileVideoIcon,
 } from "lucide-react";
 import * as React from "react";
+
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const ROOT_NAME = "FileUpload";
 const DROPZONE_NAME = "FileUploadDropzone";
@@ -790,7 +791,7 @@ const FileUploadDropzone = React.forwardRef<
       {...dropzoneProps}
       ref={forwardedRef}
       className={cn(
-        "relative flex bg-red-50 border-red-500 select-none flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 outline-none transition-colors focus-visible:border-ring/50 data-[disabled]:pointer-events-none data-[dragging]:border-red-500 data-[invalid]:border-destructive data-[invalid]:ring-destructive/20",
+        "relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-red-500 bg-red-50 p-6 transition-colors outline-none select-none focus-visible:border-ring/50 data-[disabled]:pointer-events-none data-[dragging]:border-red-500 data-[invalid]:border-destructive data-[invalid]:ring-destructive/20",
         className,
       )}
       onClick={onClick}
@@ -809,8 +810,8 @@ const FileUploadDropzone = React.forwardRef<
             icon="material-symbols:upload-rounded"
             className="size-16 text-red-500"
           />
-          <span className="text-red-500 font-bold">Arrastra archivos aqui</span>
-          <span className="text-red-500 text-sm">O seleccionalos</span>
+          <span className="font-bold text-red-500">Arrastra archivos aqui</span>
+          <span className="text-sm text-red-500">O seleccionalos</span>
 
           <FileUploadTrigger asChild>
             <Button className="mt-2 w-fit">Seleccionar archivos</Button>
@@ -900,7 +901,7 @@ const FileUploadList = React.forwardRef<HTMLDivElement, FileUploadListProps>(
         {...listProps}
         ref={forwardedRef}
         className={cn(
-          "data-[state=inactive]:fade-out-0 data-[state=active]:fade-in-0 data-[state=inactive]:slide-out-to-top-2 data-[state=active]:slide-in-from-top-2 flex flex-col gap-2 data-[state=active]:animate-in data-[state=inactive]:animate-out",
+          "flex flex-col gap-2 data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:slide-in-from-top-2 data-[state=inactive]:animate-out data-[state=inactive]:fade-out-0 data-[state=inactive]:slide-out-to-top-2",
           orientation === "horizontal" && "flex-row overflow-x-auto p-1.5",
           className,
         )}
@@ -993,7 +994,7 @@ const FileUploadItem = React.forwardRef<HTMLDivElement, FileUploadItemProps>(
           {...itemProps}
           ref={forwardedRef}
           className={cn(
-            "relative flex items-center gap-2.5 rounded-md shadow-xs border p-3",
+            "relative flex items-center gap-2.5 rounded-md border p-3 shadow-xs",
             className,
           )}
         >
@@ -1133,7 +1134,7 @@ const FileUploadItemPreview = React.forwardRef<
       {...previewProps}
       ref={forwardedRef}
       className={cn(
-        "text-red-500 relative flex size-8 shrink-0 items-center justify-center overflow-hidden bg-accent/50 [&>svg]:size-10",
+        "relative flex size-8 shrink-0 items-center justify-center overflow-hidden bg-accent/50 text-red-500 [&>svg]:size-10",
         className,
       )}
     >
@@ -1182,8 +1183,8 @@ const FileUploadItemMetadata = React.forwardRef<
           <span
             id={itemContext.nameId}
             className={cn(
-              "truncate font-medium text-sm",
-              size === "sm" && "font-normal text-[13px] leading-snug",
+              "truncate text-sm font-medium",
+              size === "sm" && "text-[13px] leading-snug font-normal",
             )}
           >
             {itemContext.fileState.file.name}
@@ -1191,7 +1192,7 @@ const FileUploadItemMetadata = React.forwardRef<
           <span
             id={itemContext.sizeId}
             className={cn(
-              "truncate text-muted-foreground text-xs",
+              "truncate text-xs text-muted-foreground",
               size === "sm" && "text-[11px]",
             )}
           >
@@ -1200,7 +1201,7 @@ const FileUploadItemMetadata = React.forwardRef<
           {itemContext.fileState.error && (
             <span
               id={itemContext.messageId}
-              className="text-destructive text-xs"
+              className="text-xs text-destructive"
             >
               {itemContext.fileState.error}
             </span>
@@ -1261,7 +1262,7 @@ const FileUploadItemProgress = React.forwardRef<
           {...progressProps}
           ref={forwardedRef}
           className={cn(
-            "-translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2",
+            "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
             className,
           )}
         >

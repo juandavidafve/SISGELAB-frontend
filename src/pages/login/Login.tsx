@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
@@ -36,7 +36,7 @@ export default function Login() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Iniciar Sesión</h1>
+      <h1 className="mb-4 text-2xl font-bold">Iniciar Sesión</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -74,15 +74,15 @@ export default function Login() {
         </form>
       </Form>
 
-      <div className="text-right mb-4">
+      <div className="mb-4 text-right">
         <Button variant="link" className="text-xs">
           <Link to="password-recovery">Olvidé mi contraseña</Link>
         </Button>
       </div>
 
-      <div className="h-4 relative">
+      <div className="relative h-4">
         <div className="h-px w-full bg-gray-500"></div>
-        <span className="bg-white px-2 absolute left-1/2 top-0 -translate-1/2 text-nowrap text-xs">
+        <span className="absolute top-0 left-1/2 -translate-1/2 bg-white px-2 text-xs text-nowrap">
           o inicia sesión con
         </span>
       </div>

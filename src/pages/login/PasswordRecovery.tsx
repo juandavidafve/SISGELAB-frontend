@@ -32,7 +32,7 @@ export default function PasswordRecovery() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Recuperar Contraseña</h1>
+      <h1 className="mb-4 text-2xl font-bold">Recuperar Contraseña</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

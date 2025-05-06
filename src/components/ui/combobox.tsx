@@ -1,5 +1,8 @@
 "use client";
 
+import { Icon } from "@iconify/react";
+import * as React from "react";
+
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -15,8 +18,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Icon } from "@iconify/react";
-import * as React from "react";
 
 interface ComboboxProps {
   items: string[];

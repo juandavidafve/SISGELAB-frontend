@@ -13,14 +13,14 @@ export default function CardLayout({
   allowHorizontal = true,
 }: CardLayoutOptions) {
   return (
-    <main className="flex items-center justify-center min-h-screen relative p-5">
-      <div className="absolute top-0 left-0 h-screen w-screen -z-10">
+    <main className="relative flex min-h-screen items-center justify-center p-5">
+      <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
         <img
           src={BackgroundImg}
           alt="Background"
-          className="fixed object-cover w-full h-full"
+          className="fixed h-full w-full object-cover"
         />
-        <div className="fixed w-full h-full bg-red-500 opacity-50"></div>
+        <div className="fixed h-full w-full bg-red-500 opacity-50"></div>
       </div>
 
       <Card>
@@ -33,7 +33,7 @@ export default function CardLayout({
           <img
             src={FablabLogoImg}
             className={cn(
-              "w-full max-w-16 mx-auto",
+              "mx-auto w-full max-w-16",
               allowHorizontal && "lg:max-w-64",
             )}
             alt="FABLAB Logo"

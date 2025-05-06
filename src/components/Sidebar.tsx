@@ -36,16 +36,16 @@ const AdminSidebar: FC = () => {
     <>
       {!collapsed && (
         <div
-          className="absolute top-0 left-0 w-screen h-screen bg-neutral-950 opacity-30"
+          className="absolute top-0 left-0 h-screen w-screen bg-neutral-950 opacity-30"
           onClick={() => setCollapsed(true)}
         ></div>
       )}
 
       <aside
         className={cn(
-          "w-full bg-red-600 text-white space-y-10 p-3 transition-[height] lg:transition-[width] lg:min-h-screen fixed top-0 left-0 overflow-hidden",
-          collapsed && "lg:w-16 h-16",
-          !collapsed && "lg:w-64 h-screen",
+          "fixed top-0 left-0 w-full space-y-10 overflow-hidden bg-red-600 p-3 text-white transition-[height] lg:min-h-screen lg:transition-[width]",
+          collapsed && "h-16 lg:w-16",
+          !collapsed && "h-screen lg:w-64",
         )}
       >
         <div className="flex items-center justify-between">
@@ -67,13 +67,13 @@ const AdminSidebar: FC = () => {
             <Icon icon="mingcute:user-4-fill" className="size-6" />
           </div>
         </div>
-        <nav className="flex flex-col gap-4 items-start h-full overflow-y-auto">
+        <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
           {navItems.map((item, index) => (
             <Button
               key={index}
               variant="ghost"
               className={cn(
-                "justify-start w-full has-[>svg]:p-0",
+                "w-full justify-start has-[>svg]:p-0",
                 collapsed && "w-9",
               )}
               onClick={handleClick}

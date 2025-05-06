@@ -13,13 +13,13 @@ function InputPassword({ className, ...props }: ComponentProps<"input">) {
       {hidden ? (
         <Icon
           icon="iconamoon:eye"
-          className="absolute top-1/2 size-6 right-2 -translate-y-1/2 cursor-pointer"
+          className="absolute top-1/2 right-2 size-6 -translate-y-1/2 cursor-pointer"
           onClick={() => setHidden(!hidden)}
         />
       ) : (
         <Icon
           icon="iconamoon:eye-off"
-          className="absolute top-1/2 size-6 right-2 -translate-y-1/2 cursor-pointer"
+          className="absolute top-1/2 right-2 size-6 -translate-y-1/2 cursor-pointer"
           onClick={() => setHidden(!hidden)}
         />
       )}

@@ -1,7 +1,8 @@
-import { cn } from "@/lib/utils";
 import { Icon } from "@iconify/react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import * as React from "react";
+
+import { cn } from "@/lib/utils";
 
 function RadioGroup({
   className,
@@ -24,7 +25,7 @@ function RadioGroupItem({
     <RadioGroupPrimitive.Item
       data-slot="radio-group-item"
       className={cn(
-        "relative text-red-500 size-6 shrink-0 outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer",
+        "relative size-6 shrink-0 cursor-pointer text-red-500 outline-none disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}
