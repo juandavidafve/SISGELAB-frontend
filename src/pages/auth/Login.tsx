@@ -112,7 +112,7 @@ export default function Login() {
 
       <div className="mb-4 text-right">
         <Button variant="link" className="text-xs">
-          <Link to="password-recovery">Olvidé mi contraseña</Link>
+          <Link to="../password-recovery">Olvidé mi contraseña</Link>
         </Button>
       </div>
 

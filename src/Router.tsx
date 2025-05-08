@@ -6,11 +6,11 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import CardLayout from "@/layouts/CardLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { MODE } from "@/lib/config";
+import Action from "@/pages/auth/Action";
+import Login from "@/pages/auth/Login";
+import PasswordRecovery from "@/pages/auth/PasswordRecovery";
 import Home from "@/pages/dashboard/Home.tsx";
 import Components from "@/pages/dev/Components.tsx";
-import Login from "@/pages/login/Login";
-import PasswordRecovery from "@/pages/login/PasswordRecovery";
-import PasswordReset from "@/pages/login/PasswordReset";
 
 import "./index.css";
 
@@ -32,7 +32,7 @@ export default function Router() {
         </Route>
 
         <Route
-          path="login"
+          path="auth"
           element={
             <ProtectedRoute
               elemOnDeny={<CardLayout />}
@@ -40,9 +40,10 @@ export default function Router() {
             />
           }
         >
-          <Route index element={<Login />} />
+          <Route index element={<Navigate to="login" />} />
+          <Route path="login" element={<Login />} />
           <Route path="password-recovery" element={<PasswordRecovery />} />
-          <Route path="password-reset" element={<PasswordReset />} />
+          <Route path="action" element={<Action />} />
         </Route>
 
         {MODE === "development" && (

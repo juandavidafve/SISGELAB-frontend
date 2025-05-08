@@ -1,6 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { sendPasswordResetEmail } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -13,8 +15,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useAuth from "@/hooks/useAuth";
 
 export default function PasswordRecovery() {
+  const { auth } = useAuth();
+
   const formSchema = z.object({
     email: z.string().email("El correo no es válido"),
   });
@@ -26,8 +31,10 @@ export default function PasswordRecovery() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await sendPasswordResetEmail(auth, values.email);
+
+    toast.success(`Enlace de recuperación enviado a ${values.email}`);
   }
 
   return (

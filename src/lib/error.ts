@@ -21,6 +21,11 @@ function getFirebaseErrorMsg(error: FirebaseError) {
     "auth/too-many-requests",
     "Demasiadas peticiones. Inténtalo más tarde.",
   );
+  errorMapping.set(
+    "auth/invalid-action-code",
+    "El código de acción no es válido",
+  );
+  errorMapping.set("auth/weak-password", "La contraseña es muy débil");
 
   return errorMapping.get(error.code) || error.code;
 }

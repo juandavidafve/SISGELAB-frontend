@@ -16,7 +16,7 @@ export default function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { user } = useAuth();
 
-  if (user === null) return elemOnDeny || <Navigate to="/login" />;
-
+  if (user === undefined) return;
+  if (user === null) return elemOnDeny || <Navigate to="/auth/login" />;
   return elemOnAllow || children;
 }
