@@ -28,7 +28,9 @@ createRoot(document.getElementById("root")!).render(
           <Route path="password-reset" element={<PasswordReset />} />
         </Route>
         {MODE === "development" && (
-          <Route path="dev/components" element={<Components />} />
+          <>
+            <Route path="dev/components" element={<Components />} />
+          </>
         )}
 
         <Route path="ingreso-fablab" element={<FabLabIngresoTable />} />
