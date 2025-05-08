@@ -13,6 +13,7 @@ import Home from "@/pages/dashboard/Home.tsx";
 import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
+import FabLabIngresoTable from "./pages/ingreso-fablab/IngresoFablab";
 
 export default function Router() {
   return (
@@ -47,8 +48,12 @@ export default function Router() {
         </Route>
 
         {MODE === "development" && (
-          <Route path="dev/components" element={<Components />} />
+          <>
+            <Route path="dev/components" element={<Components />} />
+          </>
         )}
+
+        <Route path="ingreso-fablab" element={<FabLabIngresoTable />} />
       </Routes>
     </HashRouter>
   );
