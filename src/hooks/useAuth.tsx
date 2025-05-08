@@ -5,10 +5,9 @@ import app from "@/lib/firebase";
 
 export default function useAuth() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
+  const [auth] = useState(getAuth(app));
 
   useEffect(() => {
-    const auth = getAuth(app);
-
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
@@ -16,5 +15,5 @@ export default function useAuth() {
     return () => unsubscribe();
   }, []);
 
-  return { user };
+  return { user, auth };
 }

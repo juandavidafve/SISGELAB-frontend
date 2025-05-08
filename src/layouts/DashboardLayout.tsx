@@ -1,14 +1,14 @@
 import { Outlet } from "react-router";
 
-import Sidebar from "@/components/Sidebar";
+import AdminSidebar from "@/components/Sidebar";
+
+import BaseLayout from "./BaseLayout";
 
 export default function DashboardLayout() {
   return (
-    <main>
-      <Sidebar />
-      <div className="mt-16 lg:mt-0 lg:ml-16">
-        <Outlet />
-      </div>
-    </main>
+    <BaseLayout className="mt-16 lg:mt-0 lg:ml-16">
+      <AdminSidebar />
+      <Outlet />
+    </BaseLayout>
   );
 }
