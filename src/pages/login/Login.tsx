@@ -1,7 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import { FirebaseError } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { toast } from "sonner";
@@ -18,8 +22,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/input-password";
+import useAuth from "@/hooks/useAuth";
+import { handleFirebaseError } from "@/lib/error";
 
 export default function Login() {
+  const { auth } = useAuth();
+
   const formSchema = z.object({
     email: z.string().email("El correo no es válido"),
     password: z.string().nonempty("La contraseña no puede estar vacía"),
@@ -33,21 +41,29 @@ export default function Login() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        handleFirebaseError(toast.error, error);
+      }
+
+      console.error(error);
+    }
   }
 
   async function handleGoogleLogin() {
-    const auth = getAuth();
     const provider = new GoogleAuthProvider();
 
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
       if (error instanceof FirebaseError) {
-        toast(error.message);
-      } else {
-        toast(String(error));
+        handleFirebaseError(toast.error, error, [
+          "auth/popup-closed-by-user",
+          "auth/cancelled-popup-request",
+        ]);
       }
 
       console.error(error);

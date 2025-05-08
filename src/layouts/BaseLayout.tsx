@@ -6,7 +6,7 @@ export default function BaseLayout({
 }: React.ComponentProps<"main">) {
   return (
     <>
-      <Toaster />
+      <Toaster position="top-center" richColors />
       <main {...props}>{children}</main>
     </>
   );
