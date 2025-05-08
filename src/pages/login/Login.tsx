@@ -1,7 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
+import { FirebaseError } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -32,6 +35,23 @@ export default function Login() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+  }
+
+  async function handleGoogleLogin() {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        toast(error.message);
+      } else {
+        toast(String(error));
+      }
+
+      console.error(error);
+    }
   }
 
   return (
@@ -87,7 +107,7 @@ export default function Login() {
         </span>
       </div>
 
-      <Button variant="outline" className="w-full">
+      <Button variant="outline" className="w-full" onClick={handleGoogleLogin}>
         <Icon icon="devicon:google" />
         Google
       </Button>
