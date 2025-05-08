@@ -2,9 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route, Navigate } from "react-router";
 
-import { MODE } from "@/config";
 import CardLayout from "@/layouts/CardLayout";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { MODE } from "@/lib/config";
 import Home from "@/pages/dashboard/Home.tsx";
 import Components from "@/pages/dev/Components.tsx";
 import Login from "@/pages/login/Login";
