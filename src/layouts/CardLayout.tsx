@@ -5,6 +5,8 @@ import FablabLogoImg from "@/assets/images/fablab-logo.jpg";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+import BaseLayout from "./BaseLayout";
+
 interface CardLayoutOptions {
   allowHorizontal?: boolean;
 }
@@ -13,7 +15,7 @@ export default function CardLayout({
   allowHorizontal = true,
 }: CardLayoutOptions) {
   return (
-    <main className="relative flex min-h-screen items-center justify-center p-5">
+    <BaseLayout className="relative flex min-h-screen items-center justify-center p-5">
       <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
         <img
           src={BackgroundImg}
@@ -43,6 +45,6 @@ export default function CardLayout({
           <Outlet />
         </CardContent>
       </Card>
-    </main>
+    </BaseLayout>
   );
 }

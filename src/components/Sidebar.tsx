@@ -1,8 +1,16 @@
 import { Icon } from "@iconify/react";
-import { FC, useState } from "react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import useAuth from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 interface NavItem {
   label: string;
@@ -25,11 +33,12 @@ const navItems: NavItem[] = [
   { label: "Datos", icon: "mdi:database" },
 ];
 
-const AdminSidebar: FC = () => {
+export default function AdminSidebar() {
+  const { auth } = useAuth();
   const [collapsed, setCollapsed] = useState(true);
 
-  function handleClick() {
-    setCollapsed(true);
+  async function handleLogout() {
+    await auth.signOut();
   }
 
   return (
@@ -57,15 +66,24 @@ const AdminSidebar: FC = () => {
             <Icon icon="mdi:menu" className="size-6" />
           </Button>
 
-          <div
-            className={cn(
-              "flex gap-2 transition-opacity",
-              collapsed && "lg:opacity-0",
-            )}
-          >
-            <span className="font-bold">ADMIN</span>
-            <Icon icon="mingcute:user-4-fill" className="size-6" />
-          </div>
+          <Popover>
+            <PopoverTrigger
+              className={cn(
+                "cursor-pointer transition-opacity",
+                collapsed && "lg:opacity-0",
+              )}
+            >
+              <Icon icon="mingcute:user-4-fill" className="size-6" />
+            </PopoverTrigger>
+            <PopoverContent className="w-fit">
+              <p className="text-center font-bold">Juan Afanador</p>
+              <p className="text-center text-sm">ADMIN</p>
+              <Separator className="my-4" />
+              <Button variant="outline" onClick={handleLogout}>
+                Cerrar Sesión
+              </Button>
+            </PopoverContent>
+          </Popover>
         </div>
         <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
           {navItems.map((item, index) => (
@@ -76,7 +94,9 @@ const AdminSidebar: FC = () => {
                 "w-full justify-start has-[>svg]:p-0",
                 collapsed && "w-9",
               )}
-              onClick={handleClick}
+              onClick={() => {
+                setCollapsed(true);
+              }}
             >
               <Icon icon={item.icon} className="ml-[6px] size-6" />
               <span
@@ -93,6 +113,4 @@ const AdminSidebar: FC = () => {
       </aside>
     </>
   );
-};
-
-export default AdminSidebar;
+}
