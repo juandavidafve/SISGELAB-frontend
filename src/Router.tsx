@@ -14,6 +14,7 @@ import Entry from "@/pages/dashboard/entry/Entry";
 import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
+import FormularioDatosPersonales from "./pages/dashboard/instructor/datosPersonales";
 
 export default function Router() {
   return (
@@ -31,6 +32,10 @@ export default function Router() {
         >
           <Route index element={<Home />} />
           <Route path="entry" element={<Entry />} />
+          <Route
+            path="datosPersonales"
+            element={<FormularioDatosPersonales />}
+          />
         </Route>
 
         <Route
