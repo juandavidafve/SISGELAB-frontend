@@ -10,10 +10,10 @@ import Action from "@/pages/auth/Action";
 import Login from "@/pages/auth/Login";
 import PasswordRecovery from "@/pages/auth/PasswordRecovery";
 import Home from "@/pages/dashboard/Home.tsx";
+import Entry from "@/pages/dashboard/entry/Entry";
 import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
-import FabLabIngresoTable from "./pages/ingreso-fablab/IngresoFablab";
 
 export default function Router() {
   return (
@@ -30,6 +30,7 @@ export default function Router() {
           }
         >
           <Route index element={<Home />} />
+          <Route path="entry" element={<Entry />} />
         </Route>
 
         <Route
@@ -48,12 +49,8 @@ export default function Router() {
         </Route>
 
         {MODE === "development" && (
-          <>
-            <Route path="dev/components" element={<Components />} />
-          </>
+          <Route path="dev/components" element={<Components />} />
         )}
-
-        <Route path="ingreso-fablab" element={<FabLabIngresoTable />} />
       </Routes>
     </HashRouter>
   );
