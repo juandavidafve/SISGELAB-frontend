@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import {
   Popover,
@@ -46,8 +46,16 @@ const navItems: NavItem[] = [
   { label: "Datos", icon: "material-symbols:database-outline", url: "" },
 ];
 
-export default function AdminSidebar() {
+export default function Sidebar() {
   const { auth } = useAuth();
+  const { pathname } = useLocation();
+
+  const currentItemPath = pathname.split("/")[2];
+  const currentNavItem =
+    currentItemPath?.length > 0
+      ? navItems.find((item) => item.url === currentItemPath)
+      : undefined;
+
   const [collapsed, setCollapsed] = useState(true);
 
   async function handleLogout() {
@@ -100,12 +108,12 @@ export default function AdminSidebar() {
         </div>
         <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
           {navItems.map((item, index) => (
-            <Link to={item.url}>
+            <Link to={item.url} key={index}>
               <Button
-                key={index}
                 variant="ghost"
                 className={cn(
                   "w-full justify-start has-[>svg]:p-0",
+                  currentNavItem === item && "bg-neutral-100 text-neutral-900",
                   collapsed && "w-9",
                 )}
                 onClick={() => {
