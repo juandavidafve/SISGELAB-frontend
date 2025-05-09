@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { Link } from "react-router";
 
 import {
   Popover,
@@ -15,22 +16,34 @@ import { Separator } from "./ui/separator";
 interface NavItem {
   label: string;
   icon: string;
+  url: string;
 }
 
 const navItems: NavItem[] = [
-  { label: "Instructores", icon: "ph:chalkboard-teacher" },
+  {
+    label: "Datos Personales",
+    icon: "material-symbols:database-outline",
+    url: "",
+  },
+  { label: "Instructores", icon: "ph:chalkboard-teacher", url: "" },
   {
     label: "Ofertas de Formación",
     icon: "material-symbols:menu-book-outline-rounded",
+    url: "",
   },
-  { label: "Ingreso al FabLab", icon: "material-symbols:login-rounded" },
+  {
+    label: "Ingreso al FabLab",
+    icon: "material-symbols:login-rounded",
+    url: "entry",
+  },
   {
     label: "Asistencia Instructores",
     icon: "material-symbols:list-alt-outline-rounded",
+    url: "",
   },
-  { label: "Certificados", icon: "lineicons:certificate-badge-1" },
-  { label: "Reportes", icon: "mdi:file-document" },
-  { label: "Datos", icon: "mdi:database" },
+  { label: "Certificados", icon: "lineicons:certificate-badge-1", url: "" },
+  { label: "Reportes", icon: "material-symbols:docs-outline-rounded", url: "" },
+  { label: "Datos", icon: "material-symbols:database-outline", url: "" },
 ];
 
 export default function AdminSidebar() {
@@ -87,27 +100,29 @@ export default function AdminSidebar() {
         </div>
         <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
           {navItems.map((item, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              className={cn(
-                "w-full justify-start has-[>svg]:p-0",
-                collapsed && "w-9",
-              )}
-              onClick={() => {
-                setCollapsed(true);
-              }}
-            >
-              <Icon icon={item.icon} className="ml-[6px] size-6" />
-              <span
+            <Link to={item.url}>
+              <Button
+                key={index}
+                variant="ghost"
                 className={cn(
-                  "overflow-hidden transition-opacity",
-                  collapsed && "opacity-0",
+                  "w-full justify-start has-[>svg]:p-0",
+                  collapsed && "w-9",
                 )}
+                onClick={() => {
+                  setCollapsed(true);
+                }}
               >
-                {item.label}
-              </span>
-            </Button>
+                <Icon icon={item.icon} className="ml-[6px] size-6" />
+                <span
+                  className={cn(
+                    "mr-[6px] overflow-hidden transition-opacity",
+                    collapsed && "opacity-0",
+                  )}
+                >
+                  {item.label}
+                </span>
+              </Button>
+            </Link>
           ))}
         </nav>
       </aside>
