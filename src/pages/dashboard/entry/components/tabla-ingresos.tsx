@@ -23,6 +23,7 @@ export default function TablaIngresos({ apiUrl }: TablaIngresosProps) {
       .get(apiUrl)
       .then((response) => {
         // Mapea la respuesta para que coincida con la estructura esperada
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mappedData = response.data.map((ingreso: any) => ({
           id: ingreso.id,
           instructor: ingreso.usuario, // Mapeamos 'usuario' a 'instructor'
