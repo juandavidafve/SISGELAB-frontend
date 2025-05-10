@@ -1,8 +1,7 @@
-import EntryTable from "./components/EntryTable";
 import QrDialog from "./components/QrDialog";
 import TablaIngresos from "./components/tabla-ingresos";
 
-export default function Entry() {
+export default function IngresoFablab() {
   return (
     <div className="flex w-full flex-col p-4">
       <div className="mb-6 flex items-center justify-between">

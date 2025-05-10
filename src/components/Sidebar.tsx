@@ -29,12 +29,12 @@ const navItems: NavItem[] = [
   {
     label: "Ofertas de Formación",
     icon: "material-symbols:menu-book-outline-rounded",
-    url: "",
+    url: "oferta-formacion",
   },
   {
     label: "Ingreso al FabLab",
     icon: "material-symbols:login-rounded",
-    url: "entry",
+    url: "ingreso-fablab",
   },
   {
     label: "Asistencia Instructores",
