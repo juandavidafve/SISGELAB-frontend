@@ -1,3 +1,4 @@
+import EntryTable from "./components/EntryTable";
 import QrDialog from "./components/QrDialog";
 import TablaIngresos from "./components/tabla-ingresos";
 

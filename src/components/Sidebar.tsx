@@ -73,7 +73,7 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          "fixed top-0 left-0 w-full space-y-10 overflow-hidden bg-red-600 p-3 text-white transition-[height] lg:min-h-screen lg:transition-[width]",
+          "fixed top-0 left-0 z-10 w-full space-y-10 overflow-hidden bg-red-600 p-3 text-white transition-[height] lg:min-h-screen lg:transition-[width]",
           collapsed && "h-16 lg:w-16",
           !collapsed && "h-screen lg:w-64",
         )}
