@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router";
 
 import {
   Popover,
@@ -15,26 +16,46 @@ import { Separator } from "./ui/separator";
 interface NavItem {
   label: string;
   icon: string;
+  url: string;
 }
 
 const navItems: NavItem[] = [
-  { label: "Instructores", icon: "ph:chalkboard-teacher" },
+  {
+    label: "Datos Personales",
+    icon: "material-symbols:database-outline",
+    url: "",
+  },
+  { label: "Instructores", icon: "ph:chalkboard-teacher", url: "" },
   {
     label: "Ofertas de Formación",
     icon: "material-symbols:menu-book-outline-rounded",
+    url: "oferta-formacion",
   },
-  { label: "Ingreso al FabLab", icon: "material-symbols:login-rounded" },
+  {
+    label: "Ingreso al FabLab",
+    icon: "material-symbols:login-rounded",
+    url: "ingreso-fablab",
+  },
   {
     label: "Asistencia Instructores",
     icon: "material-symbols:list-alt-outline-rounded",
+    url: "",
   },
-  { label: "Certificados", icon: "lineicons:certificate-badge-1" },
-  { label: "Reportes", icon: "mdi:file-document" },
-  { label: "Datos", icon: "mdi:database" },
+  { label: "Certificados", icon: "lineicons:certificate-badge-1", url: "" },
+  { label: "Reportes", icon: "material-symbols:docs-outline-rounded", url: "" },
+  { label: "Datos", icon: "material-symbols:database-outline", url: "" },
 ];
 
-export default function AdminSidebar() {
+export default function Sidebar() {
   const { auth } = useAuth();
+  const { pathname } = useLocation();
+
+  const currentItemPath = pathname.split("/")[2];
+  const currentNavItem =
+    currentItemPath?.length > 0
+      ? navItems.find((item) => item.url === currentItemPath)
+      : undefined;
+
   const [collapsed, setCollapsed] = useState(true);
 
   async function handleLogout() {
@@ -52,7 +73,7 @@ export default function AdminSidebar() {
 
       <aside
         className={cn(
-          "fixed top-0 left-0 w-full space-y-10 overflow-hidden bg-red-600 p-3 text-white transition-[height] lg:min-h-screen lg:transition-[width]",
+          "fixed top-0 left-0 z-10 w-full space-y-10 overflow-hidden bg-red-600 p-3 text-white transition-[height] lg:min-h-screen lg:transition-[width]",
           collapsed && "h-16 lg:w-16",
           !collapsed && "h-screen lg:w-64",
         )}
@@ -87,27 +108,29 @@ export default function AdminSidebar() {
         </div>
         <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
           {navItems.map((item, index) => (
-            <Button
-              key={index}
-              variant="ghost"
-              className={cn(
-                "w-full justify-start has-[>svg]:p-0",
-                collapsed && "w-9",
-              )}
-              onClick={() => {
-                setCollapsed(true);
-              }}
-            >
-              <Icon icon={item.icon} className="ml-[6px] size-6" />
-              <span
+            <Link to={item.url} key={index}>
+              <Button
+                variant="ghost"
                 className={cn(
-                  "overflow-hidden transition-opacity",
-                  collapsed && "opacity-0",
+                  "w-full justify-start has-[>svg]:p-0",
+                  currentNavItem === item && "bg-neutral-100 text-neutral-900",
+                  collapsed && "w-9",
                 )}
+                onClick={() => {
+                  setCollapsed(true);
+                }}
               >
-                {item.label}
-              </span>
-            </Button>
+                <Icon icon={item.icon} className="ml-[6px] size-6" />
+                <span
+                  className={cn(
+                    "mr-[6px] overflow-hidden transition-opacity",
+                    collapsed && "opacity-0",
+                  )}
+                >
+                  {item.label}
+                </span>
+              </Button>
+            </Link>
           ))}
         </nav>
       </aside>

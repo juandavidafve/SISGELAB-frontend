@@ -10,7 +10,8 @@ import Action from "@/pages/auth/Action";
 import Login from "@/pages/auth/Login";
 import PasswordRecovery from "@/pages/auth/PasswordRecovery";
 import Home from "@/pages/dashboard/Home.tsx";
-import Entry from "@/pages/dashboard/entry/Entry";
+import IngresoFablab from "@/pages/dashboard/ingreso-fablab/Entry";
+import OfertaFormacion from "@/pages/dashboard/oferta-formacion/OfertaFormacion";
 import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
@@ -30,7 +31,8 @@ export default function Router() {
           }
         >
           <Route index element={<Home />} />
-          <Route path="entry" element={<Entry />} />
+          <Route path="ingreso-fablab" element={<IngresoFablab />} />
+          <Route path="oferta-formacion" element={<OfertaFormacion />} />
         </Route>
 
         <Route
