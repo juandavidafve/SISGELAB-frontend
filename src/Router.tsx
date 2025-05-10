@@ -12,6 +12,7 @@ import PasswordRecovery from "@/pages/login/PasswordRecovery";
 import PasswordReset from "@/pages/login/PasswordReset";
 
 import "./index.css";
+import OfertasFormacion from "./pages/IOfertasdeFormacion/ofertas-instructor";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")!).render(
         {MODE === "development" && (
           <Route path="dev/components" element={<Components />} />
         )}
+        <Route path="IOfertasFormacion" element={<OfertasFormacion />} />
       </Routes>
     </HashRouter>
   </StrictMode>,
