@@ -15,7 +15,6 @@ import OfertaFormacion from "@/pages/dashboard/oferta-formacion/OfertaFormacion"
 import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
-import OfertasFormacion from "./pages/IOfertasdeFormacion/ofertas-instructor";
 
 export default function Router() {
   return (
@@ -54,7 +53,6 @@ export default function Router() {
         {MODE === "development" && (
           <Route path="dev/components" element={<Components />} />
         )}
-        <Route path="IOfertasFormacion" element={<OfertasFormacion />} />
       </Routes>
     </HashRouter>
   );
