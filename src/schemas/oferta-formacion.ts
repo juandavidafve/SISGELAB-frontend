@@ -11,3 +11,7 @@ export const OfertaFormacionMinimalSchema = z.object({
   nombre: z.string(),
   estado: EstadoOfertaFormacionSchema,
 });
+
+export type OfertaFormacionMinimal = z.infer<
+  typeof OfertaFormacionMinimalSchema
+>;
