@@ -1,6 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FirebaseError } from "firebase/app";
+import { confirmPasswordReset } from "firebase/auth";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -13,8 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { InputPassword } from "@/components/ui/input-password";
+import useAuth from "@/hooks/useAuth";
+import { handleFirebaseError } from "@/lib/error";
 
 export default function PasswordReset() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { auth } = useAuth();
+  const [redirectTimer, setRedirectTimer] = useState<NodeJS.Timeout>();
+
   let passwordValue = "";
   const formSchema = z.object({
     password: z
@@ -41,7 +52,29 @@ export default function PasswordReset() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  useEffect(() => {
+    return () => {
+      clearTimeout(redirectTimer);
+    };
+  }, [redirectTimer]);
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await confirmPasswordReset(
+        auth,
+        searchParams.get("oobCode") || "",
+        values.password,
+      );
+      toast.success("Contraseña actualizada correctamente");
+      setRedirectTimer(setTimeout(() => navigate("/"), 3000));
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        handleFirebaseError(toast.error, error);
+      }
+
+      console.error(error);
+    }
+
     console.log(values);
   }
 
