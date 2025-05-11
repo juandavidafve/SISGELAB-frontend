@@ -19,25 +19,29 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-interface ComboboxProps {
-  items: string[];
-  value: number | null;
-  onChange: (value: number | null) => void;
-  searchPlaceholder: string;
-  comboboxPlaceholder: string;
-  notFoundText: string;
+interface ComboboxProps<T> {
+  itemValue: (item: T) => string | number;
+  itemLabel: (item: T) => string;
+  items: T[];
+  value?: T;
+  onChange: (value?: T) => void;
+  searchPlaceholder?: string;
+  comboboxPlaceholder?: string;
+  notFoundText?: string;
   width?: string;
 }
 
-export function Combobox({
+export function Combobox<T>({
+  itemValue,
+  itemLabel,
   items,
   value,
   onChange,
-  searchPlaceholder,
-  comboboxPlaceholder,
-  notFoundText,
+  searchPlaceholder = "Buscar...",
+  comboboxPlaceholder = "Seleccionar...",
+  notFoundText = "Sin resultados",
   width = "w-[200px]",
-}: ComboboxProps) {
+}: ComboboxProps<T>) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -49,7 +53,7 @@ export function Combobox({
           aria-expanded={open}
           className={cn(width, "justify-between")}
         >
-          {value !== null ? items[value] : comboboxPlaceholder}
+          {value ? itemLabel(value) : comboboxPlaceholder}
           <Icon
             icon="material-symbols:expand-all-rounded"
             className="ml-2 h-4 w-4 shrink-0 opacity-50"
@@ -64,9 +68,9 @@ export function Combobox({
             <CommandGroup>
               {items.map((item, index) => (
                 <CommandItem
-                  key={item}
+                  key={itemValue(item)}
                   onSelect={() => {
-                    onChange(index == value ? null : index);
+                    onChange(item);
                     setOpen(false);
                   }}
                 >
@@ -77,7 +81,7 @@ export function Combobox({
                       value === index ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  {item}
+                  {itemLabel(item)}
                 </CommandItem>
               ))}
             </CommandGroup>

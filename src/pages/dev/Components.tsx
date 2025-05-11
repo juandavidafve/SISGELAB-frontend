@@ -12,11 +12,10 @@ import {
   FileUploadList,
 } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
-import { InputDate } from "@/components/ui/input-date";
 import { InputDateTime } from "@/components/ui/input-datetime";
 import { InputPassword } from "@/components/ui/input-password";
-import ItemList from "@/components/ui/item-list";
 import { Label } from "@/components/ui/label";
+import MultiSelector from "@/components/ui/multi-selector";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function Components() {
@@ -69,7 +68,8 @@ export default function Components() {
         searchPlaceholder="Buscar país..."
         items={["Colombia", "Venecozuela"]}
       />
-      <ItemList
+      <MultiSelector
+        valueKey="country"
         label="País"
         options={[
           {
@@ -84,8 +84,8 @@ export default function Components() {
         value={itemListValue}
         onChange={setItemListValue}
         valueLabel="country"
-      ></ItemList>
-      <InputDate />
+      ></MultiSelector>
+
       <InputDateTime />
 
       <FileUpload value={files} onValueChange={setFiles} multiple>
