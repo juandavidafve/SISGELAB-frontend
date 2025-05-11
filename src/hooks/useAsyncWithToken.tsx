@@ -5,7 +5,7 @@ import useAuth from "./useAuth";
 import useRequestInterceptor from "./useRequestInterceptor";
 
 export function useAsyncWithToken<T, U>(
-  asyncFunction: () => Promise<T>,
+  asyncFunction: (params: U) => Promise<T>,
   params: U[],
   options?: UseAsyncOptions<T>,
 ): UseAsyncReturn<T> {
@@ -21,5 +21,5 @@ export function useAsyncWithToken<T, U>(
     ? asyncFunction
     : async () => new Promise<never>(() => {});
 
-  return useAsync(wrappedAsyncFn, [...params, wrappedAsyncFn], options);
+  return useAsync(wrappedAsyncFn, [...params, wrappedAsyncFn] as [U], options);
 }

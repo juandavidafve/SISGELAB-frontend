@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react";
 import { QRCodeCanvas } from "qrcode.react";
+import { ReactNode } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,10 @@ import { Label } from "@/components/ui/label";
 
 interface QrDialogProps {
   url: string;
+  children: ReactNode;
 }
 
-export default function QrDialog({ url }: QrDialogProps) {
+export default function QrDialog({ url, children }: QrDialogProps) {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(url);
@@ -31,9 +33,7 @@ export default function QrDialog({ url }: QrDialogProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button>Enlace Formulario</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center">

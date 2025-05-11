@@ -1,5 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Table } from "@tanstack/react-table";
+import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,11 @@ export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
   const pageSizeOptions = [10, 20, 30, 40, 50];
+
+  useEffect(() => {
+    table.setPageSize(Math.min(pageSizeOptions[0], table.getRowCount()));
+  }, []);
+
   if (table.getRowCount() === 0) return;
 
   return (
@@ -25,7 +31,6 @@ export function DataTablePagination<TData>({
       <div className="flex items-center space-x-2">
         <p className="text-sm font-medium">Filas por página</p>
         <Select
-          defaultValue={String(pageSizeOptions[0])}
           value={`${table.getState().pagination.pageSize}`}
           onValueChange={(value) => {
             table.setPageSize(Number(value));

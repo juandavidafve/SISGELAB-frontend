@@ -1,19 +1,33 @@
-import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
-import { get as getOfertas } from "@/services/oferta";
+import { Link } from "react-router";
 
-import OfertaFormacionCard from "./components/OfertaFormacionCard";
+import CardSmall from "@/components/CardSmall";
+import { Button } from "@/components/ui/button";
+import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
+import { get as getOfertas } from "@/services/oferta-formacion";
 
 export default function OfertaFormacion() {
   const { result: ofertas } = useAsyncWithToken(getOfertas, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 p-6">
-      <div className="mx-auto w-full max-w-4xl">
-        <h2 className="mb-6 text-2xl font-bold">Ofertas de Formación</h2>
+    <>
+      <h2 className="mb-6 text-2xl font-bold">Ofertas de Formación</h2>
+      <div className="space-y-4">
         {ofertas?.map((oferta) => {
-          return <OfertaFormacionCard oferta={oferta} key={oferta.id} />;
+          return (
+            <CardSmall
+              title={oferta.nombre}
+              slotAction={
+                <Link to={String(oferta.id)}>
+                  <Button className="bg-red-500 text-white hover:bg-red-600">
+                    Ver
+                  </Button>
+                </Link>
+              }
+              key={oferta.id}
+            />
+          );
         })}
       </div>
-    </div>
+    </>
   );
 }
