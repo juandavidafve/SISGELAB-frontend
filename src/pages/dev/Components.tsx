@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Combobox } from "@/components/ui/combobox";
 import {
   FileUpload,
   FileUploadClear,
@@ -15,18 +14,11 @@ import { Input } from "@/components/ui/input";
 import { InputDateTime } from "@/components/ui/input-datetime";
 import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
-import MultiSelector from "@/components/ui/multi-selector";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function Components() {
   const [files, setFiles] = useState<File[]>([]);
-  const [comboValue, setComboValue] = useState<number | null>(null);
-  const [itemListValue, setItemListValue] = useState<
-    {
-      country: string;
-      currency: string;
-    }[]
-  >([]);
+
   return (
     <>
       <Button>Wenas</Button>
@@ -60,31 +52,6 @@ export default function Components() {
         <Input type="email" id="email" placeholder="Email" />
       </div>
       <InputPassword />
-      <Combobox
-        value={comboValue}
-        onChange={setComboValue}
-        comboboxPlaceholder="Seleccionar país"
-        notFoundText="País no encontrado."
-        searchPlaceholder="Buscar país..."
-        items={["Colombia", "Venecozuela"]}
-      />
-      <MultiSelector
-        valueKey="country"
-        label="País"
-        options={[
-          {
-            country: "Colombia",
-            currency: "COP",
-          },
-          {
-            country: "Venecozuela",
-            currency: "Bolivar",
-          },
-        ]}
-        value={itemListValue}
-        onChange={setItemListValue}
-        valueLabel="country"
-      ></MultiSelector>
 
       <InputDateTime />
 

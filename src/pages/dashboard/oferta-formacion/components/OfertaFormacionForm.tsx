@@ -1,9 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Combobox } from "@/components/ui/combobox";
+import {
+  FileUpload,
+  FileUploadDropzone,
+  FileUploadItem,
+  FileUploadList,
+} from "@/components/ui/file-upload";
 import {
   Form,
   FormControl,
@@ -16,11 +24,19 @@ import { Input } from "@/components/ui/input";
 import { InputDate } from "@/components/ui/input-date";
 import { InputNumber } from "@/components/ui/input-number";
 import SelectIdName from "@/components/ui/select-id-name";
+import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
+import { handleAxiosError } from "@/lib/error";
 import {
   OfertaFormacionFormInput,
   OfertaFormacionFormOutput,
   OfertaFormacionFormSchema,
 } from "@/schemas/oferta-formacion";
+import { getAll as getInstituciones } from "@/services/institucion";
+import {
+  getCategorias,
+  getTiposBeneficiario,
+  getTiposOferta,
+} from "@/services/oferta-formacion";
 
 import SesionForm from "./SesionForm";
 
@@ -40,7 +56,7 @@ export default function OfertaFormacionForm({
     defaultValues: {
       nombre: "",
       codigo: "",
-      cine: "",
+      cine: 0,
       extension: false,
       horas: 0,
       semestre: 0,
@@ -61,27 +77,34 @@ export default function OfertaFormacionForm({
           instructores: [],
         },
       ],
+      file: undefined,
     },
   });
 
-  const instituciones = [
-    {
-      id: 23,
-      nombre: "Institucion 1",
-    },
-    {
-      id: 56,
-      nombre: "Institucion 2",
-    },
-    {
-      id: 75,
-      nombre: "Institucion 3",
-    },
-  ];
+  const { result: instituciones } = useAsyncWithToken(getInstituciones, []);
+  const { result: tiposOferta } = useAsyncWithToken(getTiposOferta, []);
+  const { result: categorias } = useAsyncWithToken(getCategorias, []);
+  const { result: tiposBeneficiario } = useAsyncWithToken(
+    getTiposBeneficiario,
+    [],
+  );
+
+  async function handleSubmit(oferta: OfertaFormacionFormOutput) {
+    try {
+      await onSubmit(oferta);
+      form.reset();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        handleAxiosError(toast.error, error);
+      }
+
+      console.error(error);
+    }
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="nombre"
@@ -117,7 +140,7 @@ export default function OfertaFormacionForm({
             <FormItem>
               <FormLabel>CINE</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <InputNumber {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -211,69 +234,51 @@ export default function OfertaFormacionForm({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="id_tipo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de oferta</FormLabel>
-              <SelectIdName
-                {...field}
-                items={[
-                  {
-                    id: 1,
-                    nombre: "AAAA",
-                  },
-                ]}
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {tiposOferta && (
+          <FormField
+            control={form.control}
+            name="id_tipo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de oferta</FormLabel>
+                <SelectIdName {...field} items={tiposOferta} />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
-        <FormField
-          control={form.control}
-          name="id_categoria"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Categoría</FormLabel>
-              <FormControl>
-                <SelectIdName
-                  {...field}
-                  items={[
-                    {
-                      id: 1,
-                      nombre: "AAAA",
-                    },
-                  ]}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {categorias && (
+          <FormField
+            control={form.control}
+            name="id_categoria"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categoría</FormLabel>
+                <FormControl>
+                  <SelectIdName {...field} items={categorias} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
-        <FormField
-          control={form.control}
-          name="id_tipo_beneficiario"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de beneficiario</FormLabel>
-              <FormControl>
-                <SelectIdName
-                  {...field}
-                  items={[
-                    {
-                      id: 1,
-                      nombre: "AAAA",
-                    },
-                  ]}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {tiposBeneficiario && (
+          <FormField
+            control={form.control}
+            name="id_tipo_beneficiario"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tipo de beneficiario</FormLabel>
+                <FormControl>
+                  <SelectIdName {...field} items={tiposBeneficiario} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -289,27 +294,29 @@ export default function OfertaFormacionForm({
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="id_institucion"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Institución</FormLabel>
-              <FormControl>
-                <Combobox
-                  value={instituciones.find(
-                    (institucion) => institucion.id === field.value,
-                  )}
-                  items={instituciones}
-                  itemLabel={(institucion) => institucion.nombre}
-                  itemValue={(institucion) => institucion.id}
-                  onChange={(institucion) => field.onChange(institucion?.id)}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {instituciones && (
+          <FormField
+            control={form.control}
+            name="id_institucion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Institución</FormLabel>
+                <FormControl>
+                  <Combobox
+                    value={instituciones.find(
+                      (institucion) => institucion.id === field.value,
+                    )}
+                    items={instituciones}
+                    itemLabel={(institucion) => institucion.nombre}
+                    itemValue={(institucion) => institucion.id}
+                    onChange={(institucion) => field.onChange(institucion?.id)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
@@ -319,6 +326,37 @@ export default function OfertaFormacionForm({
               <FormLabel>Sesiones</FormLabel>
               <FormControl>
                 <SesionForm {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="file"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pieza gráfica</FormLabel>
+              <FormControl>
+                <FileUpload
+                  value={field.value ? [field.value] : []}
+                  onValueChange={(files) => {
+                    console.log(files);
+                    field.onChange(files[files.length - 1]);
+                  }}
+                >
+                  {field.value ? (
+                    <FileUploadList>
+                      <FileUploadItem
+                        key={field.value.name}
+                        value={field.value}
+                      />
+                    </FileUploadList>
+                  ) : (
+                    <FileUploadDropzone />
+                  )}
+                </FileUpload>
               </FormControl>
               <FormMessage />
             </FormItem>

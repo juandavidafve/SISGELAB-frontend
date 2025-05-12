@@ -2,12 +2,15 @@ import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Combobox } from "@/components/ui/combobox";
 import { InputDate } from "@/components/ui/input-date";
-import { InputNumber } from "@/components/ui/input-number";
 import { InputTime } from "@/components/ui/input-time";
 import { Label } from "@/components/ui/label";
 import MultiSelector from "@/components/ui/multi-selector";
+import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { SesionFormInput } from "@/schemas/sesion";
+import { getAll as getInstructores } from "@/services/instructor";
+import { getAll as getSalas } from "@/services/sala";
 
 interface SesionFormProps {
   value: SesionFormInput[];
@@ -15,20 +18,8 @@ interface SesionFormProps {
 }
 
 export default function SesionForm({ value, onChange }: SesionFormProps) {
-  const instructores = [
-    {
-      id: 34,
-      nombre: "Pepe",
-    },
-    {
-      id: 56,
-      nombre: "Juan",
-    },
-    {
-      id: 46,
-      nombre: "Mario",
-    },
-  ];
+  const { result: instructores } = useAsyncWithToken(getInstructores, []);
+  const { result: salas } = useAsyncWithToken(getSalas, []);
 
   const handleChange = (
     index: number,
@@ -78,10 +69,18 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
               </div>
               <div>
                 <Label>ID Sala</Label>
-                <InputNumber
-                  value={sesion.id_sala}
-                  onChange={(value) => handleChange(index, "id_sala", value)}
-                />
+
+                {salas && (
+                  <Combobox
+                    value={salas.find((sala) => sala.id === sesion.id_sala)}
+                    items={salas}
+                    itemLabel={(sala) => sala.nombre}
+                    itemValue={(sala) => sala.id}
+                    onChange={(sala) =>
+                      sala && handleChange(index, "id_sala", sala.id)
+                    }
+                  />
+                )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -103,27 +102,29 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
               </div>
             </div>
             <div>
-              <MultiSelector
-                value={sesion.instructores
-                  .map((instructorId) =>
-                    instructores.find(
-                      (instructor) => instructor.id === instructorId,
-                    ),
-                  )
-                  .filter((instructor) => instructor !== undefined)}
-                items={instructores}
-                itemLabel={(instructor) => instructor.nombre}
-                itemValue={(instructor) => instructor.id}
-                onChange={(value) =>
-                  handleChange(
-                    index,
-                    "instructores",
-                    value.map((v) => v.id),
-                  )
-                }
-                className="w-full"
-                label="Instructores"
-              />
+              {instructores && (
+                <MultiSelector
+                  value={sesion.instructores
+                    .map((instructorId) =>
+                      instructores.find(
+                        (instructor) => instructor.id === instructorId,
+                      ),
+                    )
+                    .filter((instructor) => instructor !== undefined)}
+                  items={instructores}
+                  itemLabel={(instructor) => instructor.nombre}
+                  itemValue={(instructor) => instructor.id}
+                  onChange={(value) =>
+                    handleChange(
+                      index,
+                      "instructores",
+                      value.map((v) => v.id),
+                    )
+                  }
+                  className="w-full"
+                  label="Instructores"
+                />
+              )}
             </div>
             <Button
               variant="destructive"

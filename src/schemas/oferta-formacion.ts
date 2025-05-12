@@ -1,13 +1,14 @@
 import { formatISO } from "date-fns";
 import { z } from "zod";
 
-import { BaseEntity } from "./generic";
+import { BaseEntitySchema } from "./generic";
+import { InstitucionSchema } from "./institucion";
 import { SesionFormSchema } from "./sesion";
 
 const OfertaFormacionBaseSchema = z.object({
   nombre: z.string(),
   codigo: z.string(),
-  cine: z.string(),
+  cine: z.number().min(0).max(9999),
   extension: z.boolean(),
   horas: z.number(),
   semestre: z.number(),
@@ -18,14 +19,12 @@ export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
   id: z.number(),
   estado: z.enum(["ACTIVA", "INACTIVA", "FINALIZADA"]),
   pieza_grafica: z.string(),
-  tipo_oferta: BaseEntity,
-  categoria: BaseEntity,
-  tipo_beneficiario: BaseEntity,
+  tipo_oferta: BaseEntitySchema,
+  categoria: BaseEntitySchema,
+  tipo_beneficiario: BaseEntitySchema,
   fecha_inicio: z.string().date(),
   fecha_fin: z.string().date(),
-  institucion: BaseEntity.extend({
-    tipoInstitucion: z.string(),
-  }),
+  institucion: InstitucionSchema,
   sesiones: z
     .object({
       id: z.number(),
@@ -33,10 +32,10 @@ export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
       fecha: z.string(),
       inicio: z.string(),
       fin: z.string(),
-      sala: BaseEntity,
+      sala: BaseEntitySchema,
     })
     .array(),
-  inscritos: BaseEntity.array(),
+  inscritos: BaseEntitySchema.array(),
 });
 
 export const OfertaFormacionMinimalSchema = OfertaFormacionSchema.pick({
@@ -58,6 +57,7 @@ export const OfertaFormacionFormSchema = OfertaFormacionBaseSchema.extend({
   cupo_maximo: z.number(),
   id_institucion: z.number(),
   sesiones: SesionFormSchema.array(),
+  file: z.instanceof(File),
 });
 
 export type OfertaFormacionFormInput = z.input<

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router";
+import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
 import { Button } from "@/components/ui/button";
@@ -11,20 +13,33 @@ import {
 } from "@/components/ui/dialog";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { OfertaFormacionFormOutput } from "@/schemas/oferta-formacion";
-import { getAll as getOfertas } from "@/services/oferta-formacion";
+import {
+  getAll as getOfertas,
+  create as createOferta,
+} from "@/services/oferta-formacion";
 
 import OfertaFormacionForm from "./components/OfertaFormacionForm";
 
 export default function OfertaFormacion() {
-  const { result: ofertas } = useAsyncWithToken(getOfertas, []);
+  const { result: ofertas, execute: refreshOfertas } = useAsyncWithToken(
+    getOfertas,
+    [],
+  );
 
-  function onCreate(oferta: OfertaFormacionFormOutput) {}
+  const [openDialog, setOpenDialog] = useState(false);
+
+  async function onCreate(oferta: OfertaFormacionFormOutput) {
+    await createOferta(oferta);
+    toast.success("Oferta creada correctamente");
+    await refreshOfertas();
+    setOpenDialog(false);
+  }
 
   return (
     <>
       <div className="my-10 mb-6 flex justify-between">
         <h1 className="text-2xl font-bold">Ofertas de formación</h1>
-        <Dialog>
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
           <DialogTrigger asChild>
             <Button>Crear</Button>
           </DialogTrigger>

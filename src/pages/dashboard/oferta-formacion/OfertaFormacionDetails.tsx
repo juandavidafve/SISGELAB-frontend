@@ -25,8 +25,6 @@ export default function OfertaFormacionDetails() {
 
   if (!oferta) return;
 
-  //estado
-
   return (
     <>
       <div className="flex justify-between">
