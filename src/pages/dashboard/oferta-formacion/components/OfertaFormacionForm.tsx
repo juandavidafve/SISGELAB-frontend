@@ -5,7 +5,6 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Combobox } from "@/components/ui/combobox";
 import {
   FileUpload,
   FileUploadDropzone,
@@ -20,10 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import FormCombobox from "@/components/ui/form-combobox";
+import GenericEntitySelect from "@/components/ui/generic-entity-select";
 import { Input } from "@/components/ui/input";
 import { InputDate } from "@/components/ui/input-date";
 import { InputNumber } from "@/components/ui/input-number";
-import SelectIdName from "@/components/ui/select-id-name";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { handleAxiosError } from "@/lib/error";
 import {
@@ -241,7 +241,7 @@ export default function OfertaFormacionForm({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de oferta</FormLabel>
-                <SelectIdName {...field} items={tiposOferta} />
+                <GenericEntitySelect {...field} items={tiposOferta} />
                 <FormMessage />
               </FormItem>
             )}
@@ -256,7 +256,7 @@ export default function OfertaFormacionForm({
               <FormItem>
                 <FormLabel>Categoría</FormLabel>
                 <FormControl>
-                  <SelectIdName {...field} items={categorias} />
+                  <GenericEntitySelect {...field} items={categorias} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -272,7 +272,7 @@ export default function OfertaFormacionForm({
               <FormItem>
                 <FormLabel>Tipo de beneficiario</FormLabel>
                 <FormControl>
-                  <SelectIdName {...field} items={tiposBeneficiario} />
+                  <GenericEntitySelect {...field} items={tiposBeneficiario} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -295,26 +295,13 @@ export default function OfertaFormacionForm({
         />
 
         {instituciones && (
-          <FormField
+          <FormCombobox
             control={form.control}
             name="id_institucion"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Institución</FormLabel>
-                <FormControl>
-                  <Combobox
-                    value={instituciones.find(
-                      (institucion) => institucion.id === field.value,
-                    )}
-                    items={instituciones}
-                    itemLabel={(institucion) => institucion.nombre}
-                    itemValue={(institucion) => institucion.id}
-                    onChange={(institucion) => field.onChange(institucion?.id)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Institución"
+            items={instituciones}
+            itemLabel="nombre"
+            itemValue="id"
           />
         )}
 

@@ -23,7 +23,7 @@ const navItems: NavItem[] = [
   {
     label: "Datos Personales",
     icon: "material-symbols:database-outline",
-    url: "",
+    url: "datos-personales",
   },
   { label: "Instructores", icon: "ph:chalkboard-teacher", url: "" },
   {

@@ -5,21 +5,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BaseEntity } from "@/schemas/generic";
 
-interface SelectIdNameProps {
+interface GenericEntitySelectProps {
   value?: number;
   onChange: (value: number) => void;
-  items: {
-    id?: number;
-    nombre: string;
-  }[];
+  items: BaseEntity[];
 }
 
-export default function SelectIdName({
+export default function GenericEntitySelect({
   items,
   value,
   onChange,
-}: SelectIdNameProps) {
+}: GenericEntitySelectProps) {
   return (
     <Select
       defaultValue={value !== undefined ? String(value) : undefined}
