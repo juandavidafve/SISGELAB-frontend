@@ -11,7 +11,15 @@ export const DatosPersonalesFormSchema = z.object({
   fecha_expedicion: z
     .date()
     .transform((date) => formatISO(date, { representation: "date" })),
-  sexo: z.enum(["MASCULINO", "FEMENINO"]),
+  sexo: z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        return val.toUpperCase();
+      }
+      return val;
+    },
+    z.enum(["MASCULINO", "FEMENINO"]),
+  ),
   fecha_nacimiento: z
     .date()
     .transform((date) => formatISO(date, { representation: "date" })),

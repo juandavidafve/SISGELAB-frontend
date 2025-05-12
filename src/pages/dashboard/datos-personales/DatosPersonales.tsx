@@ -7,7 +7,8 @@ import DatosPersonalesForm from "./components/DatosPersonalesForm";
 
 export default function DatosPersonales() {
   async function onCreate(datosPersonales: DatosPersonalesFormOutput) {
-    await createDatosPersonales(datosPersonales);
+    //await createDatosPersonales(datosPersonales);
+    console.log(datosPersonales);
     toast.success("Datos personales actualizados correctamente");
   }
 

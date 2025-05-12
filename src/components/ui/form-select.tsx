@@ -20,8 +20,8 @@ interface FormSelectProps<T extends FieldValues, U> {
   control: Control<T, unknown, FieldValues>;
   label?: string;
   items: U[];
-  itemLabel: keyof U;
-  itemValue: keyof U;
+  itemLabel?: keyof U;
+  itemValue?: keyof U;
 }
 
 export default function FormSelect<T extends FieldValues, U>({
@@ -52,10 +52,10 @@ export default function FormSelect<T extends FieldValues, U>({
               <SelectContent>
                 {items.map((item) => (
                   <SelectItem
-                    key={String(item[itemValue])}
-                    value={String(item[itemValue])}
+                    key={String(itemValue ? item[itemValue] : item)}
+                    value={String(itemValue ? item[itemValue] : item)}
                   >
-                    {String(item[itemLabel])}
+                    {String(itemLabel ? item[itemLabel] : item)}
                   </SelectItem>
                 ))}
               </SelectContent>

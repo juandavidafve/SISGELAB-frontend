@@ -4,41 +4,27 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import FormCombobox from "@/components/ui/form-combobox";
 import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormSelect from "@/components/ui/form-select";
-import GenericEntitySelect from "@/components/ui/generic-entity-select";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { handleAxiosError } from "@/lib/error";
 import {
   DatosPersonalesFormInput,
   DatosPersonalesFormOutput,
   DatosPersonalesFormSchema,
 } from "@/schemas/datos-personales";
+import { getAll as getEstadosCiviles } from "@/services/estado-civil";
+import { getAll as getModalidades } from "@/services/modalidad";
+import { getAll as getMunicipios } from "@/services/municipio";
+import { getAll as getPaises } from "@/services/pais";
+import { getAll as getPoblacionesEspeciales } from "@/services/poblacion-especial";
+import { getAll as getTiposDocumento } from "@/services/tipo-documento";
 
 interface DatosPersonalesFormProps {
   onSubmit: (data: DatosPersonalesFormOutput) => void;
-  municipios: { id: number; nombre: string }[];
-  paises: { id: number; nombre: string }[];
-  poblaciones: { id: number; nombre: string }[];
-  estadosCiviles: { id: number; nombre: string }[];
-  modalidades: { id: number; nombre: string }[];
-  tiposDocumento: { id: number; nombre: string }[];
 }
 
 export default function DatosPersonalesForm({
@@ -74,6 +60,16 @@ export default function DatosPersonalesForm({
     },
   });
 
+  const { result: tiposDocumento } = useAsyncWithToken(getTiposDocumento, []);
+  const { result: paises } = useAsyncWithToken(getPaises, []);
+  const { result: municipios } = useAsyncWithToken(getMunicipios, []);
+  const { result: poblacionesEspeciales } = useAsyncWithToken(
+    getPoblacionesEspeciales,
+    [],
+  );
+  const { result: estadosCiviles } = useAsyncWithToken(getEstadosCiviles, []);
+  const { result: modalidades } = useAsyncWithToken(getModalidades, []);
+
   async function handleSubmit(datosPersonales: DatosPersonalesFormOutput) {
     try {
       await onSubmit(datosPersonales);
@@ -86,76 +82,6 @@ export default function DatosPersonalesForm({
       console.error(error);
     }
   }
-
-  const tiposDocumento = [
-    {
-      id: 0,
-      nombre: "Tarjeta de Identidad",
-    },
-    {
-      id: 1,
-      nombre: "Cedula",
-    },
-  ];
-
-  const paises = [
-    {
-      id: 1,
-      nombre: "Colombia",
-    },
-    {
-      id: 2,
-      nombre: "Venezuela",
-    },
-  ];
-
-  const municipios = [
-    {
-      id: 1,
-      nombre: "Cucuta",
-    },
-    {
-      id: 2,
-      nombre: "Zulia",
-    },
-  ];
-
-  const poblacionesEspeciales = [
-    {
-      id: 1,
-      nombre: "Poblacion especial 1",
-    },
-    {
-      id: 2,
-      nombre: "Poblacion especial 2",
-    },
-    {
-      id: 3,
-      nombre: "Poblacion especial 3",
-    },
-  ];
-
-  const estadosCiviles = [
-    {
-      id: 1,
-      nombre: "Casado",
-    },
-    {
-      id: 2,
-      nombre: "Soltero",
-    },
-  ];
-
-  const modalidades = [
-    {
-      id: 1,
-      nombre: "Modalidad 1",
-    },
-    {
-      id: 2,
-      nombre: "Modalidad 2",
-    },
-  ];
 
   return (
     <Form {...form}>
@@ -187,41 +113,25 @@ export default function DatosPersonalesForm({
         <div>
           Documento de Identidad
           <div className="mt-1 flex items-end gap-2">
-            <FormSelect
-              control={form.control}
-              name="id_tipo_documento"
-              items={tiposDocumento}
-              itemLabel="nombre"
-              itemValue="id"
-            />
+            {tiposDocumento && (
+              <FormSelect
+                control={form.control}
+                name="id_tipo_documento"
+                items={tiposDocumento}
+                itemLabel="siglas"
+                itemValue="id"
+              />
+            )}
 
             <FormInput control={form.control} name="documento" />
           </div>
         </div>
 
-        <FormField
+        <FormSelect
           control={form.control}
           name="sexo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sexo</FormLabel>
-              <FormControl>
-                <Select onValueChange={(value) => field.onChange(value)}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Seleccionar..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["Masculino", "Femenino"].map((item) => (
-                      <SelectItem key={item} value={item.toUpperCase()}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          items={["Masculino", "Femenino"]}
+          label="Sexo"
         />
 
         <FormInputDate
@@ -236,23 +146,27 @@ export default function DatosPersonalesForm({
           label="Fecha de nacimiento"
         />
 
-        <FormCombobox
-          control={form.control}
-          name="id_pais"
-          itemLabel="nombre"
-          itemValue="id"
-          items={paises}
-          label="País"
-        />
+        {paises && (
+          <FormCombobox
+            control={form.control}
+            name="id_pais"
+            itemLabel="nombre"
+            itemValue="id"
+            items={paises}
+            label="País"
+          />
+        )}
 
-        <FormCombobox
-          control={form.control}
-          name="id_municipio"
-          itemLabel="nombre"
-          itemValue="id"
-          items={municipios}
-          label="Municipio"
-        />
+        {municipios && (
+          <FormCombobox
+            control={form.control}
+            name="id_municipio"
+            itemLabel="nombre"
+            itemValue="id"
+            items={municipios}
+            label="Municipio"
+          />
+        )}
 
         <FormInput control={form.control} name="telefono" label="Teléfono" />
         <FormInput
@@ -272,39 +186,41 @@ export default function DatosPersonalesForm({
           label="Dirección institucional"
         />
 
-        <FormSelect
-          control={form.control}
-          name="id_poblacion_especial"
-          items={poblacionesEspeciales}
-          itemLabel="nombre"
-          itemValue="id"
-          label="Población especial"
-        />
+        {poblacionesEspeciales && (
+          <FormSelect
+            control={form.control}
+            name="id_poblacion_especial"
+            items={poblacionesEspeciales}
+            itemLabel="nombre"
+            itemValue="id"
+            label="Población especial"
+          />
+        )}
 
-        <FormField
-          control={form.control}
-          name="id_estado_civil"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Estado Civil</FormLabel>
-              <FormControl>
-                <GenericEntitySelect items={estadosCiviles} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {estadosCiviles && (
+          <FormSelect
+            control={form.control}
+            name="id_estado_civil"
+            items={estadosCiviles}
+            itemLabel="nombre"
+            itemValue="id"
+            label="Estado civil"
+          />
+        )}
 
         <FormInput name="direccion" control={form.control} label="Dirección" />
         <FormInput name="entidad" control={form.control} label="Entidad" />
-        <FormSelect
-          name="id_modalidad"
-          control={form.control}
-          label="Modalidad"
-          items={modalidades}
-          itemValue="id"
-          itemLabel="nombre"
-        />
+
+        {modalidades && (
+          <FormSelect
+            name="id_modalidad"
+            control={form.control}
+            label="Modalidad"
+            items={modalidades}
+            itemValue="id"
+            itemLabel="nombre"
+          />
+        )}
 
         <Button type="submit" className="w-full">
           Guardar

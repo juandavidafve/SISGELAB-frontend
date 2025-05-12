@@ -26,6 +26,10 @@ export default function FormCombobox<T extends FieldValues, U>({
   itemLabel,
   itemValue,
 }: FormComboboxProps<T, U>) {
+  function getItemValue(item: U) {
+    return itemValue ? item[itemValue] : item;
+  }
+
   return (
     <FormField
       control={control}
@@ -35,16 +39,16 @@ export default function FormCombobox<T extends FieldValues, U>({
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Combobox
-              value={items.find((item) => item[itemValue] === field.value)}
+              value={items.find((item) => getItemValue(item) === field.value)}
               items={items}
-              itemLabel={(item) => String(item[itemLabel])}
+              itemLabel={(item) => String(itemLabel ? item[itemLabel] : item)}
               itemValue={(item) => {
-                const valStr = String(item[itemValue]);
+                const valStr = String(getItemValue(item));
                 const valNum = parseInt(valStr);
 
                 return isNaN(valNum) ? valStr : valNum;
               }}
-              onChange={(item) => item && field.onChange(item[itemValue])}
+              onChange={(item) => item && field.onChange(getItemValue(item))}
             />
           </FormControl>
           <FormMessage />
