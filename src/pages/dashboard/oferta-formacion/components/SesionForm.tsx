@@ -61,14 +61,14 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Fecha</Label>
+                <Label className="mb-2">Fecha</Label>
                 <InputDate
                   value={sesion.fecha}
                   onChange={(value) => handleChange(index, "fecha", value)}
                 />
               </div>
               <div>
-                <Label>ID Sala</Label>
+                <Label className="mb-2">Sala</Label>
 
                 {salas && (
                   <Combobox
@@ -85,7 +85,7 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Inicio</Label>
+                <Label className="mb-2">Inicio</Label>
 
                 <InputTime
                   value={sesion.inicio}
@@ -93,7 +93,7 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
                 />
               </div>
               <div>
-                <Label>Fin</Label>
+                <Label className="mb-2">Fin</Label>
 
                 <InputTime
                   value={sesion.fin}

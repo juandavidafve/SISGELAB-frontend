@@ -16,6 +16,7 @@ import OfertaFormacionDetails from "@/pages/dashboard/oferta-formacion/OfertaFor
 import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
+import DatosPersonales from "./pages/dashboard/datos-personales/DatosPersonales";
 
 export default function Router() {
   return (
@@ -38,6 +39,7 @@ export default function Router() {
             path="oferta-formacion/:id"
             element={<OfertaFormacionDetails />}
           />
+          <Route path="datos-personales" element={<DatosPersonales />} />
         </Route>
 
         <Route

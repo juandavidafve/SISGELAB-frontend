@@ -1,6 +1,7 @@
 import QrDialog from "@/components/QrDialog";
 import { Button } from "@/components/ui/button";
 
+import IngresoFablabForm from "./components/IngresoFablabForm";
 import TablaIngresos from "./components/tabla-ingresos";
 
 export default function IngresoFablab() {
@@ -12,6 +13,8 @@ export default function IngresoFablab() {
           <Button>Ver enlace de Ingreso</Button>
         </QrDialog>
       </div>
+
+      <IngresoFablabForm />
 
       <TablaIngresos apiUrl={""} />
     </div>

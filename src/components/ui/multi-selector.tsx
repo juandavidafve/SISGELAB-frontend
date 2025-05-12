@@ -73,7 +73,9 @@ export default function MultiSelector<T>({
   return (
     <div className={className}>
       <div>
-        <Label htmlFor="item-combobox">{label}</Label>
+        <Label className="mb-2" htmlFor="item-combobox">
+          {label}
+        </Label>
         <div className="mt-1 grid grid-cols-[1fr_auto] gap-2">
           <Combobox
             value={selectedValue}

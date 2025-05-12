@@ -6,7 +6,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -31,6 +30,24 @@ export default function QrDialog({ url, children }: QrDialogProps) {
     }
   };
 
+  const handleDownloadQrCode = () => {
+    const canvas = document.getElementById(
+      "qr-code-download",
+    ) as HTMLCanvasElement | null;
+
+    if (canvas) {
+      const pngUrl = canvas
+        .toDataURL("image/png")
+        .replace("image/png", "image/octet-stream");
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = pngUrl;
+      downloadLink.download = `qr-code.png`;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -40,7 +57,19 @@ export default function QrDialog({ url, children }: QrDialogProps) {
             Escanea el QR o copia el enlace
           </DialogTitle>
         </DialogHeader>
-        <QRCodeCanvas value={url} size={160} className="mx-auto mb-4" />
+
+        <QRCodeCanvas
+          id="qr-code-download"
+          value={url}
+          size={1024}
+          className="mx-auto mb-4 max-h-64 max-w-64"
+          marginSize={2}
+          level="H"
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
+        />
 
         <div className="flex items-center space-x-2">
           <div className="grid flex-1 gap-2">
@@ -50,19 +79,17 @@ export default function QrDialog({ url, children }: QrDialogProps) {
             <Input id="link" defaultValue={url} readOnly />
           </div>
           <Button size="icon" className="px-3" onClick={copyToClipboard}>
-            <span className="sr-only">Copy</span>
+            <span className="sr-only">Copiar</span>
             <Icon
               className="size-6"
               icon="material-symbols:content-copy-outline-rounded"
             />
           </Button>
         </div>
-        <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Cerrar
-            </Button>
-          </DialogClose>
+        <DialogFooter>
+          <Button className="w-full" onClick={handleDownloadQrCode}>
+            Descargar QR
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

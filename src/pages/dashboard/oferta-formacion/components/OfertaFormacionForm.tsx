@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Combobox } from "@/components/ui/combobox";
 import {
   FileUpload,
   FileUploadDropzone,
@@ -20,10 +18,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { InputDate } from "@/components/ui/input-date";
-import { InputNumber } from "@/components/ui/input-number";
-import SelectIdName from "@/components/ui/select-id-name";
+import FormCheckbox from "@/components/ui/form-checkbox";
+import FormCombobox from "@/components/ui/form-combobox";
+import FormInput from "@/components/ui/form-input";
+import FormInputDate from "@/components/ui/form-input-date";
+import FormInputNumber from "@/components/ui/form-input-number";
+import FormSelect from "@/components/ui/form-select";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { handleAxiosError } from "@/lib/error";
 import {
@@ -105,216 +105,83 @@ export default function OfertaFormacionForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="nombre"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="codigo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="cine"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>CINE</FormLabel>
-              <FormControl>
-                <InputNumber {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
+        <FormInput control={form.control} name="nombre" label="Nombre" />
+        <FormInput control={form.control} name="codigo" label="Código" />
+        <FormInput control={form.control} name="cine" label="Cine" />
+        <FormInputNumber control={form.control} name="cine" label="CINE" />
+        <FormCheckbox
           control={form.control}
           name="extension"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>¿Es extensión?</FormLabel>
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="¿Es extensión?"
         />
-
-        <FormField
+        <FormInputDate
           control={form.control}
           name="fecha_inicio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de inicio</FormLabel>
-              <FormControl>
-                <InputDate value={field.value} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Fecha de inicio"
         />
 
-        <FormField
+        <FormInputDate
           control={form.control}
           name="fecha_fin"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de fin</FormLabel>
-              <FormControl>
-                <InputDate value={field.value} onChange={field.onChange} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Fecha de fin"
         />
 
-        <FormField
-          control={form.control}
-          name="horas"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Horas</FormLabel>
-              <FormControl>
-                <InputNumber {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
+        <FormInputNumber control={form.control} name="horas" label="Horas" />
+        <FormInputNumber
           control={form.control}
           name="semestre"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Semestre</FormLabel>
-              <FormControl>
-                <InputNumber {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Semestre"
         />
 
-        <FormField
-          control={form.control}
-          name="valor"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Valor</FormLabel>
-              <FormControl>
-                <InputNumber {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormInputNumber control={form.control} name="valor" label="Valor" />
 
         {tiposOferta && (
-          <FormField
+          <FormSelect
             control={form.control}
             name="id_tipo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo de oferta</FormLabel>
-                <SelectIdName {...field} items={tiposOferta} />
-                <FormMessage />
-              </FormItem>
-            )}
+            items={tiposOferta}
+            itemLabel="nombre"
+            itemValue="id"
+            label="Tipo de oferta"
           />
         )}
 
         {categorias && (
-          <FormField
+          <FormSelect
             control={form.control}
             name="id_categoria"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Categoría</FormLabel>
-                <FormControl>
-                  <SelectIdName {...field} items={categorias} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            items={categorias}
+            itemLabel="nombre"
+            itemValue="id"
+            label="Categoría"
           />
         )}
 
         {tiposBeneficiario && (
-          <FormField
+          <FormSelect
             control={form.control}
             name="id_tipo_beneficiario"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Tipo de beneficiario</FormLabel>
-                <FormControl>
-                  <SelectIdName {...field} items={tiposBeneficiario} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            items={tiposBeneficiario}
+            itemLabel="nombre"
+            itemValue="id"
+            label="Tipo de beneficiario"
           />
         )}
 
-        <FormField
+        <FormInputNumber
           control={form.control}
           name="cupo_maximo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cupo máximo</FormLabel>
-              <FormControl>
-                <InputNumber {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Cupo máximo"
         />
 
         {instituciones && (
-          <FormField
+          <FormCombobox
             control={form.control}
             name="id_institucion"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Institución</FormLabel>
-                <FormControl>
-                  <Combobox
-                    value={instituciones.find(
-                      (institucion) => institucion.id === field.value,
-                    )}
-                    items={instituciones}
-                    itemLabel={(institucion) => institucion.nombre}
-                    itemValue={(institucion) => institucion.id}
-                    onChange={(institucion) => field.onChange(institucion?.id)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            items={instituciones}
+            itemLabel="nombre"
+            itemValue="id"
+            label="Instituciones"
           />
         )}
 
@@ -342,7 +209,6 @@ export default function OfertaFormacionForm({
                 <FileUpload
                   value={field.value ? [field.value] : []}
                   onValueChange={(files) => {
-                    console.log(files);
                     field.onChange(files[files.length - 1]);
                   }}
                 >
