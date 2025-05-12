@@ -8,16 +8,24 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function urlMerge(...inputs: unknown[]) {
-  const prefix = String(inputs[0]).startsWith("/") ? "/" : "";
+  const inputsStr = inputs.map((i) => String(i));
+
+  let base = "";
+  const prefix = inputsStr[0].startsWith("/") ? "/" : "";
+
+  try {
+    const url = new URL(inputsStr[0]);
+    base = url.origin + url.pathname;
+    inputsStr.shift();
+  } catch {
+    base = "";
+  }
 
   return (
+    base +
     prefix +
-    inputs
-      .flatMap((inputs) =>
-        String(inputs)
-          .split("/")
-          .filter((item) => item.length > 0),
-      )
+    inputsStr
+      .flatMap((inputs) => inputs.split("/").filter((item) => item.length > 0))
       .join("/") +
     "/"
   );
