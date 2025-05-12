@@ -14,7 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
-import { formatDate, formatMoney } from "@/lib/utils";
+import { BACKEND_BASE_URL } from "@/lib/config";
+import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
 import { getById as getOferta } from "@/services/oferta-formacion";
 
 export default function OfertaFormacionDetails() {
@@ -50,7 +51,7 @@ export default function OfertaFormacionDetails() {
                 <DialogTitle>Pieza gráfica</DialogTitle>
               </DialogHeader>
               <img
-                src={oferta.pieza_grafica}
+                src={urlMerge(BACKEND_BASE_URL, oferta.pieza_grafica)}
                 alt={`Pieza gráfica de ${oferta.nombre}`}
               />
             </DialogContent>
