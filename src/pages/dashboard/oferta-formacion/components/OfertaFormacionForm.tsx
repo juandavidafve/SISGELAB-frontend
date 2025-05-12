@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import FormCheckbox from "@/components/ui/form-checkbox";
+import FormCombobox from "@/components/ui/form-combobox";
 import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormInputNumber from "@/components/ui/form-input-number";
@@ -174,7 +175,7 @@ export default function OfertaFormacionForm({
         />
 
         {instituciones && (
-          <FormSelect
+          <FormCombobox
             control={form.control}
             name="id_institucion"
             items={instituciones}
