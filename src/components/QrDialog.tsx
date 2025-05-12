@@ -61,9 +61,14 @@ export default function QrDialog({ url, children }: QrDialogProps) {
         <QRCodeCanvas
           id="qr-code-download"
           value={url}
-          size={160}
-          className="mx-auto mb-4"
+          size={1024}
+          className="mx-auto mb-4 max-h-64 max-w-64"
           marginSize={2}
+          level="H"
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
         />
 
         <div className="flex items-center space-x-2">
