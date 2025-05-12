@@ -68,7 +68,7 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
                 />
               </div>
               <div>
-                <Label>ID Sala</Label>
+                <Label>Sala</Label>
 
                 {salas && (
                   <Combobox
