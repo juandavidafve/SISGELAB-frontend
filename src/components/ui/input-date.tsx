@@ -2,8 +2,6 @@
 
 import { Icon } from "@iconify/react";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -14,24 +12,25 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-export function InputDate() {
-  const [date, setDate] = React.useState<Date>();
+interface InputDateProps {
+  value: Date | undefined;
+  onChange: (date: Date | undefined) => void;
+}
 
+export function InputDate({ value, onChange }: InputDateProps) {
   return (
-    <Popover>
+    <Popover modal>
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
           className={cn(
             "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            !value && "text-muted-foreground",
             "flex justify-between",
           )}
         >
-          {date ? (
-            format(date, "PPP", {
-              locale: es,
-            })
+          {value ? (
+            format(value, "dd/MM/yyyy")
           ) : (
             <span>Selecciona una fecha</span>
           )}
@@ -44,8 +43,8 @@ export function InputDate() {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={setDate}
+          selected={value}
+          onSelect={onChange}
           initialFocus
         />
       </PopoverContent>

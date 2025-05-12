@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Combobox } from "@/components/ui/combobox";
 import {
   FileUpload,
   FileUploadClear,
@@ -12,22 +11,14 @@ import {
   FileUploadList,
 } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
-import { InputDate } from "@/components/ui/input-date";
 import { InputDateTime } from "@/components/ui/input-datetime";
 import { InputPassword } from "@/components/ui/input-password";
-import ItemList from "@/components/ui/item-list";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function Components() {
   const [files, setFiles] = useState<File[]>([]);
-  const [comboValue, setComboValue] = useState<number | null>(null);
-  const [itemListValue, setItemListValue] = useState<
-    {
-      country: string;
-      currency: string;
-    }[]
-  >([]);
+
   return (
     <>
       <Button>Wenas</Button>
@@ -61,31 +52,7 @@ export default function Components() {
         <Input type="email" id="email" placeholder="Email" />
       </div>
       <InputPassword />
-      <Combobox
-        value={comboValue}
-        onChange={setComboValue}
-        comboboxPlaceholder="Seleccionar país"
-        notFoundText="País no encontrado."
-        searchPlaceholder="Buscar país..."
-        items={["Colombia", "Venecozuela"]}
-      />
-      <ItemList
-        label="País"
-        options={[
-          {
-            country: "Colombia",
-            currency: "COP",
-          },
-          {
-            country: "Venecozuela",
-            currency: "Bolivar",
-          },
-        ]}
-        value={itemListValue}
-        onChange={setItemListValue}
-        valueLabel="country"
-      ></ItemList>
-      <InputDate />
+
       <InputDateTime />
 
       <FileUpload value={files} onValueChange={setFiles} multiple>

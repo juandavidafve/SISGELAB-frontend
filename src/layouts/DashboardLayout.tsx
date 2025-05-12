@@ -8,7 +8,11 @@ export default function DashboardLayout() {
   return (
     <BaseLayout className="mt-16 lg:mt-0 lg:ml-16">
       <AdminSidebar />
-      <Outlet />
+      <div className="flex min-h-screen flex-col bg-gray-50 p-6">
+        <div className="mx-auto w-full max-w-4xl">
+          <Outlet />
+        </div>
+      </div>
     </BaseLayout>
   );
 }
