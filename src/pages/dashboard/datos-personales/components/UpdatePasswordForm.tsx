@@ -28,10 +28,6 @@ export default function UpdatePasswordForm({
 }: UpdatePasswordFormProps) {
   const form = useForm<UpdatePassword>({
     resolver: zodResolver(UpdatePasswordFormSchema),
-    defaultValues: {
-      password: "",
-      passwordCheck: "",
-    },
   });
 
   async function handleSubmit(values: UpdatePassword) {

@@ -41,29 +41,7 @@ export default function DatosPersonalesForm({
   >({
     resolver: zodResolver(DatosPersonalesFormSchema),
     shouldUnregister: true,
-    defaultValues: {
-      primer_nombre: "",
-      segundo_nombre: "",
-      primer_apellido: "",
-      segundo_apellido: "",
-      id_tipo_documento: undefined,
-      documento: "",
-      fecha_expedicion: new Date(),
-      sexo: undefined,
-      fecha_nacimiento: new Date(),
-      id_pais: undefined,
-      id_municipio: undefined,
-      telefono: "",
-      correo_personal: "",
-      correo_institucional: "",
-      direccion_institucional: "",
-      id_poblacion_especial: undefined,
-      id_estado_civil: undefined,
-      direccion: "",
-      entidad: "",
-      id_modalidad: undefined,
-      ...defaultValues,
-    },
+    defaultValues,
   });
 
   const { result: tiposDocumento } = useAsyncWithToken(getTiposDocumento, []);

@@ -56,8 +56,6 @@ export default function OfertaFormacionForm({
   >({
     resolver: zodResolver(OfertaFormacionFormSchema),
     defaultValues: {
-      nombre: "",
-      codigo: "",
       cine: 0,
       extension: false,
       horas: 0,
