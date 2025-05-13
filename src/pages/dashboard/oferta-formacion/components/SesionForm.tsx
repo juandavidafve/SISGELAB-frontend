@@ -127,6 +127,7 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
               )}
             </div>
             <Button
+              type="button"
               variant="destructive"
               onClick={() => {
                 removeSesion(index);
@@ -138,7 +139,7 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
           </CardContent>
         </Card>
       ))}
-      <Button onClick={addSesion}>
+      <Button onClick={addSesion} type="button">
         <Plus className="mr-2 h-4 w-4" /> Agregar sesión
       </Button>
     </div>

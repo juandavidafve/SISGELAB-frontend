@@ -1,5 +1,3 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route, Navigate } from "react-router";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -17,6 +15,7 @@ import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
 import DatosPersonales from "./pages/dashboard/datos-personales/DatosPersonales";
+import NuevoUsuario from "./pages/dashboard/datos-personales/NuevoUsuario";
 
 export default function Router() {
   return (
@@ -43,6 +42,17 @@ export default function Router() {
         </Route>
 
         <Route
+          path="dashboard/datos-personales/nuevo-usuario"
+          element={
+            <ProtectedRoute>
+              <CardLayout allowHorizontal={false} />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<NuevoUsuario />} />
+        </Route>
+
+        <Route
           path="auth"
           element={
             <ProtectedRoute
@@ -64,9 +74,3 @@ export default function Router() {
     </HashRouter>
   );
 }
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Router />
-  </StrictMode>,
-);

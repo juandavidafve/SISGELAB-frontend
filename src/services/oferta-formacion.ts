@@ -10,13 +10,21 @@ import {
 const base = "/ofertas/";
 
 export async function getAll() {
-  const req = await api.get(base);
+  const req = await api.get(urlMerge(base));
 
   return OfertaFormacionMinimalSchema.array().parse(req.data);
 }
 
 export async function create(oferta: OfertaFormacionFormOutput) {
-  await api.postForm(base, oferta, {
+  await api.postForm(urlMerge(base), oferta, {
+    formSerializer: {
+      dots: true,
+    },
+  });
+}
+
+export async function update(id: number, oferta: OfertaFormacionFormOutput) {
+  await api.putForm(urlMerge(base, id), oferta, {
     formSerializer: {
       dots: true,
     },

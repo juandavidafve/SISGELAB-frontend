@@ -1,5 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useState } from "react";
 import { useParams } from "react-router";
+import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
 import { KeyValueItem } from "@/components/KeyValueItem";
@@ -16,13 +18,34 @@ import {
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { BACKEND_BASE_URL } from "@/lib/config";
 import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
-import { getById as getOferta } from "@/services/oferta-formacion";
+import {
+  convertToFormInput as convertOfertaToFormInput,
+  OfertaFormacionFormOutput,
+} from "@/schemas/oferta-formacion";
+import {
+  getById as getOferta,
+  update as updateOferta,
+} from "@/services/oferta-formacion";
+
+import OfertaFormacionForm from "./components/OfertaFormacionForm";
 
 export default function OfertaFormacionDetails() {
   const { id } = useParams();
-  const { result: oferta } = useAsyncWithToken(getOferta, [
-    parseInt(String(id)),
-  ]);
+  const idNum = parseInt(String(id));
+
+  const { result: oferta, execute: refreshOferta } = useAsyncWithToken(
+    getOferta,
+    [idNum],
+  );
+  const [editOfertaDialog, setEditOfertaDialog] = useState(false);
+
+  async function handleEditOferta(oferta: OfertaFormacionFormOutput) {
+    await updateOferta(idNum, oferta);
+    toast.success("Oferta de formación actualizada correctamente.");
+
+    await refreshOferta(idNum);
+    setEditOfertaDialog(false);
+  }
 
   if (!oferta) return;
 
@@ -56,12 +79,26 @@ export default function OfertaFormacionDetails() {
               />
             </DialogContent>
           </Dialog>
-          <Button variant="ghost" size="icon">
-            <Icon
-              icon="material-symbols:edit-square-outline-rounded"
-              className="size-6"
-            />
-          </Button>
+
+          <Dialog open={editOfertaDialog} onOpenChange={setEditOfertaDialog}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Icon
+                  icon="material-symbols:edit-square-outline-rounded"
+                  className="size-6"
+                />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Editar oferta de formación</DialogTitle>
+              </DialogHeader>
+              <OfertaFormacionForm
+                onSubmit={handleEditOferta}
+                defaultValues={convertOfertaToFormInput(oferta)}
+              />
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">

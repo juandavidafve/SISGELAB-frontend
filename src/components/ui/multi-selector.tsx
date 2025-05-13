@@ -86,9 +86,8 @@ export default function MultiSelector<T>({
             searchPlaceholder={searchPlaceholder}
             comboboxPlaceholder={comboboxPlaceholder}
             notFoundText={notFoundText}
-            width="w-full"
           />
-          <Button onClick={handleAdd} className="font-bold">
+          <Button onClick={handleAdd} className="font-bold" type="button">
             Agregar
           </Button>
         </div>

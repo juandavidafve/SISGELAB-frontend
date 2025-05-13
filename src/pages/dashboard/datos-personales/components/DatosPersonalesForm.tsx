@@ -10,6 +10,7 @@ import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormSelect from "@/components/ui/form-select";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
+import useAuth from "@/hooks/useAuth";
 import { handleAxiosError } from "@/lib/error";
 import {
   DatosPersonalesFormInput,
@@ -24,18 +25,22 @@ import { getAll as getPoblacionesEspeciales } from "@/services/poblacion-especia
 import { getAll as getTiposDocumento } from "@/services/tipo-documento";
 
 interface DatosPersonalesFormProps {
+  defaultValues?: DatosPersonalesFormInput;
   onSubmit: (data: DatosPersonalesFormOutput) => void;
 }
 
 export default function DatosPersonalesForm({
   onSubmit,
+  defaultValues,
 }: DatosPersonalesFormProps) {
+  const { info } = useAuth();
   const form = useForm<
     DatosPersonalesFormInput,
     unknown,
     DatosPersonalesFormOutput
   >({
     resolver: zodResolver(DatosPersonalesFormSchema),
+    shouldUnregister: true,
     defaultValues: {
       primer_nombre: "",
       segundo_nombre: "",
@@ -57,6 +62,7 @@ export default function DatosPersonalesForm({
       direccion: "",
       entidad: "",
       id_modalidad: undefined,
+      ...defaultValues,
     },
   });
 
@@ -91,25 +97,21 @@ export default function DatosPersonalesForm({
           control={form.control}
           label="Primer nombre"
         />
-
         <FormInput
           name="segundo_nombre"
           control={form.control}
           label="Segundo nombre"
         />
-
         <FormInput
           name="primer_apellido"
           control={form.control}
           label="Primer apellido"
         />
-
         <FormInput
           name="segundo_apellido"
           control={form.control}
           label="Segundo apellido"
         />
-
         <div>
           Documento de Identidad
           <div className="mt-1 flex items-end gap-2">
@@ -126,26 +128,27 @@ export default function DatosPersonalesForm({
             <FormInput control={form.control} name="documento" />
           </div>
         </div>
-
         <FormSelect
           control={form.control}
           name="sexo"
-          items={["Masculino", "Femenino"]}
+          items={["Masculino", "Femenino"].map((sexo) => ({
+            label: sexo,
+            value: sexo.toUpperCase(),
+          }))}
+          itemLabel="label"
+          itemValue="value"
           label="Sexo"
         />
-
         <FormInputDate
           control={form.control}
           name="fecha_expedicion"
           label="Fecha de expedición"
         />
-
         <FormInputDate
           control={form.control}
           name="fecha_nacimiento"
           label="Fecha de nacimiento"
         />
-
         {paises && (
           <FormCombobox
             control={form.control}
@@ -157,16 +160,18 @@ export default function DatosPersonalesForm({
           />
         )}
 
-        {municipios && (
-          <FormCombobox
-            control={form.control}
-            name="id_municipio"
-            itemLabel="nombre"
-            itemValue="id"
-            items={municipios}
-            label="Municipio"
-          />
-        )}
+        {municipios &&
+          paises?.find((pais) => pais.id === form.watch("id_pais"))?.codigo ===
+            "170" && (
+            <FormCombobox
+              control={form.control}
+              name="id_municipio"
+              itemLabel="nombre"
+              itemValue="id"
+              items={municipios}
+              label="Municipio"
+            />
+          )}
 
         <FormInput control={form.control} name="telefono" label="Teléfono" />
         <FormInput
@@ -174,19 +179,21 @@ export default function DatosPersonalesForm({
           name="correo_personal"
           label="Correo personal"
         />
-        <FormInput
-          control={form.control}
-          name="correo_institucional"
-          label="Correo institucional"
-        />
-
-        <FormInput
-          control={form.control}
-          name="direccion_institucional"
-          label="Dirección institucional"
-        />
-
-        {poblacionesEspeciales && (
+        {info?.roles.includes("ROLE_PARTICIPANTE") && (
+          <FormInput
+            control={form.control}
+            name="correo_institucional"
+            label="Correo institucional"
+          />
+        )}
+        {info?.roles.includes("ROLE_PARTICIPANTE") && (
+          <FormInput
+            control={form.control}
+            name="direccion_institucional"
+            label="Dirección institucional"
+          />
+        )}
+        {poblacionesEspeciales && info?.roles.includes("ROLE_PARTICIPANTE") && (
           <FormSelect
             control={form.control}
             name="id_poblacion_especial"
@@ -196,8 +203,7 @@ export default function DatosPersonalesForm({
             label="Población especial"
           />
         )}
-
-        {estadosCiviles && (
+        {estadosCiviles && info?.roles.includes("ROLE_PARTICIPANTE") && (
           <FormSelect
             control={form.control}
             name="id_estado_civil"
@@ -208,10 +214,19 @@ export default function DatosPersonalesForm({
           />
         )}
 
-        <FormInput name="direccion" control={form.control} label="Dirección" />
-        <FormInput name="entidad" control={form.control} label="Entidad" />
+        {info?.roles.includes("ROLE_INSTRUCTOR") && (
+          <FormInput
+            name="direccion"
+            control={form.control}
+            label="Dirección"
+          />
+        )}
 
-        {modalidades && (
+        {info?.roles.includes("ROLE_INSTRUCTOR") && (
+          <FormInput name="entidad" control={form.control} label="Entidad" />
+        )}
+
+        {modalidades && info?.roles.includes("ROLE_INSTRUCTOR") && (
           <FormSelect
             name="id_modalidad"
             control={form.control}

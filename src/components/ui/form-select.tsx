@@ -41,12 +41,13 @@ export default function FormSelect<T extends FieldValues, U>({
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Select
+              defaultValue={field.value ? String(field.value) : undefined}
               onValueChange={(value) => {
                 const valNum = parseInt(value);
                 field.onChange(isNaN(valNum) ? value : valNum);
               }}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Seleccionar..." />
               </SelectTrigger>
               <SelectContent>

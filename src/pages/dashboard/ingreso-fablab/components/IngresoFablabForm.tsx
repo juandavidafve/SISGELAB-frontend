@@ -85,7 +85,7 @@ export default function IngresoFablabForm() {
     ) => FormNode | undefined;
   };
 
-  const formNodes = new Map<Path<IngresoFablabFormInput>, FormNode>();
+  const formNodes = new Map<string, FormNode>();
 
   formNodes.set("motivo", {
     field: "motivo",
@@ -123,9 +123,30 @@ export default function IngresoFablabForm() {
     next: (value) => {
       if (value === "CURSO") return formNodes.get("id_oferta_formacion");
       if (value === "CURSO_A_COLEGIO")
-        return formNodes.get("id_oferta_formacion");
+        return formNodes.get("id_oferta_formacion_colegios");
+      if (value === "STEAM_SCHOOL" || value === "STEAM_YOUNG")
+        return formNodes.get("id_institucion_colegios");
+      if (value === "CLASE") return formNodes.get("id_sala");
+      if (value === "SOCIALIZACION") return formNodes.get("id_institucion");
+      if (value === "SOCIALIZACION_A_COLEGIO")
+        return formNodes.get("id_institucion_colegios");
+      if (value === "SEMILLERO") return formNodes.get("id_semillero");
+      if (value === "GRABACION_CARRERA") return formNodes.get("id_institucion");
+      if (value === "GRABACION_SEMILLERO") return formNodes.get("id_semillero");
+      if (value === "GRABACION_EXTERNO") return formNodes.get("asociacion");
+      if (value === "SUSTENTACION_PROYECTO_GRADO") return;
+      if (value === "PRACTICANTE") return formNodes.get("id_institucion");
+      if (value === "INFORME_FINAL") return formNodes.get("id_cargo");
+    },
+  });
 
-      return formNodes.get("id_programa_academico");
+  formNodes.set("asociacion", {
+    field: "asociacion",
+    elem: (
+      <FormInput name="asociacion" control={form.control} label="Asociación" />
+    ),
+    next: () => {
+      return formNodes.get("id_institucion");
     },
   });
 
@@ -141,6 +162,37 @@ export default function IngresoFablabForm() {
         itemLabel="nombre"
       />
     ),
+    next: () => formNodes.get("id_institucion"),
+  });
+
+  formNodes.set("id_oferta_formacion_colegios", {
+    field: "id_oferta_formacion",
+    elem: ofertasFormacion && (
+      <FormCombobox
+        name="id_oferta_formacion"
+        control={form.control}
+        label="Oferta de Formación"
+        items={ofertasFormacion}
+        itemValue="id"
+        itemLabel="nombre"
+      />
+    ),
+    next: () => formNodes.get("id_institucion_colegios"),
+  });
+
+  formNodes.set("id_institucion_colegios", {
+    field: "id_institucion",
+    elem: instituciones && (
+      <FormCombobox
+        name="id_institucion"
+        control={form.control}
+        label="Institución"
+        items={instituciones}
+        itemValue="id"
+        itemLabel="nombre"
+      />
+    ),
+    next: () => formNodes.get("id_cargo"),
   });
 
   formNodes.set("id_institucion", {
@@ -155,6 +207,7 @@ export default function IngresoFablabForm() {
         itemLabel="nombre"
       />
     ),
+    next: () => formNodes.get("nombre_institucion"),
   });
 
   formNodes.set("nombre_institucion", {
@@ -166,6 +219,7 @@ export default function IngresoFablabForm() {
         label="Nombre de Institución"
       />
     ),
+    next: () => formNodes.get("id_programa_academico"),
   });
 
   formNodes.set("id_programa_academico", {
@@ -180,11 +234,13 @@ export default function IngresoFablabForm() {
         itemLabel="nombre"
       />
     ),
+    next: () => formNodes.get("codigo"),
   });
 
   formNodes.set("codigo", {
     field: "codigo",
     elem: <FormInput name="codigo" control={form.control} label="Código" />,
+    next: () => formNodes.get("id_cargo"),
   });
 
   formNodes.set("id_sala", {
@@ -199,11 +255,13 @@ export default function IngresoFablabForm() {
         itemLabel="nombre"
       />
     ),
+    next: () => formNodes.get("materia"),
   });
 
   formNodes.set("materia", {
     field: "materia",
     elem: <FormInput name="materia" control={form.control} label="Materia" />,
+    next: () => formNodes.get("id_institucion"),
   });
 
   formNodes.set("id_semillero", {
@@ -218,6 +276,7 @@ export default function IngresoFablabForm() {
         itemLabel="nombre"
       />
     ),
+    next: () => formNodes.get("nombre_semillero"),
   });
 
   formNodes.set("nombre_semillero", {
@@ -229,6 +288,7 @@ export default function IngresoFablabForm() {
         label="Nombre del Semillero"
       />
     ),
+    next: () => formNodes.get("siglas_semillero"),
   });
 
   formNodes.set("siglas_semillero", {
@@ -240,6 +300,7 @@ export default function IngresoFablabForm() {
         label="Siglas del Semillero"
       />
     ),
+    next: () => formNodes.get("id_institucion"),
   });
 
   formNodes.set("id_cargo", {
@@ -253,13 +314,6 @@ export default function IngresoFablabForm() {
         itemValue="id"
         itemLabel="nombre"
       />
-    ),
-  });
-
-  formNodes.set("asociacion", {
-    field: "asociacion",
-    elem: (
-      <FormInput name="asociacion" control={form.control} label="Asociación" />
     ),
   });
 
@@ -285,7 +339,9 @@ export default function IngresoFablabForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="grid gap-4">
-        {getNodeList().map((item) => item?.elem)}
+        {getNodeList().map((item) => (
+          <div key={item?.field}>{item?.elem}</div>
+        ))}
 
         <Button type="submit" className="w-full">
           Guardar

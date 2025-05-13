@@ -1,8 +1,22 @@
 import { api } from "@/lib/axios";
-import { DatosPersonalesFormOutput } from "@/schemas/datos-personales";
+import { urlMerge } from "@/lib/utils";
+import {
+  DatosPersonalesFormOutput,
+  DatosPersonalesSchema,
+} from "@/schemas/datos-personales";
 
-const base = "/datos-personales/";
+const base = "/usuarios/datos-personales/";
 
 export async function create(data: DatosPersonalesFormOutput) {
-  await api.post(base, data);
+  await api.post(urlMerge(base), data);
+}
+
+export async function update(data: DatosPersonalesFormOutput) {
+  await api.put(urlMerge(base), data);
+}
+
+export async function get() {
+  const req = await api.get(urlMerge(base));
+
+  return DatosPersonalesSchema.parse(req.data);
 }

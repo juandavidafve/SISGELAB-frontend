@@ -1,6 +1,6 @@
-import { Checkbox } from "@radix-ui/react-checkbox";
 import { Control, FieldValues, Path } from "react-hook-form";
 
+import { Checkbox } from "./checkbox";
 import {
   FormControl,
   FormField,

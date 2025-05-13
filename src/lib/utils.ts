@@ -1,7 +1,9 @@
 import { clsx, type ClassValue } from "clsx";
+import { formatISO } from "date-fns";
 import { format, fromZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
+import { z } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -31,7 +33,20 @@ export function urlMerge(...inputs: unknown[]) {
   );
 }
 
-export function formatDate(date: string, formatStr = "PPP") {
+export function zodDateFromString() {
+  return z
+    .string()
+    .date()
+    .transform((date) => fromZonedTime(date, "America/Bogota"));
+}
+
+export function zodStringFromDate() {
+  return z
+    .date()
+    .transform((date) => formatISO(date, { representation: "date" }));
+}
+
+export function formatDate(date: string | Date, formatStr = "PPP") {
   return format(fromZonedTime(date, "America/Bogota"), formatStr, {
     locale: es,
   });
