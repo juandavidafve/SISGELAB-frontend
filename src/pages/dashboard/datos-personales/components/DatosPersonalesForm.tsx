@@ -24,11 +24,13 @@ import { getAll as getPoblacionesEspeciales } from "@/services/poblacion-especia
 import { getAll as getTiposDocumento } from "@/services/tipo-documento";
 
 interface DatosPersonalesFormProps {
+  defaultValues?: DatosPersonalesFormInput;
   onSubmit: (data: DatosPersonalesFormOutput) => void;
 }
 
 export default function DatosPersonalesForm({
   onSubmit,
+  defaultValues,
 }: DatosPersonalesFormProps) {
   const form = useForm<
     DatosPersonalesFormInput,
@@ -57,6 +59,7 @@ export default function DatosPersonalesForm({
       direccion: "",
       entidad: "",
       id_modalidad: undefined,
+      ...defaultValues,
     },
   });
 
@@ -130,7 +133,12 @@ export default function DatosPersonalesForm({
         <FormSelect
           control={form.control}
           name="sexo"
-          items={["Masculino", "Femenino"]}
+          items={["Masculino", "Femenino"].map((sexo) => ({
+            label: sexo,
+            value: sexo.toUpperCase(),
+          }))}
+          itemLabel="label"
+          itemValue="value"
           label="Sexo"
         />
 

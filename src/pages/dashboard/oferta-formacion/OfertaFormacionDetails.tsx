@@ -19,7 +19,7 @@ import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { BACKEND_BASE_URL } from "@/lib/config";
 import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
 import {
-  convertOfertaToFormInput,
+  convertToFormInput as convertOfertaToFormInput,
   OfertaFormacionFormOutput,
 } from "@/schemas/oferta-formacion";
 import {

@@ -41,7 +41,7 @@ export default function FormSelect<T extends FieldValues, U>({
           {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <Select
-              defaultValue={String(field.value)}
+              defaultValue={field.value ? String(field.value) : undefined}
               onValueChange={(value) => {
                 const valNum = parseInt(value);
                 field.onChange(isNaN(valNum) ? value : valNum);

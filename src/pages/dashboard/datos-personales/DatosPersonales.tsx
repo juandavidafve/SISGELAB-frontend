@@ -1,22 +1,43 @@
 import { toast } from "sonner";
 
-import { DatosPersonalesFormOutput } from "@/schemas/datos-personales";
-import { create as createDatosPersonales } from "@/services/datos-personales";
+import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
+import {
+  convertToFormInput as convertDatosPersonalesToFormInput,
+  DatosPersonalesFormOutput,
+} from "@/schemas/datos-personales";
+import {
+  get as getDatosPersonales,
+  update as updateDatosPersonales,
+} from "@/services/datos-personales";
 
 import DatosPersonalesForm from "./components/DatosPersonalesForm";
 
 export default function DatosPersonales() {
-  async function onCreate(datosPersonales: DatosPersonalesFormOutput) {
-    await createDatosPersonales(datosPersonales);
+  const {
+    result: datosPersonales,
+    execute: refreshDatosPersonales,
+    error,
+  } = useAsyncWithToken(getDatosPersonales, []);
+
+  async function handleUpdate(datosPersonales: DatosPersonalesFormOutput) {
+    await updateDatosPersonales(datosPersonales);
 
     toast.success("Datos personales actualizados correctamente");
+    refreshDatosPersonales();
   }
+
+  console.log(error);
+
+  if (!datosPersonales) return;
 
   return (
     <>
       <h1 className="mb-4 text-2xl font-bold">Datos personales</h1>
 
-      <DatosPersonalesForm onSubmit={onCreate} />
+      <DatosPersonalesForm
+        onSubmit={handleUpdate}
+        defaultValues={convertDatosPersonalesToFormInput(datosPersonales)}
+      />
     </>
   );
 }

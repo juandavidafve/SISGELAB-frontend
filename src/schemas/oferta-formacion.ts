@@ -72,7 +72,7 @@ export type OfertaFormacionFormOutput = z.infer<
   typeof OfertaFormacionFormSchema
 >;
 
-export function convertOfertaToFormInput(
+export function convertToFormInput(
   entity: OfertaFormacion,
 ): OfertaFormacionFormInput {
   return {

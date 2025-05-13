@@ -17,6 +17,7 @@ import Components from "@/pages/dev/Components.tsx";
 
 import "./index.css";
 import DatosPersonales from "./pages/dashboard/datos-personales/DatosPersonales";
+import NuevoUsuario from "./pages/dashboard/datos-personales/NuevoUsuario";
 
 export default function Router() {
   return (
@@ -40,6 +41,17 @@ export default function Router() {
             element={<OfertaFormacionDetails />}
           />
           <Route path="datos-personales" element={<DatosPersonales />} />
+        </Route>
+
+        <Route
+          path="dashboard/datos-personales/nuevo-usuario"
+          element={
+            <ProtectedRoute>
+              <CardLayout allowHorizontal={false} />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<NuevoUsuario />} />
         </Route>
 
         <Route
