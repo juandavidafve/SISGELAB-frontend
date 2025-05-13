@@ -47,7 +47,7 @@ export default function FormSelect<T extends FieldValues, U>({
                 field.onChange(isNaN(valNum) ? value : valNum);
               }}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Seleccionar..." />
               </SelectTrigger>
               <SelectContent>

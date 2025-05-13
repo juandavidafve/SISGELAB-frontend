@@ -9,7 +9,7 @@ export default function NuevoUsuario() {
   async function onCreate(datosPersonales: DatosPersonalesFormOutput) {
     await createDatosPersonales(datosPersonales);
 
-    toast.success("Datos personales actualizados correctamente");
+    toast.success("Datos actualizados correctamente");
   }
 
   return (

@@ -28,7 +28,6 @@ interface ComboboxProps<T> {
   searchPlaceholder?: string;
   comboboxPlaceholder?: string;
   notFoundText?: string;
-  width?: string;
 }
 
 export function Combobox<T>({
@@ -40,7 +39,6 @@ export function Combobox<T>({
   searchPlaceholder = "Buscar...",
   comboboxPlaceholder = "Seleccionar...",
   notFoundText = "Sin resultados",
-  width = "w-[200px]",
 }: ComboboxProps<T>) {
   const [open, setOpen] = React.useState(false);
 
@@ -51,7 +49,7 @@ export function Combobox<T>({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn(width, "justify-between")}
+          className="w-full justify-between"
         >
           {value ? itemLabel(value) : comboboxPlaceholder}
           <Icon
@@ -60,7 +58,7 @@ export function Combobox<T>({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn(width, "p-0")}>
+      <PopoverContent className="p-0">
         <Command>
           <CommandInput placeholder={searchPlaceholder} />
           <CommandList>

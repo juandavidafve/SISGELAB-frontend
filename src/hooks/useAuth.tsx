@@ -1,21 +1,13 @@
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 
-import app from "@/lib/firebase";
+import AuthContext from "@/contexts/AuthContext";
 
-export default function useAuth() {
-  const [user, setUser] = useState<User | null | undefined>(undefined);
-  const [auth] = useState(getAuth(app));
-  const [token, setToken] = useState<string>();
+const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      setToken(await currentUser?.getIdToken());
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  return { user, auth, token };
-}
+export default useAuth;

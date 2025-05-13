@@ -13,20 +13,15 @@ import {
 import DatosPersonalesForm from "./components/DatosPersonalesForm";
 
 export default function DatosPersonales() {
-  const {
-    result: datosPersonales,
-    execute: refreshDatosPersonales,
-    error,
-  } = useAsyncWithToken(getDatosPersonales, []);
+  const { result: datosPersonales, execute: refreshDatosPersonales } =
+    useAsyncWithToken(getDatosPersonales, []);
 
   async function handleUpdate(datosPersonales: DatosPersonalesFormOutput) {
     await updateDatosPersonales(datosPersonales);
 
-    toast.success("Datos personales actualizados correctamente");
+    toast.success("Datos actualizados correctamente");
     refreshDatosPersonales();
   }
-
-  console.log(error);
 
   if (!datosPersonales) return;
 

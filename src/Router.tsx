@@ -1,5 +1,3 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route, Navigate } from "react-router";
 
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -76,9 +74,3 @@ export default function Router() {
     </HashRouter>
   );
 }
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Router />
-  </StrictMode>,
-);
