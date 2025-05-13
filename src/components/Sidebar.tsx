@@ -47,7 +47,7 @@ const navItems: NavItem[] = [
 ];
 
 export default function Sidebar() {
-  const { auth } = useAuth();
+  const { auth, info } = useAuth();
   const { pathname } = useLocation();
 
   const currentItemPath = pathname.split("/")[2];
@@ -97,8 +97,8 @@ export default function Sidebar() {
               <Icon icon="mingcute:user-4-fill" className="size-6" />
             </PopoverTrigger>
             <PopoverContent className="w-fit">
-              <p className="text-center font-bold">Juan Afanador</p>
-              <p className="text-center text-sm">ADMIN</p>
+              <p className="text-center font-bold">{info?.nombre}</p>
+              <p className="text-center text-sm">{info?.roles}</p>
               <Separator className="my-4" />
               <Button variant="outline" onClick={handleLogout}>
                 Cerrar Sesión

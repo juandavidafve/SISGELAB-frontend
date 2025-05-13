@@ -1,8 +1,10 @@
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode, useCallback } from "react";
 import { useAsync } from "react-async-hook";
 
 import AuthContext from "@/contexts/AuthContext";
+import useRequestInterceptor from "@/hooks/useRequestInterceptor";
+import { api } from "@/lib/axios";
 import { get as getInfoUsuario } from "@/services/info-usuario";
 
 interface AuthProviderProps {
@@ -14,9 +16,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [token, setToken] = useState<string | undefined>(undefined);
   const [auth] = useState(() => getAuth());
 
+  const interceptorReady = useRequestInterceptor(
+    api,
+    useCallback(
+      (config) => {
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      [token],
+    ),
+    useCallback((error) => Promise.reject(error), []),
+    token !== undefined,
+  );
+
   const { result: info } = useAsync(async () => {
-    return token ? await getInfoUsuario() : undefined;
-  }, [token]);
+    if (!interceptorReady) return undefined;
+    return getInfoUsuario();
+  }, [interceptorReady]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -30,10 +48,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     });
 
     return () => unsubscribe();
-  }, [token]);
+  }, [auth]);
 
   return (
-    <AuthContext.Provider value={{ user, auth, token, info }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        auth,
+        token: token && interceptorReady ? token : undefined,
+        info,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

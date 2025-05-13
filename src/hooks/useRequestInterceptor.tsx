@@ -1,34 +1,31 @@
-import { useEffect } from "react";
+import { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import { useEffect, useState } from "react";
 
-import { api } from "@/lib/axios";
-
-import useAuth from "./useAuth";
-
-function useRequestInterceptor() {
-  const { token } = useAuth();
-
+function useRequestInterceptor(
+  axios: AxiosInstance,
+  onFullfilled: (
+    value: InternalAxiosRequestConfig,
+  ) => InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>,
+  onRejected: (error: unknown) => unknown,
+  check: boolean,
+) {
+  const [ready, setReady] = useState(false);
   useEffect(() => {
-    const requestInterceptor = api.interceptors.request.use(
-      (config) => {
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
+    if (check) {
+      const requestInterceptor = axios.interceptors.request.use(
+        onFullfilled,
+        onRejected,
+      );
 
-        config.headers.set("TEST", true);
+      setReady(true);
 
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      },
-    );
+      return () => {
+        axios.interceptors.request.eject(requestInterceptor);
+      };
+    }
+  }, [axios, onFullfilled, onRejected, check]);
 
-    return () => {
-      api.interceptors.request.eject(requestInterceptor);
-    };
-  }, [token]);
-
-  return { axiosInstance: api };
+  return ready;
 }
 
 export default useRequestInterceptor;
