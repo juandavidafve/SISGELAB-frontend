@@ -96,11 +96,26 @@ export default function Sidebar() {
             >
               <Icon icon="mingcute:user-4-fill" className="size-6" />
             </PopoverTrigger>
-            <PopoverContent className="w-fit">
-              <p className="text-center font-bold">{info?.nombre}</p>
-              <p className="text-center text-sm">{info?.roles}</p>
+            <PopoverContent className="flex w-fit flex-col items-center">
+              <p className="text-center font-bold">
+                {info?.nombre
+                  .split(" ")
+                  .filter((_, i) => i === 0 || i === 2)
+                  .join(" ")}
+              </p>
+              {info?.roles.map((rol) => {
+                const roleMapping = new Map<typeof rol, string>();
+                roleMapping.set("ROLE_ADMINISTRADOR", "Administrador");
+                roleMapping.set("ROLE_INSTRUCTOR", "Instructor");
+                roleMapping.set("ROLE_PARTICIPANTE", "Participante");
+
+                return (
+                  <p className="text-center text-sm">{roleMapping.get(rol)}</p>
+                );
+              })}
+
               <Separator className="my-4" />
-              <Button variant="outline" onClick={handleLogout}>
+              <Button variant="secondary" onClick={handleLogout}>
                 Cerrar Sesión
               </Button>
             </PopoverContent>

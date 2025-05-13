@@ -56,6 +56,18 @@ export type DatosPersonalesFormOutput = z.infer<
   typeof DatosPersonalesFormSchema
 >;
 
+export const UpdatePasswordFormSchema = z
+  .object({
+    password: z.string().nonempty("La contraseña no debe estar vacía"),
+    passwordCheck: z.string().nonempty("Debes confirmar la contraseña"),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: "Las contraseñas no coinciden",
+    path: ["passwordCheck"],
+  });
+
+export type UpdatePassword = z.infer<typeof UpdatePasswordFormSchema>;
+
 export function convertToFormInput(
   entity: DatosPersonales,
 ): DatosPersonalesFormInput {
