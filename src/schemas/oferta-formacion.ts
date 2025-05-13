@@ -1,9 +1,14 @@
 import { formatISO } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 import { z } from "zod";
 
 import { BaseEntitySchema } from "./generic";
 import { InstitucionSchema } from "./institucion";
-import { SesionFormSchema } from "./sesion";
+import {
+  convertSesionToFormInput,
+  SesionFormSchema,
+  SesionMinimalSchema,
+} from "./sesion";
 
 const OfertaFormacionBaseSchema = z.object({
   nombre: z.string(),
@@ -13,6 +18,7 @@ const OfertaFormacionBaseSchema = z.object({
   horas: z.number(),
   semestre: z.number(),
   valor: z.number(),
+  cupo_maximo: z.number(),
 });
 
 export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
@@ -22,21 +28,20 @@ export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
   tipo_oferta: BaseEntitySchema,
   categoria: BaseEntitySchema,
   tipo_beneficiario: BaseEntitySchema,
-  fecha_inicio: z.string().date(),
-  fecha_fin: z.string().date(),
+  fecha_inicio: z
+    .string()
+    .date()
+    .transform((date) => fromZonedTime(date, "America/Bogota")),
+  fecha_fin: z
+    .string()
+    .date()
+    .transform((date) => fromZonedTime(date, "America/Bogota")),
   institucion: InstitucionSchema,
-  sesiones: z
-    .object({
-      id: z.number(),
-      nombre: z.string(),
-      fecha: z.string(),
-      inicio: z.string(),
-      fin: z.string(),
-      sala: BaseEntitySchema,
-    })
-    .array(),
+  sesiones: SesionMinimalSchema.array(),
   inscritos: BaseEntitySchema.array(),
 });
+
+export type OfertaFormacion = z.infer<typeof OfertaFormacionSchema>;
 
 export const OfertaFormacionMinimalSchema = OfertaFormacionSchema.pick({
   id: true,
@@ -54,10 +59,9 @@ export const OfertaFormacionFormSchema = OfertaFormacionBaseSchema.extend({
   id_tipo: z.number(),
   id_categoria: z.number(),
   id_tipo_beneficiario: z.number(),
-  cupo_maximo: z.number(),
   id_institucion: z.number(),
   sesiones: SesionFormSchema.array(),
-  file: z.instanceof(File),
+  file: z.instanceof(File).optional(),
 });
 
 export type OfertaFormacionFormInput = z.input<
@@ -67,3 +71,16 @@ export type OfertaFormacionFormInput = z.input<
 export type OfertaFormacionFormOutput = z.infer<
   typeof OfertaFormacionFormSchema
 >;
+
+export function convertOfertaToFormInput(
+  entity: OfertaFormacion,
+): OfertaFormacionFormInput {
+  return {
+    ...entity,
+    id_tipo: entity.tipo_oferta.id,
+    id_categoria: entity.categoria.id,
+    id_tipo_beneficiario: entity.tipo_beneficiario.id,
+    id_institucion: entity.tipo_beneficiario.id,
+    sesiones: entity.sesiones.map((sesion) => convertSesionToFormInput(sesion)),
+  };
+}

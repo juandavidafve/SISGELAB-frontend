@@ -31,7 +31,7 @@ export function urlMerge(...inputs: unknown[]) {
   );
 }
 
-export function formatDate(date: string, formatStr = "PPP") {
+export function formatDate(date: string | Date, formatStr = "PPP") {
   return format(fromZonedTime(date, "America/Bogota"), formatStr, {
     locale: es,
   });

@@ -41,11 +41,13 @@ import {
 import SesionForm from "./SesionForm";
 
 interface OfertaFormacionFormProps {
+  defaultValues?: OfertaFormacionFormInput;
   onSubmit: (oferta: OfertaFormacionFormOutput) => void;
 }
 
 export default function OfertaFormacionForm({
   onSubmit,
+  defaultValues,
 }: OfertaFormacionFormProps) {
   const form = useForm<
     OfertaFormacionFormInput,
@@ -78,6 +80,7 @@ export default function OfertaFormacionForm({
         },
       ],
       file: undefined,
+      ...defaultValues,
     },
   });
 
@@ -107,7 +110,6 @@ export default function OfertaFormacionForm({
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormInput control={form.control} name="nombre" label="Nombre" />
         <FormInput control={form.control} name="codigo" label="Código" />
-        <FormInput control={form.control} name="cine" label="Cine" />
         <FormInputNumber control={form.control} name="cine" label="CINE" />
         <FormCheckbox
           control={form.control}
@@ -181,7 +183,7 @@ export default function OfertaFormacionForm({
             items={instituciones}
             itemLabel="nombre"
             itemValue="id"
-            label="Instituciones"
+            label="Institucion"
           />
         )}
 
@@ -230,7 +232,7 @@ export default function OfertaFormacionForm({
         />
 
         <Button type="submit" className="w-full">
-          Crear
+          Guardar
         </Button>
       </form>
     </Form>
