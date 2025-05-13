@@ -41,7 +41,7 @@ export const DatosPersonalesFormSchema = DatosPersonalesBaseSchema.extend({
   fecha_expedicion: zodStringFromDate(),
   fecha_nacimiento: zodStringFromDate(),
   id_pais: z.number(),
-  id_municipio: z.number(),
+  id_municipio: z.number().optional(),
   id_poblacion_especial: z.number().optional().nullable(),
   id_estado_civil: z.number().optional().nullable(),
   id_modalidad: z.number().optional().nullable(),
