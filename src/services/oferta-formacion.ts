@@ -15,20 +15,39 @@ export async function getAll() {
   return OfertaFormacionMinimalSchema.array().parse(req.data);
 }
 
+const serialize = (oferta: OfertaFormacionFormOutput) => {
+  const formData = new FormData();
+
+  // Custom serialization function for nested objects with array indexes and dot notation
+  const serializeToForm = (obj: any, prefix = "") => {
+    for (const key in obj) {
+      const value = obj[key];
+      const name = prefix
+        ? Array.isArray(obj)
+          ? `${prefix}[${key}]`
+          : `${prefix}.${key}`
+        : key;
+
+      if (value === null || value === undefined) {
+        formData.append(name, "");
+      } else if (typeof value === "object" && !(value instanceof File)) {
+        serializeToForm(value, name);
+      } else {
+        formData.append(name, value);
+      }
+    }
+  };
+  serializeToForm(oferta);
+  return formData;
+};
+
 export async function create(oferta: OfertaFormacionFormOutput) {
-  await api.postForm(urlMerge(base), oferta, {
-    formSerializer: {
-      dots: true,
-    },
-  });
+  console.log(oferta);
+  await api.postForm(urlMerge(base), serialize(oferta));
 }
 
 export async function update(id: number, oferta: OfertaFormacionFormOutput) {
-  await api.putForm(urlMerge(base, id), oferta, {
-    formSerializer: {
-      dots: true,
-    },
-  });
+  await api.putForm(urlMerge(base, id), serialize(oferta));
 }
 
 export async function getById(id: number) {
