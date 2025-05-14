@@ -42,7 +42,6 @@ const serialize = (oferta: OfertaFormacionFormOutput) => {
 };
 
 export async function create(oferta: OfertaFormacionFormOutput) {
-  console.log(oferta);
   await api.postForm(urlMerge(base), serialize(oferta));
 }
 
