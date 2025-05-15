@@ -47,7 +47,12 @@ export const OfertaFormacionMinimalSchema = OfertaFormacionSchema.pick({
   id: true,
   nombre: true,
   estado: true,
+  categoria: true,
 });
+
+export type OfertaFormacionMinimal = z.infer<
+  typeof OfertaFormacionMinimalSchema
+>;
 
 export const OfertaFormacionFormSchema = OfertaFormacionBaseSchema.extend({
   fecha_inicio: z

@@ -76,7 +76,7 @@ export default function QrDialog({ url, children }: QrDialogProps) {
             <Label htmlFor="link" className="sr-only">
               Link
             </Label>
-            <Input id="link" defaultValue={url} readOnly />
+            <Input id="link" value={url} readOnly />
           </div>
           <Button size="icon" className="px-3" onClick={copyToClipboard}>
             <span className="sr-only">Copiar</span>
