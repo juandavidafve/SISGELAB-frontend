@@ -5,6 +5,7 @@ import { useAsync } from "react-async-hook";
 import AuthContext from "@/contexts/AuthContext";
 import useRequestInterceptor from "@/hooks/useRequestInterceptor";
 import { api } from "@/lib/axios";
+import { get as getDatosPersonales } from "@/services/datos-personales";
 import { get as getInfoUsuario } from "@/services/info-usuario";
 
 interface AuthProviderProps {
@@ -36,6 +37,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return getInfoUsuario();
   }, [interceptorReady]);
 
+  const { result: hasPersonalData } = useAsync(async () => {
+    if (!interceptorReady) return undefined;
+
+    return (await getDatosPersonales()) !== undefined;
+  }, [interceptorReady]);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
@@ -57,6 +64,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         auth,
         token: token && interceptorReady ? token : undefined,
         info,
+        hasPersonalData,
       }}
     >
       {children}

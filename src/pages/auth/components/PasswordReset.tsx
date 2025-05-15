@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 
+import UpdatePasswordForm from "@/components/UpdatePasswordForm";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
-import UpdatePasswordForm from "@/pages/dashboard/datos-personales/components/UpdatePasswordForm";
 import { UpdatePassword } from "@/schemas/datos-personales";
 
 export default function PasswordReset() {
