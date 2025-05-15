@@ -13,13 +13,13 @@ export const DatosPersonalesUserSchema = z.object({
   documento: z.string(),
   fecha_expedicion: zodDateFromString(),
   primer_nombre: z.string(),
-  segundo_nombre: z.string(),
+  segundo_nombre: z.string().optional(),
   primer_apellido: z.string(),
-  segundo_apellido: z.string(),
+  segundo_apellido: z.string().optional(),
   sexo: z.enum(["MASCULINO", "FEMENINO"]),
   fecha_nacimiento: zodDateFromString(),
   pais: PaisSchema,
-  municipio: MunicipioSchema,
+  municipio: MunicipioSchema.optional(),
   telefono: z.string(),
   correo_personal: z.string().email(),
 });
@@ -50,6 +50,7 @@ export const DatosPersonalesSchema = z.object({
 export type DatosPersonales = z.infer<typeof DatosPersonalesSchema>;
 
 export const DatosPersonalesFormSchema = DatosPersonalesSchema.omit({
+  id: true,
   pais: true,
   municipio: true,
   poblacion_especial: true,
@@ -60,7 +61,7 @@ export const DatosPersonalesFormSchema = DatosPersonalesSchema.omit({
   fecha_expedicion: zodStringFromDate(),
   fecha_nacimiento: zodStringFromDate(),
   id_pais: z.number(),
-  id_municipio: z.number(),
+  id_municipio: z.number().optional(),
   id_tipo_documento: z.number(),
   id_poblacion_especial: z.number().optional(),
   id_estado_civil: z.number().optional(),
@@ -94,10 +95,10 @@ export function convertToFormInput(
   return {
     ...entity,
     id_pais: entity.pais.id,
-    id_municipio: entity.municipio.id,
-    id_poblacion_especial: entity?.poblacion_especial?.id,
-    id_estado_civil: entity?.estado_civil?.id,
-    id_modalidad: entity?.modalidad?.id,
+    id_municipio: entity.municipio?.id,
+    id_poblacion_especial: entity.poblacion_especial?.id,
+    id_estado_civil: entity.estado_civil?.id,
+    id_modalidad: entity.modalidad?.id,
     id_tipo_documento: entity.tipo_documento.id,
   };
 }

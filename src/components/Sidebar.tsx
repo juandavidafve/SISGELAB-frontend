@@ -1,7 +1,15 @@
 import { Icon } from "@iconify/react";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
+import { toast } from "sonner";
 
+import UpdatePasswordForm from "@/components/UpdatePasswordForm";
 import {
   Popover,
   PopoverContent,
@@ -9,8 +17,15 @@ import {
 } from "@/components/ui/popover";
 import useAuth from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { UpdatePassword } from "@/schemas/datos-personales";
 
 import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTrigger,
+} from "./ui/dialog";
 import { Separator } from "./ui/separator";
 
 interface NavItem {
@@ -47,7 +62,7 @@ const navItems: NavItem[] = [
 ];
 
 export default function Sidebar() {
-  const { auth, info } = useAuth();
+  const { auth, info, user } = useAuth();
   const { pathname } = useLocation();
 
   const currentItemPath = pathname.split("/")[2];
@@ -60,6 +75,22 @@ export default function Sidebar() {
 
   async function handleLogout() {
     await auth.signOut();
+  }
+
+  async function handlePasswordUpdate(data: UpdatePassword) {
+    if (!user) return;
+
+    if (data.currentPassword) {
+      if (!user.email) return;
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        data.currentPassword,
+      );
+      await reauthenticateWithCredential(user, credential);
+    }
+
+    await updatePassword(user, data.password);
+    toast.success("Contraseña actualizada correctamente");
   }
 
   return (
@@ -87,41 +118,56 @@ export default function Sidebar() {
             <Icon icon="mdi:menu" className="size-6" />
           </Button>
 
-          <Popover>
-            <PopoverTrigger
-              className={cn(
-                "cursor-pointer transition-opacity",
-                collapsed && "lg:opacity-0",
-              )}
-            >
-              <Icon icon="mingcute:user-4-fill" className="size-6" />
-            </PopoverTrigger>
-            <PopoverContent className="flex w-fit flex-col items-center">
-              <p className="text-center font-bold">
-                {info?.nombre
-                  .split(" ")
-                  .filter((_, i) => i === 0 || i === 2)
-                  .join(" ")}
-              </p>
-              {info?.roles.map((rol) => {
-                const roleMapping = new Map<typeof rol, string>();
-                roleMapping.set("ROLE_ADMINISTRADOR", "Administrador");
-                roleMapping.set("ROLE_INSTRUCTOR", "Instructor");
-                roleMapping.set("ROLE_PARTICIPANTE", "Participante");
+          <Dialog>
+            <Popover>
+              <PopoverTrigger
+                className={cn(
+                  "cursor-pointer transition-opacity",
+                  collapsed && "lg:opacity-0",
+                )}
+              >
+                <Icon icon="mingcute:user-4-fill" className="size-6" />
+              </PopoverTrigger>
+              <PopoverContent className="flex w-fit flex-col items-center">
+                <p className="text-center font-bold">
+                  {info?.nombre
+                    .split(" ")
+                    .filter((_, i) => i === 0 || i === 2)
+                    .join(" ")}
+                </p>
+                {info?.roles.map((rol) => {
+                  const roleMapping = new Map<typeof rol, string>();
+                  roleMapping.set("ROLE_ADMINISTRADOR", "Administrador");
+                  roleMapping.set("ROLE_INSTRUCTOR", "Instructor");
+                  roleMapping.set("ROLE_PARTICIPANTE", "Participante");
 
-                return (
-                  <p className="text-center text-sm" key={rol}>
-                    {roleMapping.get(rol)}
-                  </p>
-                );
-              })}
+                  return (
+                    <p className="text-center text-sm" key={rol}>
+                      {roleMapping.get(rol)}
+                    </p>
+                  );
+                })}
 
-              <Separator className="my-4" />
-              <Button variant="secondary" onClick={handleLogout}>
-                Cerrar Sesión
-              </Button>
-            </PopoverContent>
-          </Popover>
+                <Separator className="my-2" />
+
+                <div className="flex flex-col gap-2">
+                  <DialogTrigger asChild>
+                    <Button variant="ghost">Cambiar Contraseña</Button>
+                  </DialogTrigger>
+                  <Button variant="secondary" onClick={handleLogout}>
+                    Cerrar Sesión
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Modificar Contraseña</DialogTitle>
+              </DialogHeader>
+              <UpdatePasswordForm onSubmit={handlePasswordUpdate} />
+            </DialogContent>
+          </Dialog>
         </div>
         <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
           {navItems.map((item, index) => (

@@ -1,13 +1,13 @@
 import { toast } from "sonner";
 
 import { DatosPersonalesFormOutput } from "@/schemas/datos-personales";
-import { create as createDatosPersonales } from "@/services/datos-personales";
+import { update as updateDatosPersonales } from "@/services/datos-personales";
 
 import DatosPersonalesForm from "./components/DatosPersonalesForm";
 
 export default function NuevoUsuario() {
   async function onCreate(datosPersonales: DatosPersonalesFormOutput) {
-    await createDatosPersonales(datosPersonales);
+    await updateDatosPersonales(datosPersonales);
 
     toast.success("Datos actualizados correctamente");
   }

@@ -9,6 +9,7 @@ interface AuthContextType {
   token?: string;
   info?: InfoUsuario;
   auth: Auth;
+  hasPersonalData?: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
