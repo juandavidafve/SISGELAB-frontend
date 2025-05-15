@@ -14,6 +14,7 @@ import IngresoFablab from "@/pages/dashboard/ingreso-fablab/IngresoFablab";
 import Instructor from "@/pages/dashboard/instructor/Instructor";
 import OfertaFormacion from "@/pages/dashboard/oferta-formacion/OfertaFormacion";
 import OfertaFormacionDetails from "@/pages/dashboard/oferta-formacion/OfertaFormacionDetails";
+import Sesion from "@/pages/dashboard/sesion/Sesion";
 import Components from "@/pages/dev/Components.tsx";
 import Inscripcion from "@/pages/inscripcion/Inscripcion";
 
@@ -42,6 +43,7 @@ export default function Router() {
           />
           <Route path="datos-personales" element={<DatosPersonales />} />
           <Route path="instructor" element={<Instructor />} />
+          <Route path="sesion/:id" element={<Sesion />} />
         </Route>
 
         <Route

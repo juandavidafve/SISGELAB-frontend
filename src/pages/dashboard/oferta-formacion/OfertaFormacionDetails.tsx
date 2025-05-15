@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import { useLocation, useParams } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
@@ -202,7 +202,11 @@ export default function OfertaFormacionDetails() {
           <CardSmall
             title={sesion.nombre}
             description={`${formatDate(sesion.fecha, "dd/MM/yyyy")} ${sesion.inicio}`}
-            slotAction={<Button>Ver</Button>}
+            slotAction={
+              <Button>
+                <Link to={`../sesion/${sesion.id}`}>Ver</Link>
+              </Button>
+            }
             key={sesion.id}
           />
         ))}
