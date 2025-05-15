@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { DataTable, DataTableColumnHeader } from "@/components/ui/data-table";
@@ -14,13 +15,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { InstructorFormOutput, InstructorMinimal } from "@/schemas/instructor";
-import { getAll as getInstructores } from "@/services/instructor";
+import {
+  deshabilitar as deshabilitarInstructor,
+  getAll as getInstructores,
+  update as updateInstructor,
+} from "@/services/instructor";
 
 import { InstructorDeleteAlert } from "./InstructorDeleteAlert";
 import { InstructorDialog } from "./InstructorDialog";
 
 export default function InstructorDataTable() {
-  const { result: instructores } = useAsyncWithToken(getInstructores, []);
+  const { result: instructores, execute: refreshInstructores } =
+    useAsyncWithToken(getInstructores, []);
   const [selectedInstructor, setSelectedInstructor] =
     useState<NonNullable<typeof instructores>[number]>();
   const [deleteInstructor, setDeleteInstructor] = useState(false);
@@ -70,7 +76,7 @@ export default function InstructorDataTable() {
                   setSelectedInstructor(instructor);
                 }}
               >
-                Borrar
+                Deshabilitar
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -79,12 +85,18 @@ export default function InstructorDataTable() {
     },
   ];
 
-  function handleDelete() {
-    console.log("Borrar", selectedInstructor);
+  async function handleDelete() {
+    if (!selectedInstructor) return;
+    await deshabilitarInstructor(selectedInstructor.id);
+    toast.success("Instructor deshabilitado");
+    await refreshInstructores();
   }
 
-  function handleEdit(instructor: InstructorFormOutput) {
-    console.log(instructor);
+  async function handleEdit(instructor: InstructorFormOutput) {
+    if (!selectedInstructor) return;
+    await updateInstructor(selectedInstructor.id, instructor);
+    toast.success("Instructor editado");
+    await refreshInstructores();
   }
 
   return (

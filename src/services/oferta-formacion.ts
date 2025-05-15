@@ -49,6 +49,10 @@ export async function update(id: number, oferta: OfertaFormacionFormOutput) {
   await api.putForm(urlMerge(base, id), serialize(oferta));
 }
 
+export async function toggle(id: number) {
+  await api.putForm(urlMerge(base, id, "switch-estado"));
+}
+
 export async function getById(id: number) {
   const req = await api.get(urlMerge(base, id));
 
