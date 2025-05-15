@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { result: info, execute: refreshInfo } = useAsync(async () => {
     if (!interceptorReady) return undefined;
     return getInfoUsuario();
-  }, [interceptorReady]);
+  }, [interceptorReady, user]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
