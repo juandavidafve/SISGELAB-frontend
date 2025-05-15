@@ -9,11 +9,12 @@ interface AuthContextType {
   token?: string;
   info?: InfoUsuario;
   auth: Auth;
-  hasPersonalData?: boolean;
+  refreshInfo: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   auth: getAuth(app),
+  refreshInfo: () => {},
 });
 
 export default AuthContext;
