@@ -110,7 +110,9 @@ export default function Sidebar() {
                 roleMapping.set("ROLE_PARTICIPANTE", "Participante");
 
                 return (
-                  <p className="text-center text-sm">{roleMapping.get(rol)}</p>
+                  <p className="text-center text-sm" key={rol}>
+                    {roleMapping.get(rol)}
+                  </p>
                 );
               })}
 

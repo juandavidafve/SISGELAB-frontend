@@ -72,3 +72,7 @@ export async function getTiposBeneficiario() {
 
   return BaseEntitySchema.array().parse(req.data);
 }
+
+export async function inscribir(idOferta: number) {
+  await api.post(urlMerge(base, idOferta, "/inscribir"));
+}

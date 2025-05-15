@@ -68,6 +68,7 @@ export default function Router() {
             <ProtectedRoute
               elemOnDeny={<CardLayout />}
               elemOnAllow={<Navigate to="/dashboard" />}
+              elemOnRedirect={<CardLayout />}
             />
           }
         >
