@@ -26,18 +26,18 @@ export const DatosPersonalesUserSchema = z.object({
 
 export const DatosPersonalesParticipanteSchema =
   DatosPersonalesUserSchema.extend({
-    poblacion_especial: BaseEntitySchema,
-    estado_civil: BaseEntitySchema,
-    correo_institucional: z.string().email(),
-    direccion_institucional: z.string(),
+    poblacion_especial: BaseEntitySchema.nullable(),
+    estado_civil: BaseEntitySchema.nullable(),
+    correo_institucional: z.string().email().nullable(),
+    direccion_institucional: z.string().nullable(),
   });
 
 export const DatosPersonalesInstructorSchema = DatosPersonalesUserSchema.extend(
   {
-    direccion: z.string(),
-    entidad: z.string(),
-    modalidad: BaseEntitySchema,
-    activo: z.boolean(),
+    direccion: z.string().nullable(),
+    entidad: z.string().nullable(),
+    modalidad: BaseEntitySchema.nullable(),
+    activo: z.boolean().nullable(),
   },
 );
 
