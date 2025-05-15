@@ -22,7 +22,7 @@ export function DataTablePagination<TData>({
 
   useEffect(() => {
     table.setPageSize(Math.min(pageSizeOptions[0], table.getRowCount()));
-  }, []);
+  }, [table.getRowCount()]);
 
   if (table.getRowCount() === 0) return;
 

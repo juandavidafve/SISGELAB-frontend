@@ -7,45 +7,64 @@ import { MunicipioSchema } from "./municipio";
 import { PaisSchema } from "./pais";
 import { TipoDocumentoSchema } from "./tipo-documento";
 
-const DatosPersonalesBaseSchema = z.object({
+export const DatosPersonalesUserSchema = z.object({
+  id: z.number(),
+  tipo_documento: TipoDocumentoSchema,
+  documento: z.string(),
+  fecha_expedicion: zodDateFromString(),
   primer_nombre: z.string(),
   segundo_nombre: z.string(),
   primer_apellido: z.string(),
   segundo_apellido: z.string(),
-  documento: z.string(),
   sexo: z.enum(["MASCULINO", "FEMENINO"]),
-  telefono: z.string(),
-  correo_personal: z.string().email(),
-  correo_institucional: z.string().email().optional().nullable(),
-  direccion_institucional: z.string().optional().nullable(),
-  direccion: z.string().optional().nullable(),
-  entidad: z.string().optional().nullable(),
-  activo: z.boolean().optional().nullable(),
-});
-
-export const DatosPersonalesSchema = DatosPersonalesBaseSchema.extend({
-  id: z.number(),
-  tipo_documento: TipoDocumentoSchema,
-  fecha_expedicion: zodDateFromString(),
   fecha_nacimiento: zodDateFromString(),
-  poblacion_especial: BaseEntitySchema.optional().nullable(),
-  estado_civil: BaseEntitySchema.optional().nullable(),
-  modalidad: BaseEntitySchema.optional().nullable(),
   pais: PaisSchema,
   municipio: MunicipioSchema,
+  telefono: z.string(),
+  correo_personal: z.string().email(),
+});
+
+export const DatosPersonalesParticipanteSchema =
+  DatosPersonalesUserSchema.extend({
+    poblacion_especial: BaseEntitySchema,
+    estado_civil: BaseEntitySchema,
+    correo_institucional: z.string().email(),
+    direccion_institucional: z.string(),
+  });
+
+export const DatosPersonalesInstructorSchema = DatosPersonalesUserSchema.extend(
+  {
+    direccion: z.string(),
+    entidad: z.string(),
+    modalidad: BaseEntitySchema,
+    activo: z.boolean(),
+  },
+);
+
+export const DatosPersonalesSchema = z.object({
+  ...DatosPersonalesParticipanteSchema.partial().shape,
+  ...DatosPersonalesInstructorSchema.partial().shape,
+  ...DatosPersonalesUserSchema.shape,
 });
 
 export type DatosPersonales = z.infer<typeof DatosPersonalesSchema>;
 
-export const DatosPersonalesFormSchema = DatosPersonalesBaseSchema.extend({
+export const DatosPersonalesFormSchema = DatosPersonalesSchema.omit({
+  pais: true,
+  municipio: true,
+  poblacion_especial: true,
+  estado_civil: true,
+  modalidad: true,
+  tipo_documento: true,
+}).extend({
   fecha_expedicion: zodStringFromDate(),
   fecha_nacimiento: zodStringFromDate(),
   id_pais: z.number(),
-  id_municipio: z.number().optional(),
-  id_poblacion_especial: z.number().optional().nullable(),
-  id_estado_civil: z.number().optional().nullable(),
-  id_modalidad: z.number().optional().nullable(),
+  id_municipio: z.number(),
   id_tipo_documento: z.number(),
+  id_poblacion_especial: z.number().optional(),
+  id_estado_civil: z.number().optional(),
+  id_modalidad: z.number().optional(),
 });
 
 export type DatosPersonalesFormInput = z.input<

@@ -159,7 +159,6 @@ export function DataTableColumnHeader<TData, TValue>({
   }
 
   function handleSort(dir: "asc" | "desc") {
-    console.log(dir);
     if (column.getIsSorted() === dir) {
       column.clearSorting();
       return;

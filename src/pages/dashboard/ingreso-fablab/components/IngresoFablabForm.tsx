@@ -15,6 +15,7 @@ import {
   IngresoFablabFormInput,
   IngresoFablabFormOutput,
   IngresoFablabFormSchema,
+  motivosMap,
 } from "@/schemas/ingreso-fablab";
 import { getAll as getCargos } from "@/services/cargo";
 import { create as createIngreso } from "@/services/ingreso-fablab";
@@ -31,21 +32,7 @@ export default function IngresoFablabForm() {
     IngresoFablabFormOutput
   >({
     resolver: zodResolver(IngresoFablabFormSchema),
-    defaultValues: {
-      motivo: "",
-      id_oferta_formacion: undefined,
-      id_institucion: undefined,
-      nombre_institucion: "",
-      id_programa_academico: undefined,
-      codigo: "",
-      id_sala: undefined,
-      materia: "",
-      id_semillero: undefined,
-      nombre_semillero: "",
-      siglas_semillero: "",
-      id_cargo: undefined,
-      asociacion: "",
-    },
+    shouldUnregister: true,
   });
 
   const { result: ofertasFormacion } = useAsyncWithToken(
@@ -94,28 +81,10 @@ export default function IngresoFablabForm() {
         name="motivo"
         control={form.control}
         label="Motivo"
-        items={[
-          { value: "CURSO", label: "Curso" },
-          { value: "CURSO_A_COLEGIO", label: "Curso a colegio" },
-          { value: "STEAM_SCHOOL", label: "Steam school" },
-          { value: "STEAM_YOUNG", label: "Steam young" },
-          { value: "CLASE", label: "Clase" },
-          { value: "SOCIALIZACION", label: "Socialización" },
-          {
-            value: "SOCIALIZACION_A_COLEGIO",
-            label: "Socialización a colegio",
-          },
-          { value: "SEMILLERO", label: "Semillero" },
-          { value: "GRABACION_CARRERA", label: "Grabación carrera" },
-          { value: "GRABACION_SEMILLERO", label: "Grabación semillero" },
-          { value: "GRABACION_EXTERNO", label: "Grabación externo" },
-          {
-            value: "SUSTENTACION_PROYECTO_GRADO",
-            label: "Sustentación proyecto de grado",
-          },
-          { value: "PRACTICANTE", label: "Practicante" },
-          { value: "INFORME_FINAL", label: "Informe final" },
-        ]}
+        items={Array.from(motivosMap).map((item) => ({
+          value: item[0],
+          label: item[1],
+        }))}
         itemLabel="label"
         itemValue="value"
       />

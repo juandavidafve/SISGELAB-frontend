@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -10,36 +11,28 @@ import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormSelect from "@/components/ui/form-select";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
-import useAuth from "@/hooks/useAuth";
 import { handleAxiosError } from "@/lib/error";
 import {
-  DatosPersonalesFormInput,
-  DatosPersonalesFormOutput,
-  DatosPersonalesFormSchema,
-} from "@/schemas/datos-personales";
-import { getAll as getEstadosCiviles } from "@/services/estado-civil";
+  InstructorFormInput,
+  InstructorFormOutput,
+  InstructorFormSchema,
+} from "@/schemas/instructor";
 import { getAll as getModalidades } from "@/services/modalidad";
 import { getAll as getMunicipios } from "@/services/municipio";
 import { getAll as getPaises } from "@/services/pais";
-import { getAll as getPoblacionesEspeciales } from "@/services/poblacion-especial";
 import { getAll as getTiposDocumento } from "@/services/tipo-documento";
 
-interface DatosPersonalesFormProps {
-  defaultValues?: DatosPersonalesFormInput;
-  onSubmit: (data: DatosPersonalesFormOutput) => void;
+interface InstructorFormProps {
+  defaultValues?: InstructorFormInput;
+  onSubmit: (data: InstructorFormOutput) => void;
 }
 
-export default function DatosPersonalesForm({
+export default function InstructorForm({
   onSubmit,
   defaultValues,
-}: DatosPersonalesFormProps) {
-  const { info } = useAuth();
-  const form = useForm<
-    DatosPersonalesFormInput,
-    unknown,
-    DatosPersonalesFormOutput
-  >({
-    resolver: zodResolver(DatosPersonalesFormSchema),
+}: InstructorFormProps) {
+  const form = useForm<InstructorFormInput, unknown, InstructorFormOutput>({
+    resolver: zodResolver(InstructorFormSchema),
     shouldUnregister: true,
     defaultValues,
   });
@@ -47,16 +40,15 @@ export default function DatosPersonalesForm({
   const { result: tiposDocumento } = useAsyncWithToken(getTiposDocumento, []);
   const { result: paises } = useAsyncWithToken(getPaises, []);
   const { result: municipios } = useAsyncWithToken(getMunicipios, []);
-  const { result: poblacionesEspeciales } = useAsyncWithToken(
-    getPoblacionesEspeciales,
-    [],
-  );
-  const { result: estadosCiviles } = useAsyncWithToken(getEstadosCiviles, []);
   const { result: modalidades } = useAsyncWithToken(getModalidades, []);
 
-  async function handleSubmit(datosPersonales: DatosPersonalesFormOutput) {
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues]);
+
+  async function handleSubmit(instructor: InstructorFormOutput) {
     try {
-      await onSubmit(datosPersonales);
+      await onSubmit(instructor);
       form.reset();
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -157,54 +149,12 @@ export default function DatosPersonalesForm({
           name="correo_personal"
           label="Correo personal"
         />
-        {info?.roles.includes("ROLE_PARTICIPANTE") && (
-          <FormInput
-            control={form.control}
-            name="correo_institucional"
-            label="Correo institucional"
-          />
-        )}
-        {info?.roles.includes("ROLE_PARTICIPANTE") && (
-          <FormInput
-            control={form.control}
-            name="direccion_institucional"
-            label="Dirección institucional"
-          />
-        )}
-        {poblacionesEspeciales && info?.roles.includes("ROLE_PARTICIPANTE") && (
-          <FormSelect
-            control={form.control}
-            name="id_poblacion_especial"
-            items={poblacionesEspeciales}
-            itemLabel="nombre"
-            itemValue="id"
-            label="Población especial"
-          />
-        )}
-        {estadosCiviles && info?.roles.includes("ROLE_PARTICIPANTE") && (
-          <FormSelect
-            control={form.control}
-            name="id_estado_civil"
-            items={estadosCiviles}
-            itemLabel="nombre"
-            itemValue="id"
-            label="Estado civil"
-          />
-        )}
 
-        {info?.roles.includes("ROLE_INSTRUCTOR") && (
-          <FormInput
-            name="direccion"
-            control={form.control}
-            label="Dirección"
-          />
-        )}
+        <FormInput name="direccion" control={form.control} label="Dirección" />
 
-        {info?.roles.includes("ROLE_INSTRUCTOR") && (
-          <FormInput name="entidad" control={form.control} label="Entidad" />
-        )}
+        <FormInput name="entidad" control={form.control} label="Entidad" />
 
-        {modalidades && info?.roles.includes("ROLE_INSTRUCTOR") && (
+        {modalidades && (
           <FormSelect
             name="id_modalidad"
             control={form.control}

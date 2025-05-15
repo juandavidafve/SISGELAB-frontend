@@ -16,6 +16,7 @@ import Components from "@/pages/dev/Components.tsx";
 import "./index.css";
 import DatosPersonales from "./pages/dashboard/datos-personales/DatosPersonales";
 import NuevoUsuario from "./pages/dashboard/datos-personales/NuevoUsuario";
+import Instructor from "./pages/dashboard/instructor/Instructor";
 
 export default function Router() {
   return (
@@ -39,6 +40,7 @@ export default function Router() {
             element={<OfertaFormacionDetails />}
           />
           <Route path="datos-personales" element={<DatosPersonales />} />
+          <Route path="instructor" element={<Instructor />} />
         </Route>
 
         <Route
