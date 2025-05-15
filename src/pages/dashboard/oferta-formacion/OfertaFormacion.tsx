@@ -79,17 +79,19 @@ export default function OfertaFormacion() {
     <>
       <div className="my-10 mb-6 flex justify-between">
         <h1 className="text-2xl font-bold">Ofertas de formación</h1>
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-          <DialogTrigger asChild>
-            <Button>Crear</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Crear oferta de formación</DialogTitle>
-            </DialogHeader>
-            <OfertaFormacionForm onSubmit={onCreate} />
-          </DialogContent>
-        </Dialog>
+        {info?.roles.includes("ROLE_ADMINISTRADOR") && (
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger asChild>
+              <Button>Crear</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Crear oferta de formación</DialogTitle>
+              </DialogHeader>
+              <OfertaFormacionForm onSubmit={onCreate} />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       {info?.roles.includes("ROLE_ADMINISTRADOR") && (
@@ -132,9 +134,12 @@ export default function OfertaFormacion() {
               title={oferta.nombre}
               slotAction={
                 <Link to={String(oferta.id)}>
-                  <Button className="bg-red-500 text-white hover:bg-red-600">
-                    Ver
-                  </Button>
+                  {info?.roles.includes("ROLE_ADMINISTRADOR") ||
+                    (info?.roles.includes("ROLE_INSTRUCTOR") && (
+                      <Button className="bg-red-500 text-white hover:bg-red-600">
+                        Ver
+                      </Button>
+                    ))}
                 </Link>
               }
               key={oferta.id}
