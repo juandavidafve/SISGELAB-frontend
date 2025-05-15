@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { BACKEND_BASE_URL } from "@/lib/config";
 import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
@@ -24,6 +25,7 @@ import {
 } from "@/schemas/oferta-formacion";
 import {
   getById as getOferta,
+  toggle as toggleOferta,
   update as updateOferta,
 } from "@/services/oferta-formacion";
 
@@ -48,6 +50,20 @@ export default function OfertaFormacionDetails() {
     setEditOfertaDialog(false);
   }
 
+  async function handleToggleOferta() {
+    await toggleOferta(idNum);
+
+    if (oferta?.estado === "ACTIVA") {
+      toast.success("Oferta oferta desactivada");
+    }
+
+    if (oferta?.estado === "INACTIVA") {
+      toast.success("Oferta activada");
+    }
+
+    await refreshOferta(idNum);
+  }
+
   if (!oferta) return;
 
   console.log();
@@ -57,7 +73,7 @@ export default function OfertaFormacionDetails() {
       <div className="flex justify-between">
         <h1 className="mb-6 text-2xl font-bold">{oferta.nombre}</h1>
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {oferta.estado === "ACTIVA" && (
             <QrDialog
               url={`${window.location.href.replace(location.pathname, "")}/inscripcion/${oferta.id}`}
@@ -89,7 +105,6 @@ export default function OfertaFormacionDetails() {
               />
             </DialogContent>
           </Dialog>
-
           <Dialog open={editOfertaDialog} onOpenChange={setEditOfertaDialog}>
             <DialogTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -109,6 +124,10 @@ export default function OfertaFormacionDetails() {
               />
             </DialogContent>
           </Dialog>
+          <Switch
+            checked={oferta.estado === "ACTIVA"}
+            onCheckedChange={handleToggleOferta}
+          />
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
