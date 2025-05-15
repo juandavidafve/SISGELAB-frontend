@@ -19,7 +19,7 @@ export const DatosPersonalesUserSchema = z.object({
   sexo: z.enum(["MASCULINO", "FEMENINO"]),
   fecha_nacimiento: zodDateFromString(),
   pais: PaisSchema,
-  municipio: MunicipioSchema.optional(),
+  municipio: MunicipioSchema.optional().nullable(),
   telefono: z.string(),
   correo_personal: z.string().email(),
 });
