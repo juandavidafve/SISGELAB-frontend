@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FirebaseError } from "firebase/app";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -26,8 +27,11 @@ interface UpdatePasswordFormProps {
 export default function UpdatePasswordForm({
   onSubmit,
 }: UpdatePasswordFormProps) {
+  const [requiresReauth, setRequiresReauth] = useState(false);
+
   const form = useForm<UpdatePassword>({
     resolver: zodResolver(UpdatePasswordFormSchema),
+    shouldUnregister: true,
   });
 
   async function handleSubmit(values: UpdatePassword) {
@@ -36,6 +40,10 @@ export default function UpdatePasswordForm({
     } catch (error) {
       if (error instanceof FirebaseError) {
         handleFirebaseError(toast.error, error);
+
+        if (error.code === "auth/requires-recent-login") {
+          setRequiresReauth(true);
+        }
       }
 
       console.error(error);
@@ -45,6 +53,22 @@ export default function UpdatePasswordForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        {requiresReauth && (
+          <FormField
+            control={form.control}
+            name="currentPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Introduce tu contraseña actual</FormLabel>
+                <FormControl>
+                  <InputPassword {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
           name="password"
