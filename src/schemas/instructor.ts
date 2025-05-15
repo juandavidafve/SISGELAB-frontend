@@ -27,7 +27,7 @@ export const InstructorFormSchema = InstructorSchema.omit({
     id_pais: z.number(),
     id_municipio: z.number().optional(),
     id_tipo_documento: z.number(),
-    id_modalidad: z.number(),
+    id_modalidad: z.number().optional(),
     password: z.string().optional(),
     passwordCheck: z.string().optional(),
   })
@@ -45,6 +45,6 @@ export function convertToFormInput(entity: Instructor): InstructorFormInput {
     id_pais: entity.pais.id,
     id_municipio: entity.municipio?.id,
     id_tipo_documento: entity.tipo_documento.id,
-    id_modalidad: entity.modalidad.id,
+    id_modalidad: entity.modalidad?.id,
   };
 }

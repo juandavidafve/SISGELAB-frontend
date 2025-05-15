@@ -43,9 +43,12 @@ export function InputDate({ value, onChange }: InputDateProps) {
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
+          captionLayout="dropdown-buttons"
           selected={value}
           onSelect={onChange}
           initialFocus
+          fromYear={1960}
+          toYear={2030}
         />
       </PopoverContent>
     </Popover>

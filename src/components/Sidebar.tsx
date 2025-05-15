@@ -32,38 +32,66 @@ interface NavItem {
   label: string;
   icon: string;
   url: string;
+  show?: boolean;
 }
-
-const navItems: NavItem[] = [
-  {
-    label: "Datos Personales",
-    icon: "material-symbols:database-outline",
-    url: "datos-personales",
-  },
-  { label: "Instructores", icon: "ph:chalkboard-teacher", url: "instructor" },
-  {
-    label: "Ofertas de Formación",
-    icon: "material-symbols:menu-book-outline-rounded",
-    url: "oferta-formacion",
-  },
-  {
-    label: "Ingreso al FabLab",
-    icon: "material-symbols:login-rounded",
-    url: "ingreso-fablab",
-  },
-  {
-    label: "Asistencia Instructores",
-    icon: "material-symbols:list-alt-outline-rounded",
-    url: "",
-  },
-  { label: "Certificados", icon: "lineicons:certificate-badge-1", url: "" },
-  { label: "Reportes", icon: "material-symbols:docs-outline-rounded", url: "" },
-  { label: "Datos", icon: "material-symbols:database-outline", url: "" },
-];
 
 export default function Sidebar() {
   const { auth, info, user } = useAuth();
   const { pathname } = useLocation();
+
+  const navItems: NavItem[] = [
+    {
+      label: "Datos Personales",
+      icon: "material-symbols:database-outline",
+      url: "datos-personales",
+      show:
+        info?.roles.includes("ROLE_PARTICIPANTE") ||
+        info?.roles.includes("ROLE_INSTRUCTOR"),
+    },
+    {
+      label: "Instructores",
+      icon: "ph:chalkboard-teacher",
+      url: "instructor",
+      show: info?.roles.includes("ROLE_ADMINISTRADOR"),
+    },
+    {
+      label: "Ofertas de Formación",
+      icon: "material-symbols:menu-book-outline-rounded",
+      url: "oferta-formacion",
+    },
+    {
+      label: "Ingreso al FabLab",
+      icon: "material-symbols:login-rounded",
+      url: "ingreso-fablab",
+      show:
+        info?.roles.includes("ROLE_PARTICIPANTE") ||
+        info?.roles.includes("ROLE_ADMINISTRADOR"),
+    },
+    {
+      label: "Asistencia Instructores",
+      icon: "material-symbols:list-alt-outline-rounded",
+      url: "",
+      show: false,
+    },
+    {
+      label: "Certificados",
+      icon: "lineicons:certificate-badge-1",
+      url: "",
+      show: false,
+    },
+    {
+      label: "Reportes",
+      icon: "material-symbols:docs-outline-rounded",
+      url: "",
+      show: false,
+    },
+    {
+      label: "Datos",
+      icon: "material-symbols:database-outline",
+      url: "",
+      show: false,
+    },
+  ];
 
   const currentItemPath = pathname.split("/")[2];
   const currentNavItem =
@@ -151,9 +179,12 @@ export default function Sidebar() {
                 <Separator className="my-2" />
 
                 <div className="flex flex-col gap-2">
-                  <DialogTrigger asChild>
-                    <Button variant="ghost">Cambiar Contraseña</Button>
-                  </DialogTrigger>
+                  {!info?.roles.includes("ROLE_PARTICIPANTE") && (
+                    <DialogTrigger asChild>
+                      <Button variant="ghost">Cambiar Contraseña</Button>
+                    </DialogTrigger>
+                  )}
+
                   <Button variant="secondary" onClick={handleLogout}>
                     Cerrar Sesión
                   </Button>
@@ -170,31 +201,35 @@ export default function Sidebar() {
           </Dialog>
         </div>
         <nav className="flex h-full flex-col items-start gap-4 overflow-y-auto">
-          {navItems.map((item, index) => (
-            <Link to={item.url} key={index}>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "w-full justify-start has-[>svg]:p-0",
-                  currentNavItem === item && "bg-neutral-100 text-neutral-900",
-                  collapsed && "w-9",
-                )}
-                onClick={() => {
-                  setCollapsed(true);
-                }}
-              >
-                <Icon icon={item.icon} className="ml-[6px] size-6" />
-                <span
-                  className={cn(
-                    "mr-[6px] overflow-hidden transition-opacity",
-                    collapsed && "opacity-0",
-                  )}
-                >
-                  {item.label}
-                </span>
-              </Button>
-            </Link>
-          ))}
+          {navItems.map(
+            (item, index) =>
+              item.show !== false && (
+                <Link to={item.url} key={index}>
+                  <Button
+                    variant="ghost"
+                    className={cn(
+                      "w-full justify-start has-[>svg]:p-0",
+                      currentNavItem === item &&
+                        "bg-neutral-100 text-neutral-900",
+                      collapsed && "w-9",
+                    )}
+                    onClick={() => {
+                      setCollapsed(true);
+                    }}
+                  >
+                    <Icon icon={item.icon} className="ml-[6px] size-6" />
+                    <span
+                      className={cn(
+                        "mr-[6px] overflow-hidden transition-opacity",
+                        collapsed && "opacity-0",
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  </Button>
+                </Link>
+              ),
+          )}
         </nav>
       </aside>
     </>
