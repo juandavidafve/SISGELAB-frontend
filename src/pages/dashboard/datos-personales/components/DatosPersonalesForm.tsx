@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -53,6 +54,10 @@ export default function DatosPersonalesForm({
   );
   const { result: estadosCiviles } = useAsyncWithToken(getEstadosCiviles, []);
   const { result: modalidades } = useAsyncWithToken(getModalidades, []);
+
+  useEffect(() => {
+    form.reset(defaultValues);
+  }, [defaultValues]);
 
   async function handleSubmit(datosPersonales: DatosPersonalesFormOutput) {
     try {
