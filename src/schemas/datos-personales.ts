@@ -7,45 +7,65 @@ import { MunicipioSchema } from "./municipio";
 import { PaisSchema } from "./pais";
 import { TipoDocumentoSchema } from "./tipo-documento";
 
-const DatosPersonalesBaseSchema = z.object({
-  primer_nombre: z.string(),
-  segundo_nombre: z.string(),
-  primer_apellido: z.string(),
-  segundo_apellido: z.string(),
-  documento: z.string(),
-  sexo: z.enum(["MASCULINO", "FEMENINO"]),
-  telefono: z.string(),
-  correo_personal: z.string().email(),
-  correo_institucional: z.string().email().optional().nullable(),
-  direccion_institucional: z.string().optional().nullable(),
-  direccion: z.string().optional().nullable(),
-  entidad: z.string().optional().nullable(),
-  activo: z.boolean().optional().nullable(),
-});
-
-export const DatosPersonalesSchema = DatosPersonalesBaseSchema.extend({
+export const DatosPersonalesUserSchema = z.object({
   id: z.number(),
   tipo_documento: TipoDocumentoSchema,
+  documento: z.string(),
   fecha_expedicion: zodDateFromString(),
+  primer_nombre: z.string(),
+  segundo_nombre: z.string().optional(),
+  primer_apellido: z.string(),
+  segundo_apellido: z.string().optional(),
+  sexo: z.enum(["MASCULINO", "FEMENINO"]),
   fecha_nacimiento: zodDateFromString(),
-  poblacion_especial: BaseEntitySchema.optional().nullable(),
-  estado_civil: BaseEntitySchema.optional().nullable(),
-  modalidad: BaseEntitySchema.optional().nullable(),
   pais: PaisSchema,
-  municipio: MunicipioSchema,
+  municipio: MunicipioSchema.optional(),
+  telefono: z.string(),
+  correo_personal: z.string().email(),
+});
+
+export const DatosPersonalesParticipanteSchema =
+  DatosPersonalesUserSchema.extend({
+    poblacion_especial: BaseEntitySchema.nullable(),
+    estado_civil: BaseEntitySchema.nullable(),
+    correo_institucional: z.string().email().nullable(),
+    direccion_institucional: z.string().nullable(),
+  });
+
+export const DatosPersonalesInstructorSchema = DatosPersonalesUserSchema.extend(
+  {
+    direccion: z.string().nullable(),
+    entidad: z.string().nullable(),
+    modalidad: BaseEntitySchema.nullable(),
+    activo: z.boolean().nullable(),
+  },
+);
+
+export const DatosPersonalesSchema = z.object({
+  ...DatosPersonalesParticipanteSchema.partial().shape,
+  ...DatosPersonalesInstructorSchema.partial().shape,
+  ...DatosPersonalesUserSchema.shape,
 });
 
 export type DatosPersonales = z.infer<typeof DatosPersonalesSchema>;
 
-export const DatosPersonalesFormSchema = DatosPersonalesBaseSchema.extend({
+export const DatosPersonalesFormSchema = DatosPersonalesSchema.omit({
+  id: true,
+  pais: true,
+  municipio: true,
+  poblacion_especial: true,
+  estado_civil: true,
+  modalidad: true,
+  tipo_documento: true,
+}).extend({
   fecha_expedicion: zodStringFromDate(),
   fecha_nacimiento: zodStringFromDate(),
   id_pais: z.number(),
   id_municipio: z.number().optional(),
-  id_poblacion_especial: z.number().optional().nullable(),
-  id_estado_civil: z.number().optional().nullable(),
-  id_modalidad: z.number().optional().nullable(),
   id_tipo_documento: z.number(),
+  id_poblacion_especial: z.number().optional(),
+  id_estado_civil: z.number().optional(),
+  id_modalidad: z.number().optional(),
 });
 
 export type DatosPersonalesFormInput = z.input<
@@ -58,6 +78,7 @@ export type DatosPersonalesFormOutput = z.infer<
 
 export const UpdatePasswordFormSchema = z
   .object({
+    currentPassword: z.string().optional(),
     password: z.string().nonempty("La contraseña no debe estar vacía"),
     passwordCheck: z.string().nonempty("Debes confirmar la contraseña"),
   })
@@ -74,10 +95,10 @@ export function convertToFormInput(
   return {
     ...entity,
     id_pais: entity.pais.id,
-    id_municipio: entity.municipio.id,
-    id_poblacion_especial: entity?.poblacion_especial?.id,
-    id_estado_civil: entity?.estado_civil?.id,
-    id_modalidad: entity?.modalidad?.id,
+    id_municipio: entity.municipio?.id,
+    id_poblacion_especial: entity.poblacion_especial?.id,
+    id_estado_civil: entity.estado_civil?.id,
+    id_modalidad: entity.modalidad?.id,
     id_tipo_documento: entity.tipo_documento.id,
   };
 }
