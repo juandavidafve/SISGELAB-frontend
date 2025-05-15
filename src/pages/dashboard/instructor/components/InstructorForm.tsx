@@ -5,11 +5,19 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import FormCombobox from "@/components/ui/form-combobox";
 import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormSelect from "@/components/ui/form-select";
+import { InputPassword } from "@/components/ui/input-password";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { handleAxiosError } from "@/lib/error";
 import {
@@ -164,6 +172,34 @@ export default function InstructorForm({
             itemLabel="nombre"
           />
         )}
+
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Contraseña</FormLabel>
+              <FormControl>
+                <InputPassword {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="passwordCheck"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Repetir contraseña</FormLabel>
+              <FormControl>
+                <InputPassword {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <Button type="submit" className="w-full">
           Guardar

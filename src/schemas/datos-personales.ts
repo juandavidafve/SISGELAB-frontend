@@ -77,6 +77,7 @@ export type DatosPersonalesFormOutput = z.infer<
 
 export const UpdatePasswordFormSchema = z
   .object({
+    currentPassword: z.string().optional(),
     password: z.string().nonempty("La contraseña no debe estar vacía"),
     passwordCheck: z.string().nonempty("Debes confirmar la contraseña"),
   })

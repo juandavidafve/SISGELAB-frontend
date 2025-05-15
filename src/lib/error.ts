@@ -29,6 +29,10 @@ function getFirebaseErrorMsg(error: FirebaseError) {
     "El código de acción no es válido",
   );
   errorMapping.set("auth/weak-password", "La contraseña es muy débil");
+  errorMapping.set(
+    "auth/requires-recent-login",
+    "Por motivos de seguridad, se requiere tu contraseña actual",
+  );
 
   return errorMapping.get(error.code) || error.code;
 }

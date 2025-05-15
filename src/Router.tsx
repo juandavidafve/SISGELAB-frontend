@@ -8,15 +8,16 @@ import Action from "@/pages/auth/Action";
 import Login from "@/pages/auth/Login";
 import PasswordRecovery from "@/pages/auth/PasswordRecovery";
 import Home from "@/pages/dashboard/Home.tsx";
+import DatosPersonales from "@/pages/dashboard/datos-personales/DatosPersonales";
+import NuevoUsuario from "@/pages/dashboard/datos-personales/NuevoUsuario";
 import IngresoFablab from "@/pages/dashboard/ingreso-fablab/IngresoFablab";
+import Instructor from "@/pages/dashboard/instructor/Instructor";
 import OfertaFormacion from "@/pages/dashboard/oferta-formacion/OfertaFormacion";
 import OfertaFormacionDetails from "@/pages/dashboard/oferta-formacion/OfertaFormacionDetails";
 import Components from "@/pages/dev/Components.tsx";
+import Inscripcion from "@/pages/inscripcion/Inscripcion";
 
 import "./index.css";
-import DatosPersonales from "./pages/dashboard/datos-personales/DatosPersonales";
-import NuevoUsuario from "./pages/dashboard/datos-personales/NuevoUsuario";
-import Instructor from "./pages/dashboard/instructor/Instructor";
 
 export default function Router() {
   return (
@@ -55,11 +56,19 @@ export default function Router() {
         </Route>
 
         <Route
+          path="inscripcion/:id"
+          element={<CardLayout allowHorizontal={false} />}
+        >
+          <Route index element={<Inscripcion />} />
+        </Route>
+
+        <Route
           path="auth"
           element={
             <ProtectedRoute
               elemOnDeny={<CardLayout />}
               elemOnAllow={<Navigate to="/dashboard" />}
+              elemOnRedirect={<CardLayout />}
             />
           }
         >

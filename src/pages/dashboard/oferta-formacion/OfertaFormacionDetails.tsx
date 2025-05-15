@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState } from "react";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
@@ -30,6 +30,7 @@ import {
 import OfertaFormacionForm from "./components/OfertaFormacionForm";
 
 export default function OfertaFormacionDetails() {
+  const location = useLocation();
   const { id } = useParams();
   const idNum = parseInt(String(id));
 
@@ -49,17 +50,26 @@ export default function OfertaFormacionDetails() {
 
   if (!oferta) return;
 
+  console.log();
+
   return (
     <>
       <div className="flex justify-between">
         <h1 className="mb-6 text-2xl font-bold">{oferta.nombre}</h1>
 
         <div className="flex gap-2">
-          <QrDialog url={oferta.pieza_grafica}>
-            <Button variant="ghost" size="icon">
-              <Icon icon="material-symbols:share-outline" className="size-6" />
-            </Button>
-          </QrDialog>
+          {oferta.estado === "ACTIVA" && (
+            <QrDialog
+              url={`${window.location.href.replace(location.pathname, "")}/inscripcion/${oferta.id}`}
+            >
+              <Button variant="ghost" size="icon">
+                <Icon
+                  icon="material-symbols:share-outline"
+                  className="size-6"
+                />
+              </Button>
+            </QrDialog>
+          )}
           <Dialog>
             <DialogTrigger asChild>
               <Button size="icon" variant="ghost">

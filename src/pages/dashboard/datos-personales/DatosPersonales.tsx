@@ -1,5 +1,9 @@
 import { Icon } from "@iconify/react";
-import { updatePassword } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -33,7 +37,7 @@ import DatosPersonalesForm from "./components/DatosPersonalesForm";
 import UpdatePasswordForm from "./components/UpdatePasswordForm";
 
 export default function DatosPersonales() {
-  const { auth } = useAuth();
+  const { user } = useAuth();
   const [openPassword, setOpenPassword] = useState(false);
   const { result: datosPersonales, execute: refreshDatosPersonales } =
     useAsyncWithToken(getDatosPersonales, []);
@@ -46,14 +50,21 @@ export default function DatosPersonales() {
   }
 
   async function handlePasswordUpdate(data: UpdatePassword) {
-    if (!auth.currentUser) return;
+    if (!user) return;
 
-    await updatePassword(auth.currentUser, data.password);
+    if (data.currentPassword) {
+      if (!user.email) return;
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        data.currentPassword,
+      );
+      await reauthenticateWithCredential(user, credential);
+    }
+
+    await updatePassword(user, data.password);
     toast.success("Contraseña actualizada correctamente");
     setOpenPassword(false);
   }
-
-  if (!datosPersonales) return;
 
   return (
     <>
@@ -84,7 +95,9 @@ export default function DatosPersonales() {
 
       <DatosPersonalesForm
         onSubmit={handleUpdate}
-        defaultValues={convertDatosPersonalesToFormInput(datosPersonales)}
+        defaultValues={
+          datosPersonales && convertDatosPersonalesToFormInput(datosPersonales)
+        }
       />
     </>
   );

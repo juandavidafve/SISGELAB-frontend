@@ -7,7 +7,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -26,6 +26,8 @@ import useAuth from "@/hooks/useAuth";
 import { handleFirebaseError } from "@/lib/error";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { auth } = useAuth();
 
   const formSchema = z.object({
@@ -44,6 +46,7 @@ export default function Login() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
+      handleRedirect();
     } catch (error) {
       if (error instanceof FirebaseError) {
         handleFirebaseError(toast.error, error);
@@ -58,6 +61,7 @@ export default function Login() {
 
     try {
       await signInWithPopup(auth, provider);
+      handleRedirect();
     } catch (error) {
       if (error instanceof FirebaseError) {
         handleFirebaseError(toast.error, error, [
@@ -68,6 +72,12 @@ export default function Login() {
 
       console.error(error);
     }
+  }
+
+  function handleRedirect() {
+    const redirectTo = searchParams.get("redirectTo");
+    if (!redirectTo) return;
+    navigate(redirectTo);
   }
 
   return (
