@@ -1,5 +1,3 @@
-import { ZodError } from "zod";
-
 import { api } from "@/lib/axios";
 import { urlMerge } from "@/lib/utils";
 import {
@@ -20,11 +18,5 @@ export async function update(data: DatosPersonalesFormOutput) {
 export async function get() {
   const req = await api.get(urlMerge(base));
 
-  try {
-    return DatosPersonalesSchema.parse(req.data);
-  } catch (err) {
-    if (err instanceof ZodError) {
-      return undefined;
-    }
-  }
+  return DatosPersonalesSchema.parse(req.data);
 }
