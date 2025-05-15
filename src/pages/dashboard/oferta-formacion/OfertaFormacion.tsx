@@ -67,7 +67,6 @@ export default function OfertaFormacion() {
       result:
         categoriaId !== undefined
           ? ofertasBackup.filter((oferta) => {
-              console.log(oferta);
               return oferta.categoria.id === categoriaId;
             })
           : ofertasBackup,
@@ -134,12 +133,12 @@ export default function OfertaFormacion() {
               title={oferta.nombre}
               slotAction={
                 <Link to={String(oferta.id)}>
-                  {info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                    (info?.roles.includes("ROLE_INSTRUCTOR") && (
-                      <Button className="bg-red-500 text-white hover:bg-red-600">
-                        Ver
-                      </Button>
-                    ))}
+                  {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
+                    info?.roles.includes("ROLE_INSTRUCTOR")) && (
+                    <Button className="bg-red-500 text-white hover:bg-red-600">
+                      Ver
+                    </Button>
+                  )}
                 </Link>
               }
               key={oferta.id}

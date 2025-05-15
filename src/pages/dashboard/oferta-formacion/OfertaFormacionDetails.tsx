@@ -135,7 +135,8 @@ export default function OfertaFormacionDetails() {
         )}
       </div>
 
-      {!info?.roles.includes("ROLE_PARTICIPANTE") && (
+      {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
+        info?.roles.includes("ROLE_INSTRUCTOR")) && (
         <div className="grid gap-4 sm:grid-cols-2">
           <KeyValueItem
             icon="material-symbols:barcode-scanner-rounded"
@@ -210,7 +211,8 @@ export default function OfertaFormacionDetails() {
             title={sesion.nombre}
             description={`${formatDate(sesion.fecha, "dd/MM/yyyy")} ${sesion.inicio}`}
             slotAction={
-              !info?.roles.includes("ROLE_PARTICIPANTE") && (
+              (info?.roles.includes("ROLE_ADMINISTRADOR") ||
+                info?.roles.includes("ROLE_INSTRUCTOR")) && (
                 <Button>
                   <Link to={`../sesion/${sesion.id}`}>Ver</Link>
                 </Button>
