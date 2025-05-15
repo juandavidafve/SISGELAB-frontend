@@ -19,14 +19,21 @@ export const InstructorFormSchema = InstructorSchema.omit({
   municipio: true,
   modalidad: true,
   tipo_documento: true,
-}).extend({
-  fecha_expedicion: zodStringFromDate(),
-  fecha_nacimiento: zodStringFromDate(),
-  id_pais: z.number(),
-  id_municipio: z.number().optional(),
-  id_tipo_documento: z.number(),
-  id_modalidad: z.number(),
-});
+})
+  .extend({
+    fecha_expedicion: zodStringFromDate(),
+    fecha_nacimiento: zodStringFromDate(),
+    id_pais: z.number(),
+    id_municipio: z.number().optional(),
+    id_tipo_documento: z.number(),
+    id_modalidad: z.number(),
+    password: z.string().optional(),
+    passwordCheck: z.string().optional(),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: "Las contraseñas no coinciden",
+    path: ["passwordCheck"],
+  });
 
 export type InstructorFormInput = z.input<typeof InstructorFormSchema>;
 export type InstructorFormOutput = z.infer<typeof InstructorFormSchema>;
