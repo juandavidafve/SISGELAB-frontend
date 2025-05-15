@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import FormCheckbox from "@/components/ui/form-checkbox";
 import FormCombobox from "@/components/ui/form-combobox";
 import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
@@ -42,7 +43,10 @@ export default function InstructorForm({
   const form = useForm<InstructorFormInput, unknown, InstructorFormOutput>({
     resolver: zodResolver(InstructorFormSchema),
     shouldUnregister: true,
-    defaultValues,
+    defaultValues: {
+      activo: true,
+      ...defaultValues,
+    },
   });
 
   const { result: tiposDocumento } = useAsyncWithToken(getTiposDocumento, []);
@@ -172,6 +176,8 @@ export default function InstructorForm({
             itemLabel="nombre"
           />
         )}
+
+        <FormCheckbox control={form.control} name="activo" label="Activo" />
 
         <FormField
           control={form.control}

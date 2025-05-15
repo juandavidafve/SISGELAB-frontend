@@ -23,3 +23,11 @@ export async function getById(id: number) {
 export async function create(instructor: InstructorFormOutput) {
   await api.post(urlMerge(base), instructor);
 }
+
+export async function update(id: number, instructor: InstructorFormOutput) {
+  await api.put(urlMerge(base, id), instructor);
+}
+
+export async function deshabilitar(id: number) {
+  await api.put(urlMerge(base, id, "deshabilitar"));
+}

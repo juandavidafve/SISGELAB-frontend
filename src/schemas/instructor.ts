@@ -15,6 +15,7 @@ export const InstructorSchema = DatosPersonalesInstructorSchema;
 export type Instructor = z.infer<typeof InstructorSchema>;
 
 export const InstructorFormSchema = InstructorSchema.omit({
+  id: true,
   pais: true,
   municipio: true,
   modalidad: true,
@@ -42,7 +43,7 @@ export function convertToFormInput(entity: Instructor): InstructorFormInput {
   return {
     ...entity,
     id_pais: entity.pais.id,
-    id_municipio: entity.municipio.id,
+    id_municipio: entity.municipio?.id,
     id_tipo_documento: entity.tipo_documento.id,
     id_modalidad: entity.modalidad.id,
   };
