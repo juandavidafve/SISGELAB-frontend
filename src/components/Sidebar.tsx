@@ -179,7 +179,8 @@ export default function Sidebar() {
                 <Separator className="my-2" />
 
                 <div className="flex flex-col gap-2">
-                  {!info?.roles.includes("ROLE_PARTICIPANTE") && (
+                  {(info?.roles.includes("ROLE_INSTRUCTOR") ||
+                    info?.roles.includes("ROLE_ADMINISTRADOR")) && (
                     <DialogTrigger asChild>
                       <Button variant="ghost">Cambiar Contraseña</Button>
                     </DialogTrigger>
