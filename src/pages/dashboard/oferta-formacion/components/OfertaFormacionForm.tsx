@@ -125,9 +125,10 @@ export default function OfertaFormacionForm({
         />
 
         <FormInputNumber control={form.control} name="horas" label="Horas" />
-        <FormInputNumber
+        <FormSelect
           control={form.control}
           name="semestre"
+          items={[1, 2]}
           label="Semestre"
         />
 
