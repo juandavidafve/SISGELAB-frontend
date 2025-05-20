@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import CardSmall from "@/components/CardSmall";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import Loader from "@/components/ui/loader";
 import {
   Select,
   SelectContent,
@@ -31,6 +32,7 @@ export default function OfertaFormacion() {
   const { info } = useAuth();
   const {
     result: ofertas,
+    loading: loadingOfertas,
     execute: refreshOfertas,
     set: setOfertas,
   } = useAsyncWithToken(getOfertas, []);
@@ -116,24 +118,30 @@ export default function OfertaFormacion() {
       )}
 
       <div className="space-y-4">
-        {ofertas?.map((oferta) => {
-          return (
-            <CardSmall
-              title={oferta.nombre}
-              slotAction={
-                <Link to={String(oferta.id)}>
-                  {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                    info?.roles.includes("ROLE_INSTRUCTOR")) && (
-                    <Button className="bg-red-500 text-white hover:bg-red-600">
-                      Ver
-                    </Button>
-                  )}
-                </Link>
-              }
-              key={oferta.id}
-            />
-          );
-        })}
+        {!loadingOfertas ? (
+          ofertas?.map((oferta) => {
+            return (
+              <CardSmall
+                title={oferta.nombre}
+                slotAction={
+                  <Link to={String(oferta.id)}>
+                    {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
+                      info?.roles.includes("ROLE_INSTRUCTOR")) && (
+                      <Button className="bg-red-500 text-white hover:bg-red-600">
+                        Ver
+                      </Button>
+                    )}
+                  </Link>
+                }
+                key={oferta.id}
+              />
+            );
+          })
+        ) : (
+          <div className="my-5 flex justify-center">
+            <Loader />
+          </div>
+        )}
       </div>
     </>
   );

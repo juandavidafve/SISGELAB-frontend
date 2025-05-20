@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import Loader from "@/components/ui/loader";
 import { Switch } from "@/components/ui/switch";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import useAuth from "@/hooks/useAuth";
@@ -35,10 +36,11 @@ export default function OfertaFormacionDetails() {
   const { id } = useParams();
   const idNum = parseInt(String(id));
 
-  const { result: oferta, execute: refreshOferta } = useAsyncWithToken(
-    getOferta,
-    [idNum],
-  );
+  const {
+    result: oferta,
+    execute: refreshOferta,
+    loading: loadingOferta,
+  } = useAsyncWithToken(getOferta, [idNum]);
   const [editOfertaDialog, setEditOfertaDialog] = useState(false);
 
   async function handleEditOferta(oferta: OfertaFormacionFormOutput) {
@@ -63,9 +65,10 @@ export default function OfertaFormacionDetails() {
     await refreshOferta(idNum);
   }
 
-  if (!oferta) return;
+  if (loadingOferta)
+    return <Loader className="absolute top-1/2 left-1/2 -translate-1/2" />;
 
-  console.log();
+  if (!oferta) return;
 
   return (
     <>
