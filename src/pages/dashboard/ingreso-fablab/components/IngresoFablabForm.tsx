@@ -176,12 +176,16 @@ export default function IngresoFablabForm() {
         name="id_institucion"
         control={form.control}
         label="Institución"
-        items={instituciones}
+        items={[...instituciones, { id: null, nombre: "Otro" }]}
         itemValue="id"
         itemLabel="nombre"
       />
     ),
-    next: () => formNodes.get("nombre_institucion"),
+    next: (value) => {
+      if (value === null) return formNodes.get("nombre_institucion");
+
+      return formNodes.get("id_programa_academico");
+    },
   });
 
   formNodes.set("nombre_institucion", {
@@ -245,12 +249,20 @@ export default function IngresoFablabForm() {
         name="id_semillero"
         control={form.control}
         label="Semillero"
-        items={semilleros}
+        items={[...semilleros, { id: null, nombre: "Otro", siglas: undefined }]}
         itemValue="id"
-        itemLabel="nombre"
+        itemLabel={(semillero) =>
+          semillero.siglas
+            ? `${semillero.siglas} - ${semillero.nombre}`
+            : semillero.nombre
+        }
       />
     ),
-    next: () => formNodes.get("nombre_semillero"),
+    next: (value) => {
+      if (value === null) return formNodes.get("nombre_semillero");
+
+      return formNodes.get("id_institucion");
+    },
   });
 
   formNodes.set("nombre_semillero", {

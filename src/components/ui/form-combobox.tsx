@@ -14,7 +14,7 @@ interface FormComboboxProps<T extends FieldValues, U> {
   control: Control<T, unknown, FieldValues>;
   label?: string;
   items: U[];
-  itemLabel: keyof U;
+  itemLabel: keyof U | ((item: U) => string);
   itemValue: keyof U;
 }
 
@@ -30,6 +30,18 @@ export default function FormCombobox<T extends FieldValues, U>({
     return itemValue ? item[itemValue] : item;
   }
 
+  function getItemLabel(item: U) {
+    if (typeof itemLabel === "string" || typeof itemLabel === "number") {
+      return item[itemLabel];
+    }
+
+    if (typeof itemLabel === "function") {
+      return itemLabel(item);
+    }
+
+    return item;
+  }
+
   return (
     <FormField
       control={control}
@@ -41,7 +53,7 @@ export default function FormCombobox<T extends FieldValues, U>({
             <Combobox
               value={items.find((item) => getItemValue(item) === field.value)}
               items={items}
-              itemLabel={(item) => String(itemLabel ? item[itemLabel] : item)}
+              itemLabel={(item) => String(getItemLabel(item))}
               itemValue={(item) => {
                 const valStr = String(getItemValue(item));
                 const valNum = parseInt(valStr);
