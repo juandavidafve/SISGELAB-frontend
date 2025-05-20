@@ -1,137 +1,122 @@
+import { addBusinessDays } from "date-fns";
 import { Plus, Trash2 } from "lucide-react";
+import { Control, useFieldArray, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Combobox } from "@/components/ui/combobox";
-import { InputDate } from "@/components/ui/input-date";
-import { InputTime } from "@/components/ui/input-time";
-import { Label } from "@/components/ui/label";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import FormCombobox from "@/components/ui/form-combobox";
+import FormInputDate from "@/components/ui/form-input-date";
+import FormInputTime from "@/components/ui/form-input-time";
 import MultiSelector from "@/components/ui/multi-selector";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
-import { SesionFormInput } from "@/schemas/sesion";
+import {
+  OfertaFormacionFormInput,
+  OfertaFormacionFormOutput,
+} from "@/schemas/oferta-formacion";
 import { getAll as getInstructores } from "@/services/instructor";
 import { getAll as getSalas } from "@/services/sala";
 
-interface SesionFormProps {
-  value: SesionFormInput[];
-  onChange: (value: SesionFormInput[]) => void;
+interface Props {
+  control: Control<
+    OfertaFormacionFormInput,
+    unknown,
+    OfertaFormacionFormOutput
+  >;
 }
 
-export default function SesionForm({ value, onChange }: SesionFormProps) {
+export default function SesionForm({ control }: Props) {
   const { result: instructores } = useAsyncWithToken(getInstructores, []);
   const { result: salas } = useAsyncWithToken(getSalas, []);
+  const {
+    fields: sesiones,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "sesiones",
+  });
 
-  const handleChange = (
-    index: number,
-    field: keyof SesionFormInput,
-    val: unknown,
-  ) => {
-    const newSesiones = [...value];
-
-    newSesiones[index] = {
-      ...newSesiones[index],
-      [field]: val,
-    };
-
-    onChange(newSesiones);
-  };
-
-  const addSesion = () => {
-    onChange([
-      ...value,
-      {
-        fecha: new Date(),
-        inicio: "00:00",
-        fin: "00:00",
-        id_sala: 0,
-        instructores: [],
-      },
-    ]);
-  };
-
-  const removeSesion = (index: number) => {
-    const newSesiones = value.filter((_, i) => i !== index);
-    onChange(newSesiones);
-  };
+  const sesionesValues = useWatch({
+    control,
+    name: "sesiones",
+  });
 
   return (
     <div className="space-y-4">
-      {value.map((sesion, index) => (
+      {sesiones.map((_, index) => (
         <Card key={index} className="p-4">
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="mb-2">Fecha</Label>
-                <InputDate
-                  value={sesion.fecha}
-                  onChange={(value) => handleChange(index, "fecha", value)}
-                />
-              </div>
-              <div>
-                <Label className="mb-2">Sala</Label>
+              <FormInputDate
+                control={control}
+                name={`sesiones.${index}.fecha`}
+                label="Fecha"
+              />
 
-                {salas && (
-                  <Combobox
-                    value={salas.find((sala) => sala.id === sesion.id_sala)}
-                    items={salas}
-                    itemLabel={(sala) => sala.nombre}
-                    itemValue={(sala) => sala.id}
-                    onChange={(sala) =>
-                      sala && handleChange(index, "id_sala", sala.id)
-                    }
-                  />
-                )}
-              </div>
+              <FormCombobox
+                control={control}
+                name={`sesiones.${index}.id_sala`}
+                items={salas || []}
+                itemLabel="nombre"
+                itemValue="id"
+                label="Sala"
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="mb-2">Inicio</Label>
+              <FormInputTime
+                control={control}
+                name={`sesiones.${index}.inicio`}
+                label="Inicio"
+              />
 
-                <InputTime
-                  value={sesion.inicio}
-                  onChange={(value) => handleChange(index, "inicio", value)}
-                />
-              </div>
-              <div>
-                <Label className="mb-2">Fin</Label>
-
-                <InputTime
-                  value={sesion.fin}
-                  onChange={(value) => handleChange(index, "fin", value)}
-                />
-              </div>
+              <FormInputTime
+                control={control}
+                name={`sesiones.${index}.fin`}
+                label="Fin"
+              />
             </div>
             <div>
               {instructores && (
-                <MultiSelector
-                  value={sesion.instructores
-                    .map((instructorId) =>
-                      instructores.find(
-                        (instructor) => instructor.id === instructorId,
-                      ),
-                    )
-                    .filter((instructor) => instructor !== undefined)}
-                  items={instructores}
-                  itemLabel={(instructor) => instructor.nombre}
-                  itemValue={(instructor) => instructor.id}
-                  onChange={(value) =>
-                    handleChange(
-                      index,
-                      "instructores",
-                      value.map((v) => v.id),
-                    )
-                  }
-                  className="w-full"
-                  label="Instructores"
+                <FormField
+                  control={control}
+                  name={`sesiones.${index}.instructores`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <MultiSelector
+                          value={field.value
+                            .map((instructorId) =>
+                              instructores.find(
+                                (instructor) => instructor.id === instructorId,
+                              ),
+                            )
+                            .filter((instructor) => instructor !== undefined)}
+                          items={instructores}
+                          itemLabel={(instructor) => instructor.nombre}
+                          itemValue={(instructor) => instructor.id}
+                          onChange={(value) =>
+                            field.onChange(value.map((v) => v.id))
+                          }
+                          className="w-full"
+                          label="Instructores"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               )}
             </div>
             <Button
               type="button"
               variant="destructive"
-              onClick={() => {
-                removeSesion(index);
-              }}
+              onClick={() => remove(index)}
               size="sm"
             >
               <Trash2 className="mr-2 h-4 w-4" /> Eliminar
@@ -139,7 +124,27 @@ export default function SesionForm({ value, onChange }: SesionFormProps) {
           </CardContent>
         </Card>
       ))}
-      <Button onClick={addSesion} type="button">
+      <Button
+        onClick={() => {
+          const lastSession = sesionesValues[sesionesValues.length - 1];
+          append(
+            lastSession
+              ? {
+                  ...lastSession,
+                  fecha: addBusinessDays(lastSession.fecha, 1),
+                  instructores: [...lastSession.instructores],
+                }
+              : {
+                  fecha: new Date(),
+                  inicio: "00:00",
+                  fin: "00:00",
+                  id_sala: 0,
+                  instructores: [],
+                },
+          );
+        }}
+        type="button"
+      >
         <Plus className="mr-2 h-4 w-4" /> Agregar sesión
       </Button>
     </div>

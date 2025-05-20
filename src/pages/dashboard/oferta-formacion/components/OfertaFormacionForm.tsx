@@ -70,15 +70,7 @@ export default function OfertaFormacionForm({
       id_tipo_beneficiario: undefined,
       cupo_maximo: 0,
       id_institucion: 0,
-      sesiones: [
-        {
-          fecha: new Date(),
-          inicio: "00:00",
-          fin: "00:00",
-          id_sala: 0,
-          instructores: [],
-        },
-      ],
+      sesiones: [],
       file: undefined,
       ...defaultValues,
     },
@@ -191,19 +183,7 @@ export default function OfertaFormacionForm({
           />
         )}
 
-        <FormField
-          control={form.control}
-          name="sesiones"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Sesiones</FormLabel>
-              <FormControl>
-                <SesionForm {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <SesionForm control={form.control} />
 
         <FormField
           control={form.control}
