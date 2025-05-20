@@ -125,7 +125,7 @@ export default function Sidebar() {
     <>
       {!collapsed && (
         <div
-          className="absolute top-0 left-0 h-screen w-screen bg-neutral-950 opacity-30"
+          className="fixed top-0 left-0 z-10 h-screen w-screen bg-neutral-950 opacity-30"
           onClick={() => setCollapsed(true)}
         ></div>
       )}
