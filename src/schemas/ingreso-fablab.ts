@@ -33,13 +33,13 @@ export type IngresoFablab = z.infer<typeof IngresoFablabSchema>;
 
 export const IngresoFablabFormSchema = IngresoFablabBaseSchema.extend({
   id_oferta_formacion: z.number().optional(),
-  id_institucion: z.number().optional(),
+  id_institucion: z.number().nullish(),
   nombre_institucion: z.string().optional(),
   id_programa_academico: z.number().optional(),
   codigo: z.string().optional(),
   id_sala: z.number().optional(),
   materia: z.string().optional(),
-  id_semillero: z.number().optional(),
+  id_semillero: z.number().nullish(),
   nombre_semillero: z.string().optional(),
   siglas_semillero: z.string().optional(),
   id_cargo: z.number().optional(),
