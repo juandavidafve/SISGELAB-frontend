@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -10,6 +10,7 @@ import FormCombobox from "@/components/ui/form-combobox";
 import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormSelect from "@/components/ui/form-select";
+import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import useAuth from "@/hooks/useAuth";
 import { handleAxiosError } from "@/lib/error";
@@ -54,13 +55,24 @@ export default function DatosPersonalesForm({
   );
   const { result: estadosCiviles } = useAsyncWithToken(getEstadosCiviles, []);
   const { result: modalidades } = useAsyncWithToken(getModalidades, []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     form.reset(defaultValues);
-  }, [defaultValues]);
+  }, [
+    defaultValues,
+    tiposDocumento,
+    paises,
+    municipios,
+    poblacionesEspeciales,
+    estadosCiviles,
+    modalidades,
+    form,
+  ]);
 
   async function handleSubmit(datosPersonales: DatosPersonalesFormOutput) {
     try {
+      setLoading(true);
       await onSubmit(datosPersonales);
       form.reset();
     } catch (error) {
@@ -69,6 +81,8 @@ export default function DatosPersonalesForm({
       }
 
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -220,8 +234,15 @@ export default function DatosPersonalesForm({
           />
         )}
 
-        <Button type="submit" className="w-full">
-          Guardar
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader className="size-4 text-white" />
+              Guardando
+            </>
+          ) : (
+            "Guardar"
+          )}
         </Button>
       </form>
     </Form>
