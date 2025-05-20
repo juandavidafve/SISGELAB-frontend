@@ -5,13 +5,6 @@ import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -32,7 +25,7 @@ import {
   getCategorias,
 } from "@/services/oferta-formacion";
 
-import OfertaFormacionForm from "./components/OfertaFormacionForm";
+import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
 
 export default function OfertaFormacion() {
   const { info } = useAuth();
@@ -78,18 +71,14 @@ export default function OfertaFormacion() {
     <>
       <div className="my-10 mb-6 flex justify-between">
         <h1 className="text-2xl font-bold">Ofertas de formación</h1>
+        <OfertaFormacionDialog
+          onSubmit={onCreate}
+          open={openDialog}
+          setOpen={setOpenDialog}
+          variant="CREATE"
+        />
         {info?.roles.includes("ROLE_ADMINISTRADOR") && (
-          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-            <DialogTrigger asChild>
-              <Button>Crear</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Crear oferta de formación</DialogTitle>
-              </DialogHeader>
-              <OfertaFormacionForm onSubmit={onCreate} />
-            </DialogContent>
-          </Dialog>
+          <Button onClick={() => setOpenDialog(true)}>Crear</Button>
         )}
       </div>
 

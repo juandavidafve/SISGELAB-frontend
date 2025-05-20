@@ -20,17 +20,14 @@ import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import useAuth from "@/hooks/useAuth";
 import { BACKEND_BASE_URL } from "@/lib/config";
 import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
-import {
-  convertToFormInput as convertOfertaToFormInput,
-  OfertaFormacionFormOutput,
-} from "@/schemas/oferta-formacion";
+import { OfertaFormacionFormOutput } from "@/schemas/oferta-formacion";
 import {
   getById as getOferta,
   toggle as toggleOferta,
   update as updateOferta,
 } from "@/services/oferta-formacion";
 
-import OfertaFormacionForm from "./components/OfertaFormacionForm";
+import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
 
 export default function OfertaFormacionDetails() {
   const { info } = useAuth();
@@ -108,25 +105,25 @@ export default function OfertaFormacionDetails() {
                 />
               </DialogContent>
             </Dialog>
-            <Dialog open={editOfertaDialog} onOpenChange={setEditOfertaDialog}>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Icon
-                    icon="material-symbols:edit-square-outline-rounded"
-                    className="size-6"
-                  />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Editar oferta de formación</DialogTitle>
-                </DialogHeader>
-                <OfertaFormacionForm
-                  onSubmit={handleEditOferta}
-                  defaultValues={convertOfertaToFormInput(oferta)}
-                />
-              </DialogContent>
-            </Dialog>
+            <OfertaFormacionDialog
+              open={editOfertaDialog}
+              setOpen={setEditOfertaDialog}
+              onSubmit={handleEditOferta}
+              variant="EDIT"
+              oferta={oferta}
+            />
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setEditOfertaDialog(true)}
+            >
+              <Icon
+                icon="material-symbols:edit-square-outline-rounded"
+                className="size-6"
+              />
+            </Button>
+
             <Switch
               checked={oferta.estado === "ACTIVA"}
               onCheckedChange={handleToggleOferta}

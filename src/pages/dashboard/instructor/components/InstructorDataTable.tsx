@@ -13,22 +13,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
+import Loader from "@/components/ui/loader";
 import { InstructorFormOutput, InstructorMinimal } from "@/schemas/instructor";
 import {
   deshabilitar as deshabilitarInstructor,
-  getAll as getInstructores,
   update as updateInstructor,
 } from "@/services/instructor";
 
 import { InstructorDeleteAlert } from "./InstructorDeleteAlert";
 import { InstructorDialog } from "./InstructorDialog";
 
-export default function InstructorDataTable() {
-  const { result: instructores, execute: refreshInstructores } =
-    useAsyncWithToken(getInstructores, []);
+interface Props {
+  loading: boolean;
+  refresh: () => void;
+  instructores: InstructorMinimal[];
+}
+
+export default function InstructorDataTable({
+  instructores,
+  refresh,
+  loading,
+}: Props) {
   const [selectedInstructor, setSelectedInstructor] =
-    useState<NonNullable<typeof instructores>[number]>();
+    useState<InstructorMinimal>();
   const [deleteInstructor, setDeleteInstructor] = useState(false);
   const [editInstructor, setEditInstructor] = useState(false);
 
@@ -89,15 +96,24 @@ export default function InstructorDataTable() {
     if (!selectedInstructor) return;
     await deshabilitarInstructor(selectedInstructor.id);
     toast.success("Instructor deshabilitado");
-    await refreshInstructores();
+    setDeleteInstructor(false);
+    await refresh();
   }
 
   async function handleEdit(instructor: InstructorFormOutput) {
     if (!selectedInstructor) return;
     await updateInstructor(selectedInstructor.id, instructor);
     toast.success("Instructor editado");
-    await refreshInstructores();
+    setEditInstructor(false);
+    await refresh();
   }
+
+  if (loading)
+    return (
+      <div className="my-5 flex justify-center">
+        <Loader />
+      </div>
+    );
 
   return (
     <>

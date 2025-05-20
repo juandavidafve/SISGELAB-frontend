@@ -7,40 +7,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import {
-  convertToFormInput as convertInstructorToFormInput,
-  InstructorFormOutput,
-  InstructorMinimal,
-} from "@/schemas/instructor";
-import { getById as getInstructorById } from "@/services/instructor";
+  OfertaFormacion,
+  OfertaFormacionFormOutput,
+  convertToFormInput as convertOfertaToFormInput,
+} from "@/schemas/oferta-formacion";
 
-import InstructorForm from "./InstructorForm";
+import OfertaFormacionForm from "./OfertaFormacionForm";
 
 interface Props {
-  instructor?: InstructorMinimal;
+  oferta?: OfertaFormacion;
   variant: "CREATE" | "EDIT";
   open: boolean;
   setOpen: (open: boolean) => void;
-  onSubmit: (instructor: InstructorFormOutput) => void;
+  onSubmit: (oferta: OfertaFormacionFormOutput) => void;
 }
 
-export function InstructorDialog({
+export function OfertaFormacionDialog({
   variant,
-  instructor,
+  oferta,
   open,
   setOpen,
   onSubmit,
 }: Props) {
-  const { result: instructorDetails } = useAsyncWithToken(
-    async (id) => {
-      if (!id) return;
-
-      return await getInstructorById(id);
-    },
-    [instructor?.id],
-  );
-
   const [showExitAlert, setShowExitAlert] = useState(false);
 
   return (
@@ -51,15 +40,13 @@ export function InstructorDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {variant === "CREATE" && "Agregar Instructor"}
-            {variant === "EDIT" && "Editar Instructor"}
+            {variant === "CREATE" && "Agregar oferta de formación"}
+            {variant === "EDIT" && "Editar oferta de formación"}
           </DialogTitle>
         </DialogHeader>
-        <InstructorForm
+        <OfertaFormacionForm
           onSubmit={onSubmit}
-          defaultValues={
-            instructorDetails && convertInstructorToFormInput(instructorDetails)
-          }
+          defaultValues={oferta && convertOfertaToFormInput(oferta)}
         />
         <ExitFormAlert
           open={showExitAlert}

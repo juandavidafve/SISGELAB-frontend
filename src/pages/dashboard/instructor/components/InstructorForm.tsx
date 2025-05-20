@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormSelect from "@/components/ui/form-select";
 import { InputPassword } from "@/components/ui/input-password";
+import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { handleAxiosError } from "@/lib/error";
 import {
@@ -53,6 +54,7 @@ export default function InstructorForm({
   const { result: paises } = useAsyncWithToken(getPaises, []);
   const { result: municipios } = useAsyncWithToken(getMunicipios, []);
   const { result: modalidades } = useAsyncWithToken(getModalidades, []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     form.reset(defaultValues);
@@ -60,6 +62,7 @@ export default function InstructorForm({
 
   async function handleSubmit(instructor: InstructorFormOutput) {
     try {
+      setLoading(true);
       await onSubmit(instructor);
       form.reset();
     } catch (error) {
@@ -68,6 +71,8 @@ export default function InstructorForm({
       }
 
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -207,8 +212,15 @@ export default function InstructorForm({
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Guardar
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader className="size-4 text-white" />
+              Guardando
+            </>
+          ) : (
+            "Guardar"
+          )}
         </Button>
       </form>
     </Form>
