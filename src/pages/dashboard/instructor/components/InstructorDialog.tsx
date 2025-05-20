@@ -1,3 +1,6 @@
+import { useState } from "react";
+
+import { ExitFormAlert } from "@/components/ExitFormAlert";
 import {
   Dialog,
   DialogContent,
@@ -38,8 +41,13 @@ export function InstructorDialog({
     [instructor?.id],
   );
 
+  const [showExitAlert, setShowExitAlert] = useState(false);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(value) => (value ? setOpen(true) : setShowExitAlert(true))}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -52,6 +60,11 @@ export function InstructorDialog({
           defaultValues={
             instructorDetails && convertInstructorToFormInput(instructorDetails)
           }
+        />
+        <ExitFormAlert
+          open={showExitAlert}
+          setOpen={setShowExitAlert}
+          onAccept={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>
