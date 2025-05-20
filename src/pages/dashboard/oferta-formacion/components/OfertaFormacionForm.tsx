@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -24,6 +25,7 @@ import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormInputNumber from "@/components/ui/form-input-number";
 import FormSelect from "@/components/ui/form-select";
+import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { handleAxiosError } from "@/lib/error";
 import {
@@ -89,9 +91,11 @@ export default function OfertaFormacionForm({
     getTiposBeneficiario,
     [],
   );
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(oferta: OfertaFormacionFormOutput) {
     try {
+      setLoading(true);
       await onSubmit(oferta);
       form.reset();
     } catch (error) {
@@ -100,6 +104,8 @@ export default function OfertaFormacionForm({
       }
 
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -229,8 +235,15 @@ export default function OfertaFormacionForm({
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Guardar
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader className="size-4 text-white" />
+              Guardando
+            </>
+          ) : (
+            "Guardar"
+          )}
         </Button>
       </form>
     </Form>
