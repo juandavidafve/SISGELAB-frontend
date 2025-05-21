@@ -41,6 +41,9 @@ export default function InstructorDataTable({
 
   const columns: ColumnDef<InstructorMinimal>[] = [
     {
+      id: "space",
+    },
+    {
       accessorKey: "nombre",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Nombre" />
@@ -51,6 +54,15 @@ export default function InstructorDataTable({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Correo" />
       ),
+    },
+    {
+      accessorKey: "activo",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Activo" />
+      ),
+      cell: ({ getValue }) => {
+        return getValue() ? "Si" : "No";
+      },
     },
     {
       id: "actions",

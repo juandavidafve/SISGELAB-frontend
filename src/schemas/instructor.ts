@@ -8,6 +8,7 @@ import { BaseEntitySchema } from "./generic";
 
 export const InstructorMinimalSchema = BaseEntitySchema.extend({
   correo: z.string(),
+  activo: z.boolean(),
 });
 
 export type InstructorMinimal = z.infer<typeof InstructorMinimalSchema>;
