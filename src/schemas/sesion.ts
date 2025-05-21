@@ -1,6 +1,8 @@
-import { formatISO } from "date-fns";
+import { isAfter, parse } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 import { z } from "zod";
+
+import { zodDateFromString, zodStringFromDate } from "@/lib/utils";
 
 import { BaseEntitySchema } from "./generic";
 import { InstructorMinimalSchema } from "./instructor";
@@ -8,10 +10,7 @@ import { InstructorMinimalSchema } from "./instructor";
 export const SesionSchema = z.object({
   id: z.number(),
   nombre: z.string(),
-  fecha: z
-    .string()
-    .date()
-    .transform((date) => fromZonedTime(date, "America/Bogota")),
+  fecha: zodDateFromString(),
   inicio: z.string().time(),
   fin: z.string().time(),
   sala: BaseEntitySchema,
@@ -34,16 +33,41 @@ export const SesionMinimalSchema = SesionSchema.pick({
 
 export type SesionMinimal = z.infer<typeof SesionMinimalSchema>;
 
-export const SesionFormSchema = z.object({
-  id: z.number().optional(),
-  fecha: z
-    .date()
-    .transform((date) => formatISO(date, { representation: "date" })),
-  inicio: z.string().time(),
-  fin: z.string().time(),
-  id_sala: z.number(),
-  instructores: z.number().array(),
-});
+export const SesionFormSchema = z
+  .object({
+    fecha: zodStringFromDate(),
+    inicio: z.string().time(),
+    fin: z.string().time(),
+    id_sala: z.number().min(1, "Se requiere seleccionar la sala"),
+    instructores: z
+      .number()
+      .array()
+      .nonempty("Las sesiones deben tener al menos un instructor asignado"),
+  })
+  .refine(
+    (data) => {
+      return (
+        parse(data.fin, "HH:mm", new Date()) >
+        parse(data.inicio, "HH:mm", new Date())
+      );
+    },
+    {
+      message: "La hora de fin debe ser posterior a la de inicio",
+      path: ["fin"],
+    },
+  )
+  .refine(
+    (data) => {
+      return isAfter(
+        fromZonedTime(`${data.fecha}T${data.inicio}:00`, "America/Bogota"),
+        new Date(),
+      );
+    },
+    {
+      message: "El inicio de la sesión no puede estar en el pasado",
+      path: ["inicio"],
+    },
+  );
 
 export type SesionFormInput = z.input<typeof SesionFormSchema>;
 export type SesionFormOutput = z.infer<typeof SesionFormSchema>;
@@ -54,6 +78,9 @@ export function convertSesionToFormInput(
   return {
     ...entity,
     id_sala: entity.sala.id,
-    instructores: entity.instructores.map((instructor) => instructor.id),
+    instructores: entity.instructores.map((instructor) => instructor.id) as [
+      number,
+      ...number[],
+    ],
   };
 }

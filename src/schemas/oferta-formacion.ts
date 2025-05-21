@@ -1,24 +1,39 @@
-import { formatISO } from "date-fns";
-import { fromZonedTime } from "date-fns-tz";
 import { z } from "zod";
+
+import { zodDateFromString, zodStringFromDate } from "@/lib/utils";
 
 import { BaseEntitySchema } from "./generic";
 import { InstitucionSchema } from "./institucion";
 import {
   convertSesionToFormInput,
+  SesionFormInput,
   SesionFormSchema,
   SesionMinimalSchema,
 } from "./sesion";
 
 const OfertaFormacionBaseSchema = z.object({
-  nombre: z.string(),
-  codigo: z.string(),
-  cine: z.number().min(0).max(9999),
+  nombre: z
+    .string()
+    .nonempty("Se requiere el nombre de la oferta")
+    .max(200, "El nombre de la oferta no puede exceder los 200 carácteres"),
+  codigo: z
+    .string()
+    .nonempty("Se requiere el código de la oferta")
+    .max(20, "El código de la oferta no puede exceder los 20 carácteres"),
+  cine: z
+    .number()
+    .min(1, "El código cine debe tener al menos un dígito")
+    .max(9999, "El código cine debe tener como máximo cuatro dígitos"),
   extension: z.boolean(),
-  horas: z.number(),
-  semestre: z.number(),
-  valor: z.number(),
-  cupo_maximo: z.number(),
+  horas: z
+    .number()
+    .min(1, "La oferta de formación debe durar al menos una hora"),
+  semestre: z
+    .number()
+    .min(1, "El semestre solo puede ser 1 o 2")
+    .max(2, "El semestre solo puede ser 1 o 2"),
+  valor: z.number().nonnegative("El valor no puede ser negativo"),
+  cupo_maximo: z.number().min(1, "El cupo debe ser de al menos 1"),
 });
 
 export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
@@ -28,16 +43,10 @@ export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
   tipo_oferta: BaseEntitySchema,
   categoria: BaseEntitySchema,
   tipo_beneficiario: BaseEntitySchema,
-  fecha_inicio: z
-    .string()
-    .date()
-    .transform((date) => fromZonedTime(date, "America/Bogota")),
-  fecha_fin: z
-    .string()
-    .date()
-    .transform((date) => fromZonedTime(date, "America/Bogota")),
+  fecha_inicio: zodDateFromString(),
+  fecha_fin: zodDateFromString(),
   institucion: InstitucionSchema,
-  sesiones: SesionMinimalSchema.array(),
+  sesiones: SesionMinimalSchema.array().nonempty(),
   inscritos: BaseEntitySchema.array(),
 });
 
@@ -55,17 +64,15 @@ export type OfertaFormacionMinimal = z.infer<
 >;
 
 export const OfertaFormacionFormSchema = OfertaFormacionBaseSchema.extend({
-  fecha_inicio: z
-    .date()
-    .transform((date) => formatISO(date, { representation: "date" })),
-  fecha_fin: z
-    .date()
-    .transform((date) => formatISO(date, { representation: "date" })),
-  id_tipo: z.number(),
+  fecha_inicio: zodStringFromDate(),
+  fecha_fin: zodStringFromDate(),
+  id_tipo: z.number().min(1, "Se requiere seleccionar el tipo de oferta"),
   id_categoria: z.number(),
   id_tipo_beneficiario: z.number(),
   id_institucion: z.number(),
-  sesiones: SesionFormSchema.array(),
+  sesiones: SesionFormSchema.array().nonempty(
+    "Se debe crear al menos una sesión",
+  ),
   file: z.instanceof(File).optional(),
 });
 
@@ -86,6 +93,8 @@ export function convertToFormInput(
     id_categoria: entity.categoria.id,
     id_tipo_beneficiario: entity.tipo_beneficiario.id,
     id_institucion: entity.tipo_beneficiario.id,
-    sesiones: entity.sesiones.map((sesion) => convertSesionToFormInput(sesion)),
+    sesiones: entity.sesiones.map((sesion) =>
+      convertSesionToFormInput(sesion),
+    ) as [SesionFormInput, ...SesionFormInput[]],
   };
 }

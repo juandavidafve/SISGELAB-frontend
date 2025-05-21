@@ -58,6 +58,8 @@ export default function OfertaFormacionForm({
   >({
     resolver: zodResolver(OfertaFormacionFormSchema),
     defaultValues: {
+      nombre: "",
+      codigo: "",
       cine: 0,
       extension: false,
       horas: 0,
@@ -65,12 +67,20 @@ export default function OfertaFormacionForm({
       valor: 0,
       fecha_inicio: new Date(),
       fecha_fin: new Date(),
-      id_tipo: undefined,
-      id_categoria: undefined,
-      id_tipo_beneficiario: undefined,
+      id_tipo: 0,
+      id_categoria: 0,
+      id_tipo_beneficiario: 0,
       cupo_maximo: 0,
       id_institucion: 0,
-      sesiones: [],
+      sesiones: [
+        {
+          fecha: new Date(),
+          inicio: "00:00",
+          fin: "00:00",
+          id_sala: 0,
+          instructores: [],
+        },
+      ],
       file: undefined,
       ...defaultValues,
     },
@@ -180,11 +190,23 @@ export default function OfertaFormacionForm({
             items={instituciones}
             itemLabel="nombre"
             itemValue="id"
-            label="Institucion"
+            label="Institución"
           />
         )}
 
-        <SesionForm control={form.control} />
+        <FormField
+          control={form.control}
+          name="file"
+          render={() => (
+            <FormItem>
+              <FormLabel>Sesiones</FormLabel>
+              <FormControl>
+                <SesionForm control={form.control} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

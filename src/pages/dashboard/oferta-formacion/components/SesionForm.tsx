@@ -49,8 +49,8 @@ export default function SesionForm({ control }: Props) {
 
   return (
     <div className="space-y-4">
-      {sesiones.map((_, index) => (
-        <Card key={index} className="p-4">
+      {sesiones.map((sesion, index) => (
+        <Card key={sesion.id} className="p-4">
           <CardContent className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <FormInputDate
@@ -117,6 +117,7 @@ export default function SesionForm({ control }: Props) {
               type="button"
               variant="destructive"
               onClick={() => remove(index)}
+              disabled={sesionesValues.length === 1}
               size="sm"
             >
               <Trash2 className="mr-2 h-4 w-4" /> Eliminar
@@ -127,21 +128,11 @@ export default function SesionForm({ control }: Props) {
       <Button
         onClick={() => {
           const lastSession = sesionesValues[sesionesValues.length - 1];
-          append(
-            lastSession
-              ? {
-                  ...lastSession,
-                  fecha: addBusinessDays(lastSession.fecha, 1),
-                  instructores: [...lastSession.instructores],
-                }
-              : {
-                  fecha: new Date(),
-                  inicio: "00:00",
-                  fin: "00:00",
-                  id_sala: 0,
-                  instructores: [],
-                },
-          );
+          append({
+            ...lastSession,
+            fecha: addBusinessDays(lastSession.fecha, 1),
+            instructores: [...lastSession.instructores],
+          });
         }}
         type="button"
       >

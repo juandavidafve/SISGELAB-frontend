@@ -1,3 +1,5 @@
+import { isPast } from "date-fns";
+import { fromZonedTime } from "date-fns-tz";
 import { z } from "zod";
 
 import { zodDateFromString, zodStringFromDate } from "@/lib/utils";
@@ -10,34 +12,63 @@ import { TipoDocumentoSchema } from "./tipo-documento";
 export const DatosPersonalesUserSchema = z.object({
   id: z.number(),
   tipo_documento: TipoDocumentoSchema,
-  documento: z.string(),
+  documento: z.string().nonempty("Se requiere el documento de identidad"),
   fecha_expedicion: zodDateFromString(),
-  primer_nombre: z.string(),
-  segundo_nombre: z.string().optional(),
-  primer_apellido: z.string(),
-  segundo_apellido: z.string().optional(),
-  sexo: z.enum(["MASCULINO", "FEMENINO"]),
+  primer_nombre: z
+    .string()
+    .nonempty("Se requiere el primer nombre")
+    .max(50, "El nombre no puede exceder los 50 carácteres")
+    .refine(
+      (value) => !/\s/.test(value),
+      "El primer nombre no puede tener espacios en blanco",
+    ),
+  segundo_nombre: z
+    .string()
+    .max(50, "El segundo nombre no puede exceder los 50 carácteres")
+    .optional(),
+  primer_apellido: z
+    .string()
+    .nonempty("Se requiere el primer apellido")
+    .max(50, "El apellido no puede exceder los 50 carácteres")
+    .refine((value) => {
+      if (/^(DA|DE|DEL|DI|DOS|LA|VAN|TER)\s/i.test(value)) return true;
+
+      return !/\s/.test(value);
+    }, "El apellido no puede tener espacios en blanco"),
+
+  segundo_apellido: z
+    .string()
+    .max(50, "El segundo apellido no puede exceder nos 50 carácteres")
+    .optional(),
+  sexo: z.enum(["MASCULINO", "FEMENINO"], {
+    message: "Se requiere el sexo",
+  }),
   fecha_nacimiento: zodDateFromString(),
   pais: PaisSchema,
   municipio: MunicipioSchema.optional().nullable(),
-  telefono: z.string(),
-  correo_personal: z.string().email(),
+  telefono: z
+    .string()
+    .max(15, "El teléfono no puede exceder los 15 carácteres"),
+  correo_personal: z
+    .string()
+    .email("El correo no es válido")
+    .max(200, "El correo no ppuede exceder los 200 carácteres"),
 });
 
 export const DatosPersonalesParticipanteSchema =
   DatosPersonalesUserSchema.extend({
-    poblacion_especial: BaseEntitySchema.nullable(),
-    estado_civil: BaseEntitySchema.nullable(),
-    correo_institucional: z.string().email().nullable(),
-    direccion_institucional: z.string().nullable(),
+    poblacion_especial: BaseEntitySchema.nullish(),
+    estado_civil: BaseEntitySchema.nullish(),
+    correo_institucional: z.string().email("El correo no es válido").nullish(),
+    direccion_institucional: z.string().nullish(),
   });
 
 export const DatosPersonalesInstructorSchema = DatosPersonalesUserSchema.extend(
   {
-    direccion: z.string().nullable(),
-    entidad: z.string().nullable(),
-    modalidad: BaseEntitySchema.nullable(),
-    activo: z.boolean().nullable(),
+    direccion: z.string().nonempty("Se requiere la dirección").nullish(),
+    entidad: z.string().nullish(),
+    modalidad: BaseEntitySchema.nullish(),
+    activo: z.boolean().nullish(),
   },
 );
 
@@ -58,14 +89,25 @@ export const DatosPersonalesFormSchema = DatosPersonalesSchema.omit({
   modalidad: true,
   tipo_documento: true,
 }).extend({
-  fecha_expedicion: zodStringFromDate(),
-  fecha_nacimiento: zodStringFromDate(),
-  id_pais: z.number(),
+  fecha_expedicion: zodStringFromDate()
+    .refine(
+      (fecha) => isPast(fromZonedTime(fecha, "America/Bogota")),
+      "La fecha de expedición no puede estar en el futuro",
+    )
+    .optional(),
+  fecha_nacimiento: zodStringFromDate().refine(
+    (fecha) => isPast(fromZonedTime(fecha, "America/Bogota")),
+    "La fecha de nacimiento no puede estar en el futuro",
+  ),
+  id_pais: z.number().min(1, "Se requiere el país"),
   id_municipio: z.number().optional(),
-  id_tipo_documento: z.number(),
-  id_poblacion_especial: z.number().optional(),
-  id_estado_civil: z.number().optional(),
-  id_modalidad: z.number().optional(),
+  id_tipo_documento: z.number().min(1, "Se requiere el tipo de documento"),
+  id_poblacion_especial: z
+    .number()
+    .min(1, "Seleccione la población especial")
+    .nullish(),
+  id_estado_civil: z.number().min(1, "Se requiere el estado civil").optional(),
+  id_modalidad: z.number().min(1, "Se requiere la modalidad").nullish(),
 });
 
 export type DatosPersonalesFormInput = z.input<
