@@ -47,8 +47,8 @@ export function InputDate({ value, onChange }: InputDateProps) {
           selected={value}
           onSelect={onChange}
           initialFocus
-          fromYear={1960}
-          toYear={2030}
+          fromYear={1900}
+          toYear={2100}
         />
       </PopoverContent>
     </Popover>

@@ -70,8 +70,8 @@ export default function Sidebar() {
     {
       label: "Asistencia Instructores",
       icon: "material-symbols:list-alt-outline-rounded",
-      url: "",
-      show: false,
+      url: "movimiento-instructor",
+      show: info?.roles.includes("ROLE_ADMINISTRADOR"),
     },
     {
       label: "Certificados",

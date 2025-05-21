@@ -15,52 +15,49 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-export function InputDateTime() {
-  const [date, setDate] = React.useState<Date>();
-  const [isOpen, setIsOpen] = React.useState(false);
+interface Props {
+  value: Date | undefined;
+  onChange: (date: Date | undefined) => void;
+}
 
+export function InputDateTime({ value, onChange }: Props) {
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (selectedDate) {
-      setDate(selectedDate);
+      onChange(selectedDate);
     }
   };
 
-  const handleTimeChange = (
-    type: "hour" | "minute" | "ampm",
-    value: string,
-  ) => {
-    if (date) {
-      const newDate = new Date(date);
+  const handleTimeChange = (type: "hour" | "minute" | "ampm", time: string) => {
+    if (value) {
+      const newDate = new Date(value);
       if (type === "hour") {
         newDate.setHours(
-          (parseInt(value) % 12) + (newDate.getHours() >= 12 ? 12 : 0),
+          (parseInt(time) % 12) + (newDate.getHours() >= 12 ? 12 : 0),
         );
       } else if (type === "minute") {
-        newDate.setMinutes(parseInt(value));
+        newDate.setMinutes(parseInt(time));
       } else if (type === "ampm") {
         const currentHours = newDate.getHours();
-        newDate.setHours(
-          value === "PM" ? currentHours + 12 : currentHours - 12,
-        );
+        newDate.setHours(time === "PM" ? currentHours + 12 : currentHours - 12);
       }
-      setDate(newDate);
+      onChange(newDate);
     }
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover modal>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           className={cn(
             "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground",
+            !value && "text-muted-foreground",
             "flex justify-between",
           )}
         >
-          {date ? (
-            format(date, "PPP hh:mm a", { locale: es })
+          {value ? (
+            format(value, "PPP hh:mm a", { locale: es })
           ) : (
             <span>Selecciona una fecha y hora</span>
           )}
@@ -74,11 +71,14 @@ export function InputDateTime() {
         <div className="sm:flex">
           <Calendar
             mode="single"
-            selected={date}
+            captionLayout="dropdown-buttons"
+            selected={value}
             onSelect={handleDateSelect}
             initialFocus
+            fromYear={1900}
+            toYear={2100}
           />
-          <div className="flex flex-col divide-y sm:h-[300px] sm:flex-row sm:divide-x sm:divide-y-0">
+          <div className="flex flex-col divide-y sm:h-60 sm:flex-row sm:divide-x sm:divide-y-0">
             <ScrollArea className="w-64 sm:w-auto">
               <div className="flex p-2 sm:flex-col">
                 {hours.reverse().map((hour) => (
@@ -86,7 +86,7 @@ export function InputDateTime() {
                     key={hour}
                     size="icon"
                     variant={
-                      date && date.getHours() % 12 === hour % 12
+                      value && value.getHours() % 12 === hour % 12
                         ? "default"
                         : "ghost"
                     }
@@ -106,7 +106,9 @@ export function InputDateTime() {
                     key={minute}
                     size="icon"
                     variant={
-                      date && date.getMinutes() === minute ? "default" : "ghost"
+                      value && value.getMinutes() === minute
+                        ? "default"
+                        : "ghost"
                     }
                     className="aspect-square shrink-0 sm:w-full"
                     onClick={() =>
@@ -126,9 +128,9 @@ export function InputDateTime() {
                     key={ampm}
                     size="icon"
                     variant={
-                      date &&
-                      ((ampm === "AM" && date.getHours() < 12) ||
-                        (ampm === "PM" && date.getHours() >= 12))
+                      value &&
+                      ((ampm === "AM" && value.getHours() < 12) ||
+                        (ampm === "PM" && value.getHours() >= 12))
                         ? "default"
                         : "ghost"
                     }
