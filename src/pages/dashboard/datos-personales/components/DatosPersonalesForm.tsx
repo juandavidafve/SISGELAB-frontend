@@ -43,7 +43,30 @@ export default function DatosPersonalesForm({
   >({
     resolver: zodResolver(DatosPersonalesFormSchema),
     shouldUnregister: true,
-    defaultValues,
+    defaultValues: {
+      documento: "",
+      primer_nombre: "",
+      segundo_nombre: "",
+      primer_apellido: "",
+      segundo_apellido: "",
+      sexo: undefined,
+      telefono: "",
+      correo_personal: "",
+      fecha_expedicion: new Date(),
+      fecha_nacimiento: new Date(),
+      id_pais: 0,
+      id_municipio: 0,
+      id_tipo_documento: 0,
+      id_poblacion_especial: 0,
+      id_estado_civil: 0,
+      id_modalidad: 0,
+      activo: true,
+      correo_institucional: "",
+      direccion: "",
+      direccion_institucional: "",
+      entidad: "",
+      ...defaultValues,
+    },
   });
 
   const { result: tiposDocumento } = useAsyncWithToken(getTiposDocumento, []);
@@ -125,6 +148,15 @@ export default function DatosPersonalesForm({
             <FormInput control={form.control} name="documento" />
           </div>
         </div>
+        {tiposDocumento?.find((tipoDocumento) => tipoDocumento.siglas === "CC")
+          ?.id === form.watch("id_tipo_documento") && (
+          <FormInputDate
+            control={form.control}
+            name="fecha_expedicion"
+            label="Fecha de expedición"
+          />
+        )}
+
         <FormSelect
           control={form.control}
           name="sexo"
@@ -136,11 +168,7 @@ export default function DatosPersonalesForm({
           itemValue="value"
           label="Sexo"
         />
-        <FormInputDate
-          control={form.control}
-          name="fecha_expedicion"
-          label="Fecha de expedición"
-        />
+
         <FormInputDate
           control={form.control}
           name="fecha_nacimiento"

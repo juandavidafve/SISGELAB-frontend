@@ -1,8 +1,9 @@
 import { z } from "zod";
 
-import { zodStringFromDate } from "@/lib/utils";
-
-import { DatosPersonalesInstructorSchema } from "./datos-personales";
+import {
+  DatosPersonalesFormSchema,
+  DatosPersonalesInstructorSchema,
+} from "./datos-personales";
 import { BaseEntitySchema } from "./generic";
 
 export const InstructorMinimalSchema = BaseEntitySchema.extend({
@@ -14,20 +15,13 @@ export type InstructorMinimal = z.infer<typeof InstructorMinimalSchema>;
 export const InstructorSchema = DatosPersonalesInstructorSchema;
 export type Instructor = z.infer<typeof InstructorSchema>;
 
-export const InstructorFormSchema = InstructorSchema.omit({
-  id: true,
-  pais: true,
-  municipio: true,
-  modalidad: true,
-  tipo_documento: true,
+export const InstructorFormSchema = DatosPersonalesFormSchema.omit({
+  id_poblacion_especial: true,
+  id_estado_civil: true,
+  correo_institucional: true,
+  direccion_institucional: true,
 })
   .extend({
-    fecha_expedicion: zodStringFromDate(),
-    fecha_nacimiento: zodStringFromDate(),
-    id_pais: z.number(),
-    id_municipio: z.number().optional(),
-    id_tipo_documento: z.number(),
-    id_modalidad: z.number().optional(),
     password: z.string().optional(),
     passwordCheck: z.string().optional(),
   })

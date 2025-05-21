@@ -34,6 +34,21 @@ export default function IngresoFablabForm() {
   >({
     resolver: zodResolver(IngresoFablabFormSchema),
     shouldUnregister: true,
+    defaultValues: {
+      motivo: undefined,
+      id_oferta_formacion: 0,
+      id_institucion: 0,
+      nombre_institucion: "",
+      id_programa_academico: 0,
+      codigo: "",
+      id_sala: 0,
+      materia: "",
+      id_semillero: 0,
+      nombre_semillero: "",
+      siglas_semillero: "",
+      id_cargo: 0,
+      asociacion: "",
+    },
   });
 
   const { result: ofertasFormacion } = useAsyncWithToken(
@@ -55,7 +70,7 @@ export default function IngresoFablabForm() {
       setLoading(true);
       await createIngreso(data);
       toast.success("Ingreso registrado exitosamente");
-      form.reset();
+      form.resetField("motivo");
     } catch (error) {
       if (error instanceof AxiosError) {
         handleAxiosError(toast.error, error);
