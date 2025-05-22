@@ -8,6 +8,7 @@ import Action from "@/pages/auth/Action";
 import Login from "@/pages/auth/Login";
 import PasswordRecovery from "@/pages/auth/PasswordRecovery";
 import Home from "@/pages/dashboard/Home.tsx";
+import Certificados from "@/pages/dashboard/certificados/Certificados";
 import DatosPersonales from "@/pages/dashboard/datos-personales/DatosPersonales";
 import NuevoUsuario from "@/pages/dashboard/datos-personales/NuevoUsuario";
 import IngresoFablab from "@/pages/dashboard/ingreso-fablab/IngresoFablab";
@@ -49,6 +50,7 @@ export default function Router() {
           <Route path="datos-personales" element={<DatosPersonales />} />
           <Route path="instructor" element={<Instructor />} />
           <Route path="sesion/:id" element={<Sesion />} />
+          <Route path="certificados" element={<Certificados />} />
         </Route>
 
         <Route
