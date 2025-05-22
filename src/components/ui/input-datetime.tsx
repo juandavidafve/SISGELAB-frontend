@@ -3,7 +3,6 @@
 import { Icon } from "@iconify/react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";

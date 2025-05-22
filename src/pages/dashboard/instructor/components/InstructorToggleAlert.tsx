@@ -18,7 +18,7 @@ interface Props {
   onCancel?: () => void;
 }
 
-export function InstructorDeleteAlert({
+export function InstructorToggleAlert({
   instructor,
   open,
   setOpen,
@@ -32,17 +32,21 @@ export function InstructorDeleteAlert({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            ¿Está seguro que desea deshabilitar al instructor{" "}
+            ¿Está seguro que desea{" "}
+            {instructor.activo ? "deshabilitar" : "habilitar"} al instructor{" "}
             <strong className="text-red-600">{instructor.nombre}</strong>?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-base">
-            Esta acción no se puede deshacer. El instructor será deshabilitado y
-            no podrá acceder al sistema.
+            {instructor.activo
+              ? "El instructor será deshabilitado y no podrá acceder al sistema."
+              : "El instructor será habilitado y obtendrá acceso al sistema."}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={onAccept}>Deshabilitar</AlertDialogAction>
+          <AlertDialogAction onClick={onAccept}>
+            {instructor.activo ? "Deshabilitar" : "Habilitar"}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
