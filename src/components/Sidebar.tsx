@@ -76,8 +76,10 @@ export default function Sidebar() {
     {
       label: "Certificados",
       icon: "lineicons:certificate-badge-1",
-      url: "",
-      show: false,
+      url: "certificados",
+      show:
+        info?.roles.includes("ROLE_ADMINISTRADOR") ||
+        info?.roles.includes("ROLE_INSTRUCTOR"),
     },
     {
       label: "Reportes",
