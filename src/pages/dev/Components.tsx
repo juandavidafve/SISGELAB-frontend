@@ -11,7 +11,6 @@ import {
   FileUploadList,
 } from "@/components/ui/file-upload";
 import { Input } from "@/components/ui/input";
-import { InputDateTime } from "@/components/ui/input-datetime";
 import { InputPassword } from "@/components/ui/input-password";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -52,8 +51,6 @@ export default function Components() {
         <Input type="email" id="email" placeholder="Email" />
       </div>
       <InputPassword />
-
-      <InputDateTime />
 
       <FileUpload value={files} onValueChange={setFiles} multiple>
         <FileUploadDropzone />

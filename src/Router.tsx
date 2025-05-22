@@ -12,6 +12,7 @@ import DatosPersonales from "@/pages/dashboard/datos-personales/DatosPersonales"
 import NuevoUsuario from "@/pages/dashboard/datos-personales/NuevoUsuario";
 import IngresoFablab from "@/pages/dashboard/ingreso-fablab/IngresoFablab";
 import Instructor from "@/pages/dashboard/instructor/Instructor";
+import MovimientoInstructor from "@/pages/dashboard/movimiento-instructor/MovimientoInstructor";
 import OfertaFormacion from "@/pages/dashboard/oferta-formacion/OfertaFormacion";
 import OfertaFormacionDetails from "@/pages/dashboard/oferta-formacion/OfertaFormacionDetails";
 import Sesion from "@/pages/dashboard/sesion/Sesion";
@@ -36,6 +37,10 @@ export default function Router() {
         >
           <Route index element={<Home />} />
           <Route path="ingreso-fablab" element={<IngresoFablab />} />
+          <Route
+            path="movimiento-instructor"
+            element={<MovimientoInstructor />}
+          />
           <Route path="oferta-formacion" element={<OfertaFormacion />} />
           <Route
             path="oferta-formacion/:id"

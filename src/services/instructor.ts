@@ -28,6 +28,6 @@ export async function update(id: number, instructor: InstructorFormOutput) {
   await api.put(urlMerge(base, id), instructor);
 }
 
-export async function deshabilitar(id: number) {
-  await api.put(urlMerge(base, id, "deshabilitar"));
+export async function toggle(id: number) {
+  await api.put(urlMerge(base, id, "activo"));
 }

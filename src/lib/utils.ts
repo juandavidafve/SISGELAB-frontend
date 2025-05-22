@@ -40,10 +40,21 @@ export function zodDateFromString() {
     .transform((date) => fromZonedTime(date, "America/Bogota"));
 }
 
+export function zodDateTimeFromString() {
+  return z
+    .string()
+    .datetime({ local: true })
+    .transform((date) => fromZonedTime(date, "America/Bogota"));
+}
+
 export function zodStringFromDate() {
   return z
     .date()
     .transform((date) => formatISO(date, { representation: "date" }));
+}
+
+export function zodStringFromDateTime() {
+  return z.date().transform((date) => format(date, "yyyy-MM-dd'T'HH:mm:ss"));
 }
 
 export function formatDate(date: string | Date, formatStr = "PPP") {

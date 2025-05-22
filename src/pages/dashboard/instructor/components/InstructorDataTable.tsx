@@ -16,12 +16,12 @@ import {
 import Loader from "@/components/ui/loader";
 import { InstructorFormOutput, InstructorMinimal } from "@/schemas/instructor";
 import {
-  deshabilitar as deshabilitarInstructor,
+  toggle as toggleInstructor,
   update as updateInstructor,
 } from "@/services/instructor";
 
-import { InstructorDeleteAlert } from "./InstructorDeleteAlert";
 import { InstructorDialog } from "./InstructorDialog";
+import { InstructorToggleAlert } from "./InstructorToggleAlert";
 
 interface Props {
   loading: boolean;
@@ -36,10 +36,13 @@ export default function InstructorDataTable({
 }: Props) {
   const [selectedInstructor, setSelectedInstructor] =
     useState<InstructorMinimal>();
-  const [deleteInstructor, setDeleteInstructor] = useState(false);
+  const [toggleDialog, setTogleDialog] = useState(false);
   const [editInstructor, setEditInstructor] = useState(false);
 
   const columns: ColumnDef<InstructorMinimal>[] = [
+    {
+      id: "space",
+    },
     {
       accessorKey: "nombre",
       header: ({ column }) => (
@@ -51,6 +54,15 @@ export default function InstructorDataTable({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Correo" />
       ),
+    },
+    {
+      accessorKey: "activo",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Activo" />
+      ),
+      cell: ({ getValue }) => {
+        return getValue() ? "Si" : "No";
+      },
     },
     {
       id: "actions",
@@ -79,11 +91,11 @@ export default function InstructorDataTable({
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  setDeleteInstructor(true);
+                  setTogleDialog(true);
                   setSelectedInstructor(instructor);
                 }}
               >
-                Deshabilitar
+                {instructor.activo ? "Deshabilitar" : "Habilitar"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -92,11 +104,17 @@ export default function InstructorDataTable({
     },
   ];
 
-  async function handleDelete() {
+  async function handleToggle() {
     if (!selectedInstructor) return;
-    await deshabilitarInstructor(selectedInstructor.id);
-    toast.success("Instructor deshabilitado");
-    setDeleteInstructor(false);
+    await toggleInstructor(selectedInstructor.id);
+
+    if (selectedInstructor.activo) {
+      toast.success("Instructor deshabilitado");
+    } else {
+      toast.success("Instructor habilitado");
+    }
+
+    setTogleDialog(false);
     await refresh();
   }
 
@@ -119,10 +137,10 @@ export default function InstructorDataTable({
     <>
       <DataTable columns={columns} data={instructores || []} />
 
-      <InstructorDeleteAlert
-        open={deleteInstructor}
-        setOpen={setDeleteInstructor}
-        onAccept={handleDelete}
+      <InstructorToggleAlert
+        open={toggleDialog}
+        setOpen={setTogleDialog}
+        onAccept={handleToggle}
         instructor={selectedInstructor}
       />
 
