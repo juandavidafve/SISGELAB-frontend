@@ -42,10 +42,10 @@ export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
   pieza_grafica: z.string(),
   tipo_oferta: BaseEntitySchema,
   categoria: BaseEntitySchema,
-  tipo_beneficiario: BaseEntitySchema,
+  tipos_beneficiario: BaseEntitySchema.array(),
   fecha_inicio: zodDateFromString(),
   fecha_fin: zodDateFromString(),
-  institucion: InstitucionSchema,
+  instituciones: InstitucionSchema.array(),
   sesiones: SesionMinimalSchema.array().nonempty(),
   inscritos: BaseEntitySchema.array(),
 });
@@ -68,8 +68,11 @@ export const OfertaFormacionFormSchema = OfertaFormacionBaseSchema.extend({
   fecha_fin: zodStringFromDate(),
   id_tipo: z.number().min(1, "Se requiere seleccionar el tipo de oferta"),
   id_categoria: z.number(),
-  id_tipo_beneficiario: z.number(),
-  id_institucion: z.number(),
+  tipos_beneficiario: z
+    .number()
+    .array()
+    .nonempty("Se debe seleccionar al menos un tipo de beneficiario"),
+  instituciones: z.number().array(),
   sesiones: SesionFormSchema.array().nonempty(
     "Se debe crear al menos una sesión",
   ),
@@ -91,8 +94,11 @@ export function convertToFormInput(
     ...entity,
     id_tipo: entity.tipo_oferta.id,
     id_categoria: entity.categoria.id,
-    id_tipo_beneficiario: entity.tipo_beneficiario.id,
-    id_institucion: entity.tipo_beneficiario.id,
+    tipos_beneficiario: entity.tipos_beneficiario.map((e) => e.id) as [
+      number,
+      ...number[],
+    ],
+    instituciones: entity.instituciones.map((e) => e.id),
     sesiones: entity.sesiones.map((sesion) =>
       convertSesionToFormInput(sesion),
     ) as [SesionFormInput, ...SesionFormInput[]],
