@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { zodDateFromString, zodStringFromDate } from "@/lib/utils";
 
+import { EvidenciaSchema } from "./evidencia";
 import { BaseEntitySchema } from "./generic";
 import { InstructorMinimalSchema } from "./instructor";
 
@@ -15,7 +16,7 @@ export const SesionSchema = z.object({
   sala: BaseEntitySchema,
   instructores: InstructorMinimalSchema.array(),
   participantes: BaseEntitySchema.array(),
-  evidencias: BaseEntitySchema.array(),
+  evidencias: EvidenciaSchema.array(),
 });
 
 export type Sesion = z.infer<typeof SesionSchema>;

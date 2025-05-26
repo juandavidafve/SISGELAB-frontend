@@ -7,8 +7,10 @@ export const PlantillaCertificadoSchema = BaseEntitySchema.extend({
 });
 
 export const PlantillaCertificadoFormSchema = z.object({
-  nombre: z.string(),
-  file: z.instanceof(File),
+  nombre: z.string().nonempty("Se requiere el nombre de la plantilla"),
+  file: z.instanceof(File, {
+    message: "Se requiere subir un archivo",
+  }),
 });
 
 export type PlantillaCertificado = z.infer<typeof PlantillaCertificadoSchema>;

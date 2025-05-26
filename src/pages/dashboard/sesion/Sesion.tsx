@@ -2,17 +2,28 @@ import "react";
 import { useParams } from "react-router";
 
 import { KeyValueItem } from "@/components/KeyValueItem";
+import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { formatDate } from "@/lib/utils";
 import { getById as getSesionById } from "@/services/sesion";
+
+import Evidencias from "./components/Evidencias";
 
 export default function Sesion() {
   const { id } = useParams();
   const idNum = parseInt(String(id));
 
-  const { result: sesion } = useAsyncWithToken(getSesionById, [idNum]);
+  const {
+    result: sesion,
+    loading: sesionLoading,
+    execute: refreshSesion,
+  } = useAsyncWithToken(getSesionById, [idNum]);
+
+  if (sesionLoading)
+    return <Loader className="absolute top-1/2 left-1/2 -translate-1/2" />;
 
   if (!sesion) return;
+
   return (
     <>
       <div className="flex justify-between">
@@ -46,6 +57,8 @@ export default function Sesion() {
           values={sesion.instructores.map((i) => i.nombre)}
         />
       </div>
+
+      <Evidencias sesion={sesion} refresh={() => refreshSesion(idNum)} />
     </>
   );
 }
