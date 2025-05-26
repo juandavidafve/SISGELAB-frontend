@@ -4,16 +4,10 @@ import { Control, useFieldArray, useWatch } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
 import FormCombobox from "@/components/ui/form-combobox";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormInputTime from "@/components/ui/form-input-time";
-import MultiSelector from "@/components/ui/multi-selector";
+import FormMultiSelector from "@/components/ui/form-multi-selector";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import {
   OfertaFormacionFormInput,
@@ -82,36 +76,14 @@ export default function SesionForm({ control }: Props) {
               />
             </div>
             <div>
-              {instructores && (
-                <FormField
-                  control={control}
-                  name={`sesiones.${index}.instructores`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <MultiSelector
-                          value={field.value
-                            .map((instructorId) =>
-                              instructores.find(
-                                (instructor) => instructor.id === instructorId,
-                              ),
-                            )
-                            .filter((instructor) => instructor !== undefined)}
-                          items={instructores}
-                          itemLabel={(instructor) => instructor.nombre}
-                          itemValue={(instructor) => instructor.id}
-                          onChange={(value) =>
-                            field.onChange(value.map((v) => v.id))
-                          }
-                          className="w-full"
-                          label="Instructores"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
+              <FormMultiSelector
+                control={control}
+                name={`sesiones.${index}.instructores`}
+                items={instructores || []}
+                itemLabel="nombre"
+                itemValue="id"
+                label="Instructores"
+              />
             </div>
             <Button
               type="button"

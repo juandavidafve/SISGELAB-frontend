@@ -181,8 +181,13 @@ export default function OfertaFormacionDetails() {
           />
           <KeyValueItem
             icon="material-symbols:person-outline-rounded"
+            label="Tipos de beneficiario"
+            values={oferta.tipos_beneficiario.map((e) => e.nombre)}
+          />
+          <KeyValueItem
+            icon="material-symbols:person-outline-rounded"
             label="Beneficiarios"
-            values={`${oferta.inscritos.length} ${oferta.tipo_beneficiario.nombre}`}
+            values={oferta.inscritos.length}
           />
           <KeyValueItem
             icon="material-symbols:calendar-month-outline-rounded"
@@ -195,11 +200,13 @@ export default function OfertaFormacionDetails() {
             values={formatMoney(oferta.valor)}
           />
 
-          <KeyValueItem
-            icon="fluent:building-24-regular"
-            label={oferta.institucion.tipoInstitucion}
-            values={oferta.institucion.nombre}
-          />
+          {oferta.instituciones.length > 0 && (
+            <KeyValueItem
+              icon="fluent:building-24-regular"
+              label="Instituciones"
+              values={oferta.instituciones.map((e) => e.nombre)}
+            />
+          )}
         </div>
       )}
 

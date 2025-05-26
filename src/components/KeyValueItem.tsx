@@ -24,7 +24,7 @@ export function KeyValueItem({
           {Array.isArray(values) ? (
             <ul>
               {values.map((value) => (
-                <li>{value}</li>
+                <li key={value}>{value}</li>
               ))}
             </ul>
           ) : (

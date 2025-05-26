@@ -20,10 +20,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import FormCheckbox from "@/components/ui/form-checkbox";
-import FormCombobox from "@/components/ui/form-combobox";
 import FormInput from "@/components/ui/form-input";
 import FormInputDate from "@/components/ui/form-input-date";
 import FormInputNumber from "@/components/ui/form-input-number";
+import FormMultiSelector from "@/components/ui/form-multi-selector";
 import FormSelect from "@/components/ui/form-select";
 import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
@@ -69,9 +69,9 @@ export default function OfertaFormacionForm({
       fecha_fin: new Date(),
       id_tipo: 0,
       id_categoria: 0,
-      id_tipo_beneficiario: 0,
+      tipos_beneficiario: [],
       cupo_maximo: 0,
-      id_institucion: 0,
+      instituciones: [],
       sesiones: [
         {
           fecha: new Date(),
@@ -166,16 +166,14 @@ export default function OfertaFormacionForm({
           />
         )}
 
-        {tiposBeneficiario && (
-          <FormSelect
-            control={form.control}
-            name="id_tipo_beneficiario"
-            items={tiposBeneficiario}
-            itemLabel="nombre"
-            itemValue="id"
-            label="Tipo de beneficiario"
-          />
-        )}
+        <FormMultiSelector
+          control={form.control}
+          items={tiposBeneficiario || []}
+          itemLabel="nombre"
+          itemValue="id"
+          name="tipos_beneficiario"
+          label="Tipos de beneficiario"
+        />
 
         <FormInputNumber
           control={form.control}
@@ -183,16 +181,14 @@ export default function OfertaFormacionForm({
           label="Cupo máximo"
         />
 
-        {instituciones && (
-          <FormCombobox
-            control={form.control}
-            name="id_institucion"
-            items={instituciones}
-            itemLabel="nombre"
-            itemValue="id"
-            label="Institución"
-          />
-        )}
+        <FormMultiSelector
+          control={form.control}
+          name="instituciones"
+          items={instituciones || []}
+          itemLabel="nombre"
+          itemValue="id"
+          label="Institución"
+        />
 
         <FormField
           control={form.control}

@@ -1,9 +1,9 @@
-import { isAfter, parse } from "date-fns";
-import { fromZonedTime } from "date-fns-tz";
+import { parse } from "date-fns";
 import { z } from "zod";
 
 import { zodDateFromString, zodStringFromDate } from "@/lib/utils";
 
+import { EvidenciaSchema } from "./evidencia";
 import { BaseEntitySchema } from "./generic";
 import { InstructorMinimalSchema } from "./instructor";
 
@@ -16,7 +16,7 @@ export const SesionSchema = z.object({
   sala: BaseEntitySchema,
   instructores: InstructorMinimalSchema.array(),
   participantes: BaseEntitySchema.array(),
-  evidencias: BaseEntitySchema.array(),
+  evidencias: EvidenciaSchema.array(),
 });
 
 export type Sesion = z.infer<typeof SesionSchema>;
@@ -54,18 +54,6 @@ export const SesionFormSchema = z
     {
       message: "La hora de fin debe ser posterior a la de inicio",
       path: ["fin"],
-    },
-  )
-  .refine(
-    (data) => {
-      return isAfter(
-        fromZonedTime(`${data.fecha}T${data.inicio}:00`, "America/Bogota"),
-        new Date(),
-      );
-    },
-    {
-      message: "El inicio de la sesión no puede estar en el pasado",
-      path: ["inicio"],
     },
   );
 
