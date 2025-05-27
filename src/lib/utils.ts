@@ -5,6 +5,8 @@ import { es } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
+import { api } from "./axios";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -69,4 +71,34 @@ export function formatMoney(quantity: number) {
     currency: "COP",
     maximumFractionDigits: 0,
   }).format(quantity);
+}
+
+export function makeAllFieldsNullable<T extends z.ZodRawShape>(
+  schema: z.ZodObject<T>,
+) {
+  const shape = schema.shape;
+  const nullableShape: { [K in keyof T]: z.ZodNullable<T[K]> } = {} as any;
+
+  for (const key in shape) {
+    nullableShape[key] = shape[key].nullable();
+  }
+
+  return z.object(nullableShape);
+}
+
+export async function downloadFile(url: string, filename: string) {
+  const { data } = await api.get(url, {
+    responseType: "blob",
+  });
+
+  const blob = new Blob([data]);
+  const objUrl = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = objUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(objUrl);
 }

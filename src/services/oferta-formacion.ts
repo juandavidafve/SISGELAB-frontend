@@ -50,7 +50,11 @@ export async function update(id: number, oferta: OfertaFormacionFormOutput) {
 }
 
 export async function toggle(id: number) {
-  await api.putForm(urlMerge(base, id, "switch-estado"));
+  await api.put(urlMerge(base, id, "switch-estado"));
+}
+
+export async function finalizar(idOferta: number, idPlantilla: number) {
+  await api.post(urlMerge(base, idOferta, "finalizar", idPlantilla));
 }
 
 export async function getById(id: number) {
@@ -79,4 +83,22 @@ export async function getTiposBeneficiario() {
 
 export async function inscribir(idOferta: number) {
   await api.post(urlMerge(base, idOferta, "/inscribir"));
+}
+
+export async function inscribirParticipante(
+  idOferta: number,
+  idParticipante: number,
+) {
+  await api.post(
+    urlMerge(base, idOferta, "/inscribir-participante/", idParticipante),
+  );
+}
+
+export async function desinscribirParticipante(
+  idOferta: number,
+  idParticipante: number,
+) {
+  await api.delete(
+    urlMerge(base, idOferta, "/desinscribir-participante/", idParticipante),
+  );
 }

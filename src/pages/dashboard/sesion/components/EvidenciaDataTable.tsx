@@ -17,8 +17,8 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/useAuth";
-import { api } from "@/lib/axios";
 import { handleAxiosError } from "@/lib/error";
+import { downloadFile } from "@/lib/utils";
 import { Evidencia } from "@/schemas/evidencia";
 import { InstructorMinimalSchema } from "@/schemas/instructor";
 import { Sesion } from "@/schemas/sesion";
@@ -113,20 +113,7 @@ export default function EvidenciaDataTable({ sesion, refresh }: Props) {
   const handleDownload = async (evidencia: Evidencia) => {
     toast.info("Iniciando descarga...");
     try {
-      const response = await api.get(evidencia.url, {
-        responseType: "blob",
-      });
-
-      const blob = new Blob([response.data]);
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = evidencia.nombre || "archivo-descargado";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      await downloadFile(evidencia.url, `${evidencia.nombre}`);
 
       toast.success("Evidencia descargada");
     } catch (error) {

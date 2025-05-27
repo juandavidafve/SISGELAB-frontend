@@ -72,7 +72,7 @@ export default function PlantillaForm({ onSubmit }: Props) {
               <FormLabel>Plantilla</FormLabel>
               <FormControl>
                 <FileUpload
-                  accept="application/pdf"
+                  accept="application/msword"
                   value={field.value ? [field.value] : []}
                   onValueChange={(files) => {
                     field.onChange(files[files.length - 1]);

@@ -6,10 +6,7 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { PlantillaCertificadoForm } from "@/schemas/plantillas-certificados";
-import {
-  create as createPlantilla,
-  getAll as getPlantillas,
-} from "@/services/plantillas-certificados";
+import { createPlantilla, getPlantillas } from "@/services/certificados";
 
 import { PlantillaDialog } from "./PlantillaDialog";
 import { PlantillaPreview } from "./PlantillaPreview";
@@ -39,7 +36,7 @@ export default function Plantillas() {
       </div>
 
       {!plantillasLoading ? (
-        <div>
+        <div className="space-y-4">
           {plantillas?.map((plantilla) => {
             return (
               <CardSmall

@@ -15,7 +15,7 @@ export const SesionSchema = z.object({
   fin: z.string().time(),
   sala: BaseEntitySchema,
   instructores: InstructorMinimalSchema.array(),
-  participantes: BaseEntitySchema.array(),
+  //participantes: BaseEntitySchema.array(),
   evidencias: EvidenciaSchema.array(),
 });
 
