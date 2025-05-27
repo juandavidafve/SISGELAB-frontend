@@ -50,7 +50,11 @@ export async function update(id: number, oferta: OfertaFormacionFormOutput) {
 }
 
 export async function toggle(id: number) {
-  await api.putForm(urlMerge(base, id, "switch-estado"));
+  await api.put(urlMerge(base, id, "switch-estado"));
+}
+
+export async function finalizar(idOferta: number, idPlantilla: number) {
+  await api.post(urlMerge(base, idOferta, "finalizar", idPlantilla));
 }
 
 export async function getById(id: number) {

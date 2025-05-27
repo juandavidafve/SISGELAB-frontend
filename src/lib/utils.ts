@@ -5,6 +5,8 @@ import { es } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
+import { api } from "./axios";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -82,4 +84,21 @@ export function makeAllFieldsNullable<T extends z.ZodRawShape>(
   }
 
   return z.object(nullableShape);
+}
+
+export async function downloadFile(url: string, filename: string) {
+  const { data } = await api.get(url, {
+    responseType: "blob",
+  });
+
+  const blob = new Blob([data]);
+  const objUrl = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = objUrl;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(objUrl);
 }
