@@ -80,3 +80,21 @@ export async function getTiposBeneficiario() {
 export async function inscribir(idOferta: number) {
   await api.post(urlMerge(base, idOferta, "/inscribir"));
 }
+
+export async function inscribirParticipante(
+  idOferta: number,
+  idParticipante: number,
+) {
+  await api.post(
+    urlMerge(base, idOferta, "/inscribir-participante/", idParticipante),
+  );
+}
+
+export async function desinscribirParticipante(
+  idOferta: number,
+  idParticipante: number,
+) {
+  await api.delete(
+    urlMerge(base, idOferta, "/desinscribir-participante/", idParticipante),
+  );
+}

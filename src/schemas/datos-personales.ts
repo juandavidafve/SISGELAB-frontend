@@ -52,7 +52,7 @@ export const DatosPersonalesUserSchema = z.object({
   correo_personal: z
     .string()
     .email("El correo no es válido")
-    .max(200, "El correo no ppuede exceder los 200 carácteres"),
+    .max(200, "El correo no puede exceder los 200 carácteres"),
 });
 
 export const DatosPersonalesParticipanteSchema =

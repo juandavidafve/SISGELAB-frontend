@@ -70,3 +70,16 @@ export function formatMoney(quantity: number) {
     maximumFractionDigits: 0,
   }).format(quantity);
 }
+
+export function makeAllFieldsNullable<T extends z.ZodRawShape>(
+  schema: z.ZodObject<T>,
+) {
+  const shape = schema.shape;
+  const nullableShape: { [K in keyof T]: z.ZodNullable<T[K]> } = {} as any;
+
+  for (const key in shape) {
+    nullableShape[key] = shape[key].nullable();
+  }
+
+  return z.object(nullableShape);
+}

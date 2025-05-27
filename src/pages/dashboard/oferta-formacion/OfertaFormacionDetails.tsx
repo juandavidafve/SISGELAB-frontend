@@ -7,7 +7,6 @@ import CardSmall from "@/components/CardSmall";
 import { KeyValueItem } from "@/components/KeyValueItem";
 import QrDialog from "@/components/QrDialog";
 import { Button } from "@/components/ui/button";
-import { DataTable, DataTableColumnHeader } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +27,7 @@ import {
   update as updateOferta,
 } from "@/services/oferta-formacion";
 
+import Inscripciones from "./components/Inscripciones";
 import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
 
 export default function OfertaFormacionDetails() {
@@ -230,27 +230,9 @@ export default function OfertaFormacionDetails() {
         ))}
       </div>
 
-      {!info?.roles.includes("ROLE_PARTICIPANTE") && (
-        <>
-          <div className="my-10 mb-6 flex justify-between">
-            <h2 className="text-xl font-bold">Inscripciones</h2>
-          </div>
-
-          <DataTable
-            columns={[
-              {
-                accessorKey: "id",
-              },
-              {
-                header: ({ column }) => (
-                  <DataTableColumnHeader column={column} title="Nombre" />
-                ),
-                accessorKey: "nombre",
-              },
-            ]}
-            data={oferta.inscritos}
-          />
-        </>
+      {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
+        info?.roles.includes("ROLE_INSTRUCTOR")) && (
+        <Inscripciones oferta={oferta} refresh={() => refreshOferta(idNum)} />
       )}
     </>
   );
