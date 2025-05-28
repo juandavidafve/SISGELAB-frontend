@@ -7,16 +7,20 @@ import {
   DatosPersonalesParticipanteSchema,
 } from "./datos-personales";
 
-export const ParticipanteMinimalSchema = makeAllFieldsNullable(
-  DatosPersonalesParticipanteSchema.pick({
-    id: true,
-    documento: true,
-    correo_personal: true,
-    correo_institucional: true,
-  }).extend({
-    nombre: z.string(),
-  }),
-);
+export const ParticipanteMinimalSchema = z
+  .object({
+    id: z.number(),
+    nombre: z.string().nullable(),
+  })
+  .merge(
+    makeAllFieldsNullable(
+      DatosPersonalesParticipanteSchema.pick({
+        documento: true,
+        correo_personal: true,
+        correo_institucional: true,
+      }),
+    ),
+  );
 
 export type ParticipanteMinimal = z.infer<typeof ParticipanteMinimalSchema>;
 

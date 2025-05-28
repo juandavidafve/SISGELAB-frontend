@@ -24,9 +24,12 @@ import {
   getAll as getOfertas,
   create as createOferta,
   getCategorias,
+  getOfertasWhereInstructor,
+  getOfertasWhereParticipante,
 } from "@/services/oferta-formacion";
 
-import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
+import BadgeEstado from "./components/BadgeEstado";
+import { OfertaFormacionDialog } from "./components/oferta-formacion/OfertaFormacionDialog";
 
 export default function OfertaFormacion() {
   const { info } = useAuth();
@@ -35,7 +38,26 @@ export default function OfertaFormacion() {
     loading: loadingOfertas,
     execute: refreshOfertas,
     set: setOfertas,
-  } = useAsyncWithToken(getOfertas, []);
+  } = useAsyncWithToken(
+    async (roles: NonNullable<typeof info>["roles"]) => {
+      if (roles.includes("ROLE_ADMINISTRADOR")) return await getOfertas();
+
+      let ofertas: OfertaFormacionMinimal[] = [];
+
+      if (roles.includes("ROLE_INSTRUCTOR")) {
+        ofertas = [...ofertas, ...(await getOfertasWhereInstructor())];
+      }
+
+      if (roles.includes("ROLE_PARTICIPANTE")) {
+        ofertas = [...ofertas, ...(await getOfertasWhereParticipante())];
+      }
+
+      console.log(roles);
+
+      return ofertas;
+    },
+    [info?.roles || []],
+  );
   const { result: categorias } = useAsyncWithToken(getCategorias, []);
 
   const [ofertasBackup, setOfertasBackup] = useState<OfertaFormacionMinimal[]>(
@@ -124,14 +146,17 @@ export default function OfertaFormacion() {
               <CardSmall
                 title={oferta.nombre}
                 slotAction={
-                  <Link to={String(oferta.id)}>
-                    {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                      info?.roles.includes("ROLE_INSTRUCTOR")) && (
+                  <div className="flex flex-row items-center gap-2">
+                    <BadgeEstado
+                      estado={oferta.estado}
+                      className="hidden sm:flex"
+                    />
+                    <Link to={String(oferta.id)}>
                       <Button className="bg-red-500 text-white hover:bg-red-600">
                         Ver
                       </Button>
-                    )}
-                  </Link>
+                    </Link>
+                  </div>
                 }
                 key={oferta.id}
               />

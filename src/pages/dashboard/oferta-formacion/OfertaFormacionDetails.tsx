@@ -4,11 +4,9 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
-import { Link, useLocation, useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { toast } from "sonner";
 
-import CardSmall from "@/components/CardSmall";
-import { KeyValueItem } from "@/components/KeyValueItem";
 import QrDialog from "@/components/QrDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +26,7 @@ import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import useAuth from "@/hooks/useAuth";
 import { BACKEND_BASE_URL } from "@/lib/config";
-import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
+import { urlMerge } from "@/lib/utils";
 import { OfertaFormacionFormOutput } from "@/schemas/oferta-formacion";
 import {
   finalizar as finalizarOferta,
@@ -37,10 +35,13 @@ import {
   update as updateOferta,
 } from "@/services/oferta-formacion";
 
-import Inscripciones from "./components/Inscripciones";
-import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
-import { OfertaFormacionFinalizarAlert } from "./components/OfertaFormacionFinalizarAlert";
-import { OfertaFormacionFinalizarDialog } from "./components/OfertaFormacionFinalizarDialog";
+import BadgeEstado from "./components/BadgeEstado";
+import Inscripciones from "./components/inscripcion/Inscripciones";
+import { OfertaFormacionDialog } from "./components/oferta-formacion/OfertaFormacionDialog";
+import { OfertaFormacionFinalizarAlert } from "./components/oferta-formacion/OfertaFormacionFinalizarAlert";
+import { OfertaFormacionFinalizarDialog } from "./components/oferta-formacion/OfertaFormacionFinalizarDialog";
+import OfertaFormacionInfo from "./components/oferta-formacion/OfertaFormacionInfo";
+import Sesiones from "./components/sesiones/Sesiones";
 
 export default function OfertaFormacionDetails() {
   const { info } = useAuth();
@@ -98,8 +99,10 @@ export default function OfertaFormacionDetails() {
   return (
     <>
       <div className="flex justify-between">
-        <h1 className="mb-6 text-2xl font-bold">{oferta.nombre}</h1>
-
+        <div className="mb-6">
+          <h1 className="mb-2 text-2xl font-bold">{oferta.nombre}</h1>
+          <BadgeEstado estado={oferta.estado} />
+        </div>
         {info?.roles.includes("ROLE_ADMINISTRADOR") && (
           <div className="flex items-center gap-2">
             {oferta.estado === "ACTIVA" && (
@@ -191,98 +194,10 @@ export default function OfertaFormacionDetails() {
 
       {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
         info?.roles.includes("ROLE_INSTRUCTOR")) && (
-        <div className="grid gap-4 sm:grid-cols-2">
-          <KeyValueItem
-            icon="material-symbols:barcode-scanner-rounded"
-            label="Código"
-            values={oferta.id}
-          />
-          <KeyValueItem
-            icon="material-symbols:numbers-rounded"
-            label="Id. CINE"
-            values={oferta.cine}
-          />
-          <KeyValueItem
-            icon="ic:round-plus"
-            label="Extensión"
-            values={oferta.extension ? "Sí" : "No"}
-          />
-          <div className="flex gap-4">
-            <KeyValueItem
-              icon="material-symbols:calendar-month-outline-rounded"
-              label="Inicio"
-              values={formatDate(oferta.fecha_inicio, "dd/MM/yyyy")}
-            />
-            <KeyValueItem
-              label="Fin"
-              values={formatDate(oferta.fecha_fin, "dd/MM/yyyy")}
-            />
-          </div>
-          <KeyValueItem
-            icon="material-symbols:nest-clock-farsight-analog-outline-rounded"
-            label="Horas"
-            values={oferta.horas}
-          />
-          <KeyValueItem
-            icon="material-symbols:deployed-code-outline-sharp"
-            label="Tipo"
-            values={oferta.tipo_oferta.nombre}
-          />
-          <KeyValueItem
-            icon="material-symbols:category-outline-rounded"
-            label="Categoría"
-            values={oferta.categoria.nombre}
-          />
-          <KeyValueItem
-            icon="material-symbols:person-outline-rounded"
-            label="Tipos de beneficiario"
-            values={oferta.tipos_beneficiario.map((e) => e.nombre)}
-          />
-          <KeyValueItem
-            icon="material-symbols:person-outline-rounded"
-            label="Beneficiarios"
-            values={oferta.inscritos.length}
-          />
-          <KeyValueItem
-            icon="material-symbols:calendar-month-outline-rounded"
-            label="Semestre"
-            values={oferta.semestre}
-          />
-          <KeyValueItem
-            icon="material-symbols:price-change-outline-rounded"
-            label="Valor"
-            values={formatMoney(oferta.valor)}
-          />
-
-          {oferta.instituciones.length > 0 && (
-            <KeyValueItem
-              icon="fluent:building-24-regular"
-              label="Instituciones"
-              values={oferta.instituciones.map((e) => e.nombre)}
-            />
-          )}
-        </div>
+        <OfertaFormacionInfo oferta={oferta} />
       )}
 
-      <h2 className="my-10 mb-6 text-xl font-bold">Sesiones</h2>
-
-      <div className="space-y-4">
-        {oferta.sesiones.map((sesion) => (
-          <CardSmall
-            title={sesion.nombre}
-            description={`${formatDate(sesion.fecha, "dd/MM/yyyy")} ${sesion.inicio}`}
-            slotAction={
-              (info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                info?.roles.includes("ROLE_INSTRUCTOR")) && (
-                <Button>
-                  <Link to={`../sesion/${sesion.id}`}>Ver</Link>
-                </Button>
-              )
-            }
-            key={sesion.id}
-          />
-        ))}
-      </div>
+      <Sesiones oferta={oferta} />
 
       {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
         info?.roles.includes("ROLE_INSTRUCTOR")) && (
