@@ -44,9 +44,6 @@ export default function Sidebar() {
       label: "Datos Personales",
       icon: "material-symbols:database-outline",
       url: "datos-personales",
-      show:
-        info?.roles.includes("ROLE_PARTICIPANTE") ||
-        info?.roles.includes("ROLE_INSTRUCTOR"),
     },
     {
       label: "Instructores",

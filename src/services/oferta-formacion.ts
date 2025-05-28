@@ -75,6 +75,12 @@ export async function getOfertasWhereParticipante() {
   return OfertaFormacionMinimalSchema.array().parse(req.data);
 }
 
+export async function getOfertasActivas() {
+  const req = await api.get(urlMerge(base, "activas"));
+
+  return OfertaFormacionMinimalSchema.array().parse(req.data);
+}
+
 export async function getTiposOferta() {
   const req = await api.get(urlMerge(base, "/tipos-oferta"));
 
