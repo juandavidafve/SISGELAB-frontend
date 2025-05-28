@@ -113,7 +113,7 @@ export default function EvidenciaDataTable({ sesion, refresh }: Props) {
   const handleDownload = async (evidencia: Evidencia) => {
     toast.info("Iniciando descarga...");
     try {
-      await downloadFile(evidencia.url, `${evidencia.nombre}`);
+      await downloadFile(evidencia.url, `${evidencia.nombre_archivo}`);
 
       toast.success("Evidencia descargada");
     } catch (error) {

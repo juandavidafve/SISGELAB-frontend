@@ -6,6 +6,7 @@ import { InstructorMinimalSchema } from "./instructor";
 export const EvidenciaSchema = BaseEntitySchema.extend({
   instructor: InstructorMinimalSchema,
   url: z.string(),
+  nombre_archivo: z.string(),
 });
 
 export const EvidenciaFormSchema = z.object({
