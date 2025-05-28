@@ -69,7 +69,6 @@ export default function EvidenciasForm({ onSubmit }: Props) {
               <FormLabel>Archivo</FormLabel>
               <FormControl>
                 <FileUpload
-                  accept="application/pdf"
                   value={field.value ? [field.value] : []}
                   onValueChange={(files) => {
                     field.onChange(files[files.length - 1]);

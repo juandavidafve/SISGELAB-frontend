@@ -26,6 +26,7 @@ import {
   getCategorias,
   getOfertasWhereInstructor,
   getOfertasWhereParticipante,
+  getOfertasActivas,
 } from "@/services/oferta-formacion";
 
 import BadgeEstado from "./components/BadgeEstado";
@@ -61,6 +62,11 @@ export default function OfertaFormacion() {
   const { result: categorias } = useAsyncWithToken(getCategorias, []);
 
   const [ofertasBackup, setOfertasBackup] = useState<OfertaFormacionMinimal[]>(
+    [],
+  );
+
+  const { result: catalogo, loading: loadingCatalog } = useAsyncWithToken(
+    getOfertasActivas,
     [],
   );
 
@@ -168,6 +174,41 @@ export default function OfertaFormacion() {
           </div>
         )}
       </div>
+
+      {!info?.roles.includes("ROLE_ADMINISTRADOR") && (
+        <>
+          <h2 className="my-10 mb-6 text-xl font-bold">Catálogo de Ofertas</h2>
+          <div className="space-y-4">
+            {!(loadingOfertas && loadingCatalog) ? (
+              catalogo
+                ?.filter((oferta) => {
+                  const exists = ofertas?.find((o) => o.id === oferta.id);
+
+                  return exists === undefined;
+                })
+                .map((oferta) => {
+                  return (
+                    <CardSmall
+                      title={oferta.nombre}
+                      slotAction={
+                        <Link to={`/inscripcion/${oferta.id}`} target="_blank">
+                          <Button className="bg-red-500 text-white hover:bg-red-600">
+                            Inscripción
+                          </Button>
+                        </Link>
+                      }
+                      key={oferta.id}
+                    />
+                  );
+                })
+            ) : (
+              <div className="my-5 flex justify-center">
+                <Loader />
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 }
