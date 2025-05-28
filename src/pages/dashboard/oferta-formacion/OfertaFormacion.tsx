@@ -26,7 +26,8 @@ import {
   getCategorias,
 } from "@/services/oferta-formacion";
 
-import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
+import BadgeEstado from "./components/BadgeEstado";
+import { OfertaFormacionDialog } from "./components/oferta-formacion/OfertaFormacionDialog";
 
 export default function OfertaFormacion() {
   const { info } = useAuth();
@@ -124,11 +125,17 @@ export default function OfertaFormacion() {
               <CardSmall
                 title={oferta.nombre}
                 slotAction={
-                  <Link to={String(oferta.id)}>
-                    <Button className="bg-red-500 text-white hover:bg-red-600">
-                      Ver
-                    </Button>
-                  </Link>
+                  <div className="flex flex-row items-center gap-2">
+                    <BadgeEstado
+                      estado={oferta.estado}
+                      className="hidden sm:flex"
+                    />
+                    <Link to={String(oferta.id)}>
+                      <Button className="bg-red-500 text-white hover:bg-red-600">
+                        Ver
+                      </Button>
+                    </Link>
+                  </div>
                 }
                 key={oferta.id}
               />
