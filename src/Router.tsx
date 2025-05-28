@@ -7,7 +7,6 @@ import { MODE } from "@/lib/config";
 import Action from "@/pages/auth/Action";
 import Login from "@/pages/auth/Login";
 import PasswordRecovery from "@/pages/auth/PasswordRecovery";
-import Home from "@/pages/dashboard/Home.tsx";
 import Certificados from "@/pages/dashboard/certificados/Certificados";
 import DatosPersonales from "@/pages/dashboard/datos-personales/DatosPersonales";
 import NuevoUsuario from "@/pages/dashboard/datos-personales/NuevoUsuario";
@@ -36,7 +35,7 @@ export default function Router() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Home />} />
+          <Route index element={<Navigate to="oferta-formacion" />} />
           <Route path="ingreso-fablab" element={<IngresoFablab />} />
           <Route
             path="movimiento-instructor"
