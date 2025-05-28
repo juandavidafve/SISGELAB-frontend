@@ -57,18 +57,25 @@ export default function DatosPersonalesForm({
       id_pais: 0,
       id_municipio: 0,
       id_tipo_documento: 0,
-      id_poblacion_especial: 0,
-      id_estado_civil: 0,
-      id_modalidad: 0,
+      id_poblacion_especial: info?.roles.includes("ROLE_PARTICIPANTE")
+        ? 0
+        : undefined,
+      id_estado_civil: info?.roles.includes("ROLE_PARTICIPANTE")
+        ? 0
+        : undefined,
+      id_modalidad: info?.roles.includes("ROLE_INSTRUCTOR") ? 0 : undefined,
       activo: true,
-      correo_institucional: "",
-      direccion: "",
-      direccion_institucional: "",
+      correo_institucional: info?.roles.includes("ROLE_PARTICIPANTE")
+        ? ""
+        : undefined,
+      direccion: info?.roles.includes("ROLE_INSTRUCTOR") ? "" : undefined,
+      direccion_institucional: info?.roles.includes("ROLE_PARTICIPANTE")
+        ? ""
+        : undefined,
       entidad: "",
       ...defaultValues,
     },
   });
-
   const { result: tiposDocumento } = useAsyncWithToken(getTiposDocumento, []);
   const { result: paises } = useAsyncWithToken(getPaises, []);
   const { result: municipios } = useAsyncWithToken(getMunicipios, []);
@@ -84,6 +91,7 @@ export default function DatosPersonalesForm({
     form.reset(defaultValues);
   }, [
     defaultValues,
+    info,
     tiposDocumento,
     paises,
     municipios,

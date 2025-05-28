@@ -125,12 +125,9 @@ export default function OfertaFormacion() {
                 title={oferta.nombre}
                 slotAction={
                   <Link to={String(oferta.id)}>
-                    {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                      info?.roles.includes("ROLE_INSTRUCTOR")) && (
-                      <Button className="bg-red-500 text-white hover:bg-red-600">
-                        Ver
-                      </Button>
-                    )}
+                    <Button className="bg-red-500 text-white hover:bg-red-600">
+                      Ver
+                    </Button>
                   </Link>
                 }
                 key={oferta.id}

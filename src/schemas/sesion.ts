@@ -1,7 +1,11 @@
 import { parse } from "date-fns";
 import { z } from "zod";
 
-import { zodDateFromString, zodStringFromDate } from "@/lib/utils";
+import {
+  zodDateFromString,
+  zodDateTimeFromString,
+  zodStringFromDate,
+} from "@/lib/utils";
 
 import { EvidenciaSchema } from "./evidencia";
 import { BaseEntitySchema } from "./generic";
@@ -15,7 +19,6 @@ export const SesionSchema = z.object({
   fin: z.string().time(),
   sala: BaseEntitySchema,
   instructores: InstructorMinimalSchema.array(),
-  //participantes: BaseEntitySchema.array(),
   evidencias: EvidenciaSchema.array(),
 });
 
@@ -72,3 +75,10 @@ export function convertSesionToFormInput(
     ],
   };
 }
+
+export const SesionOtpSchema = z.object({
+  token: z.string(),
+  expiracion: zodDateTimeFromString(),
+});
+
+export type SesionOtp = z.infer<typeof SesionOtpSchema>;

@@ -30,17 +30,20 @@ import useAuth from "@/hooks/useAuth";
 import { BACKEND_BASE_URL } from "@/lib/config";
 import { formatDate, formatMoney, urlMerge } from "@/lib/utils";
 import { OfertaFormacionFormOutput } from "@/schemas/oferta-formacion";
+import { SesionMinimal } from "@/schemas/sesion";
 import {
   finalizar as finalizarOferta,
   getById as getOferta,
   toggle as toggleOferta,
   update as updateOferta,
 } from "@/services/oferta-formacion";
+import { marcarAsistencia } from "@/services/sesion";
 
-import Inscripciones from "./components/Inscripciones";
+import { AsistenciaDialog } from "./components/AsistenciaDialog";
 import { OfertaFormacionDialog } from "./components/OfertaFormacionDialog";
 import { OfertaFormacionFinalizarAlert } from "./components/OfertaFormacionFinalizarAlert";
 import { OfertaFormacionFinalizarDialog } from "./components/OfertaFormacionFinalizarDialog";
+import Inscripciones from "./components/inscripcion/Inscripciones";
 
 export default function OfertaFormacionDetails() {
   const { info } = useAuth();
@@ -58,6 +61,8 @@ export default function OfertaFormacionDetails() {
   const [showFinalizarOfertaAlert, setShowFinalizarOfertaAlert] =
     useState(false);
   const [editOfertaDialog, setEditOfertaDialog] = useState(false);
+  const [showAsistenciaDialog, setShowAsistenciaDialog] = useState(false);
+  const [selectedSesion, setSelectedSesion] = useState<SesionMinimal>();
 
   async function handleEditOferta(oferta: OfertaFormacionFormOutput) {
     await updateOferta(idNum, oferta);
@@ -88,6 +93,13 @@ export default function OfertaFormacionDetails() {
 
     setShowFinalizarOfertaDialog(false);
     await refreshOferta(idNum);
+  }
+
+  async function marcarAsistenciaConToken(token: string) {
+    if (!selectedSesion) return;
+    await marcarAsistencia(selectedSesion?.id, token);
+    toast.success("Asistencia marcada correctamente");
+    setShowAsistenciaDialog(false);
   }
 
   if (loadingOferta)
@@ -272,17 +284,36 @@ export default function OfertaFormacionDetails() {
             title={sesion.nombre}
             description={`${formatDate(sesion.fecha, "dd/MM/yyyy")} ${sesion.inicio}`}
             slotAction={
-              (info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                info?.roles.includes("ROLE_INSTRUCTOR")) && (
-                <Button>
-                  <Link to={`../sesion/${sesion.id}`}>Ver</Link>
-                </Button>
-              )
+              <>
+                {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
+                  info?.roles.includes("ROLE_INSTRUCTOR")) && (
+                  <Button>
+                    <Link to={`../sesion/${sesion.id}`}>Ver</Link>
+                  </Button>
+                )}
+
+                {info?.roles.includes("ROLE_PARTICIPANTE") && (
+                  <Button
+                    onClick={() => {
+                      setSelectedSesion(sesion);
+                      setShowAsistenciaDialog(true);
+                    }}
+                  >
+                    Marcar Asistencia
+                  </Button>
+                )}
+              </>
             }
             key={sesion.id}
           />
         ))}
       </div>
+
+      <AsistenciaDialog
+        onSubmit={marcarAsistenciaConToken}
+        open={showAsistenciaDialog}
+        setOpen={setShowAsistenciaDialog}
+      />
 
       {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
         info?.roles.includes("ROLE_INSTRUCTOR")) && (

@@ -14,8 +14,8 @@ import { ParticipanteFormOutput } from "@/schemas/participante";
 import { inscribirParticipante } from "@/services/oferta-formacion";
 import { create as createParticipante } from "@/services/participante";
 
+import { ParticipanteDialog } from "../participante/ParticipanteDialog";
 import InscripcionForm from "./InscripcionForm";
-import { ParticipanteDialog } from "./ParticipanteDialog";
 
 interface Props {
   oferta: OfertaFormacion;

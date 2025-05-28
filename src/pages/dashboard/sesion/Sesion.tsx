@@ -7,6 +7,7 @@ import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import { formatDate } from "@/lib/utils";
 import { getById as getSesionById } from "@/services/sesion";
 
+import Asistencias from "./components/Asistencias";
 import Evidencias from "./components/Evidencias";
 
 export default function Sesion() {
@@ -57,6 +58,8 @@ export default function Sesion() {
           values={sesion.instructores.map((i) => i.nombre)}
         />
       </div>
+
+      <Asistencias sesion={sesion} />
 
       <Evidencias sesion={sesion} refresh={() => refreshSesion(idNum)} />
     </>
