@@ -25,7 +25,10 @@ interface Props {
 
 export function AsistenciaDialog({ open, setOpen, onSubmit }: Props) {
   const schema = z.object({
-    token: z.string().nonempty("Se requiere el token"),
+    token: z
+      .string()
+      .nonempty("Se requiere el token")
+      .transform((token) => token.toUpperCase()),
   });
 
   const form = useForm<z.infer<typeof schema>>({

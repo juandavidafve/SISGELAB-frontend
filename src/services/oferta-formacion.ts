@@ -63,6 +63,18 @@ export async function getById(id: number) {
   return OfertaFormacionSchema.parse(req.data);
 }
 
+export async function getOfertasWhereInstructor() {
+  const req = await api.get(urlMerge(base, "instructor"));
+
+  return OfertaFormacionMinimalSchema.array().parse(req.data);
+}
+
+export async function getOfertasWhereParticipante() {
+  const req = await api.get(urlMerge(base, "participante"));
+
+  return OfertaFormacionMinimalSchema.array().parse(req.data);
+}
+
 export async function getTiposOferta() {
   const req = await api.get(urlMerge(base, "/tipos-oferta"));
 

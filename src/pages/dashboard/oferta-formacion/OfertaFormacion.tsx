@@ -24,6 +24,8 @@ import {
   getAll as getOfertas,
   create as createOferta,
   getCategorias,
+  getOfertasWhereInstructor,
+  getOfertasWhereParticipante,
 } from "@/services/oferta-formacion";
 
 import BadgeEstado from "./components/BadgeEstado";
@@ -36,7 +38,26 @@ export default function OfertaFormacion() {
     loading: loadingOfertas,
     execute: refreshOfertas,
     set: setOfertas,
-  } = useAsyncWithToken(getOfertas, []);
+  } = useAsyncWithToken(
+    async (roles: NonNullable<typeof info>["roles"]) => {
+      if (roles.includes("ROLE_ADMINISTRADOR")) return await getOfertas();
+
+      let ofertas: OfertaFormacionMinimal[] = [];
+
+      if (roles.includes("ROLE_INSTRUCTOR")) {
+        ofertas = [...ofertas, ...(await getOfertasWhereInstructor())];
+      }
+
+      if (roles.includes("ROLE_PARTICIPANTE")) {
+        ofertas = [...ofertas, ...(await getOfertasWhereParticipante())];
+      }
+
+      console.log(roles);
+
+      return ofertas;
+    },
+    [info?.roles || []],
+  );
   const { result: categorias } = useAsyncWithToken(getCategorias, []);
 
   const [ofertasBackup, setOfertasBackup] = useState<OfertaFormacionMinimal[]>(
