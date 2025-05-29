@@ -72,6 +72,7 @@ export function DataTable<T>({ columns, data }: DataTableProps<T>) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    globalFilterFn: "auto",
     state: {
       sorting,
       columnFilters,

@@ -81,8 +81,8 @@ export default function Sidebar() {
     {
       label: "Reportes",
       icon: "material-symbols:docs-outline-rounded",
-      url: "",
-      show: false,
+      url: "reportes",
+      show: info?.roles.includes("ROLE_ADMINISTRADOR"),
     },
     {
       label: "Datos",

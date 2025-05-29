@@ -15,6 +15,7 @@ import Instructor from "@/pages/dashboard/instructor/Instructor";
 import MovimientoInstructor from "@/pages/dashboard/movimiento-instructor/MovimientoInstructor";
 import OfertaFormacion from "@/pages/dashboard/oferta-formacion/OfertaFormacion";
 import OfertaFormacionDetails from "@/pages/dashboard/oferta-formacion/OfertaFormacionDetails";
+import Reportes from "@/pages/dashboard/reportes/Reportes";
 import Sesion from "@/pages/dashboard/sesion/Sesion";
 import Components from "@/pages/dev/Components.tsx";
 import Inscripcion from "@/pages/inscripcion/Inscripcion";
@@ -50,6 +51,7 @@ export default function Router() {
           <Route path="instructor" element={<Instructor />} />
           <Route path="sesion/:id" element={<Sesion />} />
           <Route path="certificados" element={<Certificados />} />
+          <Route path="reportes" element={<Reportes />} />
         </Route>
 
         <Route
