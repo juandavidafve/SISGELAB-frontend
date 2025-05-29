@@ -80,7 +80,7 @@ export default function TokenViewer({ sesion, className }: Props) {
             })}
           />
 
-          <strong className="text-4xl">{otp?.token}</strong>
+          <strong className="font-mono text-4xl">{otp?.token}</strong>
         </div>
       </CardContent>
     </Card>
