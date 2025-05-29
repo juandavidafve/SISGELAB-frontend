@@ -18,9 +18,11 @@ export default function Inscripciones({ oferta, refresh }: Props) {
     <>
       <div className="my-10 mb-6 flex justify-between">
         <h2 className="text-xl font-bold">Inscripciones</h2>
-        <Button onClick={() => setOpenInscripcionDialog(true)}>
-          Inscribir
-        </Button>
+        {oferta.estado !== "FINALIZADA" && (
+          <Button onClick={() => setOpenInscripcionDialog(true)}>
+            Inscribir
+          </Button>
+        )}
       </div>
 
       <InscripcionDataTable oferta={oferta} refresh={refresh} />

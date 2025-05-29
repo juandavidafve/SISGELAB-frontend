@@ -1,11 +1,13 @@
 import { AxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { KeyValueItem } from "@/components/KeyValueItem";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Loader from "@/components/ui/loader";
 import useAuth from "@/hooks/useAuth";
+import { handleAxiosError } from "@/lib/error";
 import { Asistencia } from "@/schemas/asistencia";
 import { Sesion } from "@/schemas/sesion";
 import {
@@ -67,10 +69,19 @@ export default function Asistencias({ sesion }: Props) {
   }
 
   async function toggleToken() {
-    setTogglingToken(true);
-    await toggleTokenAsistencia(sesion.id);
-    await updateTokenStatus();
-    setTogglingToken(false);
+    try {
+      setTogglingToken(true);
+      await toggleTokenAsistencia(sesion.id);
+      await updateTokenStatus();
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        handleAxiosError(toast.error, error);
+      }
+
+      console.error(error);
+    } finally {
+      setTogglingToken(false);
+    }
   }
 
   return (
