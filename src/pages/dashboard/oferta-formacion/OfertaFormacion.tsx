@@ -53,8 +53,6 @@ export default function OfertaFormacion() {
         ofertas = [...ofertas, ...(await getOfertasWhereParticipante())];
       }
 
-      console.log(roles);
-
       return ofertas;
     },
     [info?.roles || []],
