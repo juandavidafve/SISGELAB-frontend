@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
 
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
 import useAuth from "@/hooks/useAuth";
+import { InfoUsuario } from "@/schemas/info-usuario";
 import {
   OfertaFormacionFormOutput,
   OfertaFormacionMinimal,
@@ -38,30 +39,32 @@ export default function OfertaFormacion() {
     result: ofertas,
     loading: loadingOfertas,
     execute: refreshOfertas,
-    set: setOfertas,
   } = useAsyncWithToken(
-    async (roles: NonNullable<typeof info>["roles"]) => {
-      if (roles.includes("ROLE_ADMINISTRADOR")) return await getOfertas();
+    async (info: InfoUsuario | undefined) => {
+      if (!info) return;
+
+      if (info.roles.includes("ROLE_ADMINISTRADOR")) return await getOfertas();
 
       let ofertas: OfertaFormacionMinimal[] = [];
 
-      if (roles.includes("ROLE_INSTRUCTOR")) {
+      if (info.roles.includes("ROLE_INSTRUCTOR")) {
         ofertas = [...ofertas, ...(await getOfertasWhereInstructor())];
       }
 
-      if (roles.includes("ROLE_PARTICIPANTE")) {
+      if (info.roles.includes("ROLE_PARTICIPANTE")) {
         ofertas = [...ofertas, ...(await getOfertasWhereParticipante())];
       }
 
+      setSelectedCategoryId(undefined);
+
       return ofertas;
     },
-    [info?.roles || []],
+    [info],
   );
+
   const { result: categorias } = useAsyncWithToken(getCategorias, []);
 
-  const [ofertasBackup, setOfertasBackup] = useState<OfertaFormacionMinimal[]>(
-    [],
-  );
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number>();
 
   const { result: catalogo, loading: loadingCatalog } = useAsyncWithToken(
     getOfertasActivas,
@@ -70,10 +73,6 @@ export default function OfertaFormacion() {
 
   const [openDialog, setOpenDialog] = useState(false);
 
-  useEffect(() => {
-    if (ofertas && ofertasBackup.length === 0) setOfertasBackup(ofertas);
-  }, [ofertas, ofertasBackup.length]);
-
   async function onCreate(oferta: OfertaFormacionFormOutput) {
     await createOferta(oferta);
     toast.success("Oferta creada correctamente");
@@ -81,18 +80,11 @@ export default function OfertaFormacion() {
     setOpenDialog(false);
   }
 
-  function handleFilter(categoriaId?: number) {
-    setOfertas({
-      status: "success",
-      loading: false,
-      result:
-        categoriaId !== undefined
-          ? ofertasBackup.filter((oferta) => {
-              return oferta.categoria.id === categoriaId;
-            })
-          : ofertasBackup,
-      error: undefined,
-    });
+  function filterByCategoria(ofertas: OfertaFormacionMinimal[]) {
+    if (selectedCategoryId === undefined) return ofertas;
+    return ofertas.filter(
+      (oferta) => oferta.categoria.id === selectedCategoryId,
+    );
   }
 
   return (
@@ -113,27 +105,40 @@ export default function OfertaFormacion() {
       {info?.roles.includes("ROLE_ADMINISTRADOR") && (
         <div className="my-6 flex gap-2">
           <Label className="mr-2">Categoría</Label>
-          <Select onValueChange={(value) => handleFilter(parseInt(value))}>
+          <Select
+            key={selectedCategoryId}
+            value={
+              selectedCategoryId !== undefined
+                ? String(selectedCategoryId)
+                : undefined
+            }
+            onValueChange={(id) => {
+              const idNum = parseInt(id);
+              if (!isNaN(idNum)) {
+                setSelectedCategoryId(idNum);
+              } else {
+                setSelectedCategoryId(undefined);
+              }
+            }}
+          >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Seleccionar..." />
             </SelectTrigger>
             <SelectContent>
               {categorias?.map((categoria) => (
-                <SelectItem
-                  value={String(categoria.id)}
-                  key={categoria.id}
-                  onClick={() => {
-                    handleFilter(categoria.id);
-                  }}
-                >
+                <SelectItem value={String(categoria.id)} key={categoria.id}>
                   {categoria.nombre}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          {ofertas?.length !== ofertasBackup.length && (
-            <Button variant="ghost" size="icon" onClick={() => handleFilter()}>
+          {selectedCategoryId !== undefined && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSelectedCategoryId(undefined)}
+            >
               <Icon
                 icon="material-symbols:close-rounded"
                 className="size-6 text-red-500"
@@ -144,8 +149,8 @@ export default function OfertaFormacion() {
       )}
 
       <div className="space-y-4">
-        {!loadingOfertas ? (
-          ofertas?.map((oferta) => {
+        {!loadingOfertas && ofertas ? (
+          filterByCategoria(ofertas).map((oferta) => {
             return (
               <CardSmall
                 title={oferta.nombre}
