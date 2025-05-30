@@ -40,6 +40,7 @@ export type SesionMinimal = z.infer<typeof SesionMinimalSchema>;
 
 export const SesionFormSchema = z
   .object({
+    id: z.number().optional(),
     fecha: zodStringFromDate(),
     inicio: z.string().time(),
     fin: z.string().time(),
