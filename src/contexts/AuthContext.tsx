@@ -9,11 +9,13 @@ interface AuthContextType {
   token?: string;
   info?: InfoUsuario;
   auth: Auth;
+  hasLoggedOut: boolean;
   refreshInfo: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   auth: getAuth(app),
+  hasLoggedOut: false,
   refreshInfo: () => {},
 });
 

@@ -16,7 +16,7 @@ export default function ProtectedRoute({
   elemOnAllow,
   elemOnRedirect,
 }: ProtectedRouteProps) {
-  const { user, info } = useAuth();
+  const { user, info, hasLoggedOut } = useAuth();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
 
@@ -26,6 +26,15 @@ export default function ProtectedRoute({
     return <Navigate to={newUserForm} />;
   if (elemOnRedirect !== undefined && searchParams.get("redirectTo"))
     return elemOnRedirect;
-  if (user === null) return elemOnDeny || <Navigate to="/auth/login" />;
+  if (user === null)
+    return (
+      elemOnDeny || (
+        <Navigate
+          to={
+            hasLoggedOut ? "/auth/login" : `/auth/login?redirectTo=${pathname}`
+          }
+        />
+      )
+    );
   return elemOnAllow || children;
 }
