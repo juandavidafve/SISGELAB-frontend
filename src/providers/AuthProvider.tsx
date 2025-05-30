@@ -1,5 +1,5 @@
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { useEffect, useState, ReactNode, useCallback } from "react";
+import { useEffect, useState, ReactNode, useCallback, useRef } from "react";
 import { useAsync } from "react-async-hook";
 
 import AuthContext from "@/contexts/AuthContext";
@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [token, setToken] = useState<string | undefined>(undefined);
   const [auth] = useState(() => getAuth());
+  const [hasLoggedOut, setHasLoggedOut] = useState(false);
+  const hasLoggedIn = useRef(false);
 
   const interceptorReady = useRequestInterceptor(
     api,
@@ -39,11 +41,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
       if (currentUser) {
         const fetchedToken = await currentUser.getIdToken();
         setToken(fetchedToken);
+        setHasLoggedOut(false);
+        hasLoggedIn.current = true;
       } else {
         setToken(undefined);
+
+        if (hasLoggedIn.current) {
+          setHasLoggedOut(true);
+        } else {
+          setHasLoggedOut(false);
+        }
       }
     });
 
@@ -57,6 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         auth,
         token: token && interceptorReady ? token : undefined,
         info,
+        hasLoggedOut,
         refreshInfo,
       }}
     >
