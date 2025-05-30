@@ -133,6 +133,14 @@ export default function InstructorForm({
             <FormInput control={form.control} name="documento" />
           </div>
         </div>
+        {tiposDocumento?.find((tipoDocumento) => tipoDocumento.siglas === "CC")
+          ?.id === form.watch("id_tipo_documento") && (
+          <FormInputDate
+            control={form.control}
+            name="fecha_expedicion"
+            label="Fecha de expedición"
+          />
+        )}
         <FormSelect
           control={form.control}
           name="sexo"
@@ -143,11 +151,6 @@ export default function InstructorForm({
           itemLabel="label"
           itemValue="value"
           label="Sexo"
-        />
-        <FormInputDate
-          control={form.control}
-          name="fecha_expedicion"
-          label="Fecha de expedición"
         />
         <FormInputDate
           control={form.control}
