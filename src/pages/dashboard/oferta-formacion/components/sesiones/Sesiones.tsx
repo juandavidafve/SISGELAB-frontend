@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import useAuth from "@/hooks/useAuth";
 import { formatDate } from "@/lib/utils";
@@ -14,9 +15,10 @@ import { AsistenciaDialog } from "./AsistenciaDialog";
 
 interface Props {
   oferta: OfertaFormacion;
+  refresh: () => void;
 }
 
-export default function Sesiones({ oferta }: Props) {
+export default function Sesiones({ oferta, refresh }: Props) {
   const { info } = useAuth();
 
   const [showAsistenciaDialog, setShowAsistenciaDialog] = useState(false);
@@ -27,6 +29,7 @@ export default function Sesiones({ oferta }: Props) {
     await marcarAsistencia(selectedSesion?.id, token);
     toast.success("Asistencia marcada correctamente");
     setShowAsistenciaDialog(false);
+    refresh();
   }
 
   return (
@@ -46,16 +49,30 @@ export default function Sesiones({ oferta }: Props) {
                   </Button>
                 )}
 
-                {info?.roles.includes("ROLE_PARTICIPANTE") && (
-                  <Button
-                    onClick={() => {
-                      setSelectedSesion(sesion);
-                      setShowAsistenciaDialog(true);
-                    }}
-                  >
-                    Marcar Asistencia
-                  </Button>
-                )}
+                {info?.roles.includes("ROLE_PARTICIPANTE") &&
+                  (sesion.estado === "PENDIENTE" ? (
+                    <Button
+                      onClick={() => {
+                        setSelectedSesion(sesion);
+                        setShowAsistenciaDialog(true);
+                      }}
+                    >
+                      Marcar Asistencia
+                    </Button>
+                  ) : (
+                    <Badge
+                      className="w-28"
+                      variant={
+                        sesion.estado === "AUSENTE"
+                          ? "red"
+                          : sesion.estado === "PRESENTE"
+                            ? "green"
+                            : "neutral"
+                      }
+                    >
+                      {sesion.estado}
+                    </Badge>
+                  ))}
               </>
             }
             key={sesion.id}

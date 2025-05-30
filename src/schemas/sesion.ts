@@ -32,6 +32,8 @@ export const SesionMinimalSchema = SesionSchema.pick({
   fin: true,
   sala: true,
   instructores: true,
+}).extend({
+  estado: z.enum(["PRESENTE", "AUSENTE", "PENDIENTE"]).nullish(),
 });
 
 export type SesionMinimal = z.infer<typeof SesionMinimalSchema>;
