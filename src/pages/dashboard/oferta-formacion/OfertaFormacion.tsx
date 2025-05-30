@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { toast } from "sonner";
 
 import CardSmall from "@/components/CardSmall";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Loader from "@/components/ui/loader";
@@ -30,7 +31,6 @@ import {
   getOfertasActivas,
 } from "@/services/oferta-formacion";
 
-import BadgeEstado from "./components/BadgeEstado";
 import { OfertaFormacionDialog } from "./components/oferta-formacion/OfertaFormacionDialog";
 
 export default function OfertaFormacion() {
@@ -156,10 +156,19 @@ export default function OfertaFormacion() {
                 title={oferta.nombre}
                 slotAction={
                   <div className="flex flex-row items-center gap-2">
-                    <BadgeEstado
-                      estado={oferta.estado}
-                      className="hidden sm:flex"
-                    />
+                    <Badge
+                      className="hidden w-28 sm:flex"
+                      variant={
+                        oferta.estado === "ACTIVA"
+                          ? "green"
+                          : oferta.estado === "INACTIVA"
+                            ? "red"
+                            : "neutral"
+                      }
+                    >
+                      {oferta.estado}
+                    </Badge>
+
                     <Link to={String(oferta.id)}>
                       <Button className="bg-red-500 text-white hover:bg-red-600">
                         Ver

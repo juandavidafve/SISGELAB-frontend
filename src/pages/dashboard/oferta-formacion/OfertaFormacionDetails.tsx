@@ -8,6 +8,7 @@ import { useLocation, useParams } from "react-router";
 import { toast } from "sonner";
 
 import QrDialog from "@/components/QrDialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,7 +36,6 @@ import {
   update as updateOferta,
 } from "@/services/oferta-formacion";
 
-import BadgeEstado from "./components/BadgeEstado";
 import Inscripciones from "./components/inscripcion/Inscripciones";
 import { OfertaFormacionDialog } from "./components/oferta-formacion/OfertaFormacionDialog";
 import { OfertaFormacionFinalizarAlert } from "./components/oferta-formacion/OfertaFormacionFinalizarAlert";
@@ -101,7 +101,18 @@ export default function OfertaFormacionDetails() {
       <div className="flex justify-between">
         <div className="mb-6">
           <h1 className="mb-2 text-2xl font-bold">{oferta.nombre}</h1>
-          <BadgeEstado estado={oferta.estado} />
+          <Badge
+            className="w-28"
+            variant={
+              oferta.estado === "ACTIVA"
+                ? "green"
+                : oferta.estado === "INACTIVA"
+                  ? "red"
+                  : "neutral"
+            }
+          >
+            {oferta.estado}
+          </Badge>
         </div>
         {info?.roles.includes("ROLE_ADMINISTRADOR") && (
           <div className="flex items-center gap-2">
@@ -197,7 +208,7 @@ export default function OfertaFormacionDetails() {
         <OfertaFormacionInfo oferta={oferta} />
       )}
 
-      <Sesiones oferta={oferta} />
+      <Sesiones oferta={oferta} refresh={() => refreshOferta(idNum)} />
 
       {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
         info?.roles.includes("ROLE_INSTRUCTOR")) && (

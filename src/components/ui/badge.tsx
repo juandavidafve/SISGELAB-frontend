@@ -19,6 +19,9 @@ const badgeVariants = cva(
           "border-transparent bg-red-500 text-white [a&]:hover:bg-red-500/90 focus-visible:ring-red-500/20 ",
         outline:
           "text-neutral-950 [a&]:hover:bg-neutral-100 [a&]:hover:text-neutral-900 ",
+        red: "bg-red-200 text-red-800",
+        green: "bg-green-200 text-green-800",
+        neutral: "bg-neutral-200 text-neutral-800",
       },
     },
     defaultVariants: {
