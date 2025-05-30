@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Loader from "@/components/ui/loader";
 import { useAsyncWithToken } from "@/hooks/useAsyncWithToken";
-import useAuth from "@/hooks/useAuth";
 import { BACKEND_BASE_URL } from "@/lib/config";
 import { urlMerge } from "@/lib/utils";
 import { OfertaFormacionFormOutput } from "@/schemas/oferta-formacion";
@@ -44,7 +43,6 @@ import OfertaFormacionInfo from "./components/oferta-formacion/OfertaFormacionIn
 import Sesiones from "./components/sesiones/Sesiones";
 
 export default function OfertaFormacionDetails() {
-  const { info } = useAuth();
   const location = useLocation();
   const { id } = useParams();
   const idNum = parseInt(String(id));
@@ -114,7 +112,7 @@ export default function OfertaFormacionDetails() {
             {oferta.estado}
           </Badge>
         </div>
-        {info?.roles.includes("ROLE_ADMINISTRADOR") && (
+        {oferta.roles.includes("ADMINISTRADOR") && (
           <div className="flex items-center gap-2">
             {oferta.estado === "ACTIVA" && (
               <QrDialog
@@ -203,15 +201,15 @@ export default function OfertaFormacionDetails() {
         oferta={oferta}
       />
 
-      {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
-        info?.roles.includes("ROLE_INSTRUCTOR")) && (
+      {(oferta.roles.includes("ADMINISTRADOR") ||
+        oferta.roles.includes("INSTRUCTOR")) && (
         <OfertaFormacionInfo oferta={oferta} />
       )}
 
       <Sesiones oferta={oferta} refresh={() => refreshOferta(idNum)} />
 
-      {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
-        info?.roles.includes("ROLE_INSTRUCTOR")) && (
+      {(oferta.roles.includes("ADMINISTRADOR") ||
+        oferta.roles.includes("INSTRUCTOR")) && (
         <Inscripciones oferta={oferta} refresh={() => refreshOferta(idNum)} />
       )}
     </>

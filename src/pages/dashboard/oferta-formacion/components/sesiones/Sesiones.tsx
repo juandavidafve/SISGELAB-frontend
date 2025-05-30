@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import CardSmall from "@/components/CardSmall";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import useAuth from "@/hooks/useAuth";
 import { formatDate } from "@/lib/utils";
 import { OfertaFormacion } from "@/schemas/oferta-formacion";
 import { SesionMinimal } from "@/schemas/sesion";
@@ -19,8 +18,6 @@ interface Props {
 }
 
 export default function Sesiones({ oferta, refresh }: Props) {
-  const { info } = useAuth();
-
   const [showAsistenciaDialog, setShowAsistenciaDialog] = useState(false);
   const [selectedSesion, setSelectedSesion] = useState<SesionMinimal>();
 
@@ -42,14 +39,14 @@ export default function Sesiones({ oferta, refresh }: Props) {
             description={`${formatDate(sesion.fecha, "dd/MM/yyyy")} ${sesion.inicio}`}
             slotAction={
               <>
-                {(info?.roles.includes("ROLE_ADMINISTRADOR") ||
-                  info?.roles.includes("ROLE_INSTRUCTOR")) && (
+                {(oferta.roles.includes("ADMINISTRADOR") ||
+                  oferta.roles.includes("INSTRUCTOR")) && (
                   <Button>
                     <Link to={`../sesion/${sesion.id}`}>Ver</Link>
                   </Button>
                 )}
 
-                {info?.roles.includes("ROLE_PARTICIPANTE") &&
+                {oferta.roles.includes("PARTICIPANTE") &&
                   (sesion.estado === "PENDIENTE" ? (
                     <Button
                       onClick={() => {

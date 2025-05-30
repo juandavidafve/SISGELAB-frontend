@@ -48,6 +48,7 @@ export const OfertaFormacionSchema = OfertaFormacionBaseSchema.extend({
   instituciones: InstitucionSchema.array(),
   sesiones: SesionMinimalSchema.array().nonempty(),
   inscritos: BaseEntitySchema.array(),
+  roles: z.enum(["ADMINISTRADOR", "INSTRUCTOR", "PARTICIPANTE"]).array(),
 });
 
 export type OfertaFormacion = z.infer<typeof OfertaFormacionSchema>;
